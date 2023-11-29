@@ -18,7 +18,11 @@ import {
 } from "@dnd-kit/core";
 import DragOverlayWrapper from "../drag-overlay-wrapper";
 import { useDesigner } from "@/contexts/designer-context";
-import { customCollisionDetectionAlgorithm } from "./colision-detection";
+import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
+import { VStack } from "./components/v-stack";
+import { Text } from "./components/text";
+import { componentTags } from "./utils/component-tags";
+import { createTree } from "./utils/tree-operations";
 
 const COMPONENTS: PageComponent[] = [
   {
@@ -143,14 +147,6 @@ const SIDEBAR_COMPONENTS: Component[] = [
   },
 ];
 
-type ComponentTagsType = {
-  [key: string]: any;
-};
-export const componentTags: ComponentTagsType = {
-  Text: Text,
-  VStack: VStack,
-};
-
 export default function BlockBuilder() {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -186,11 +182,46 @@ export default function BlockBuilder() {
 }
 
 function DesignerSidebar() {
+  const { selectedElement, updateElement } = useDesigner();
   return (
     <div className="bg-white px-4 py-10 h-full min-w-[200px]">
-      {SIDEBAR_COMPONENTS.map((component) => {
-        return <SidebarComponent component={component} key={component.id} />;
-      })}
+      {selectedElement && (
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold">Properties</h1>
+          {selectedElement.props.map((prop) => {
+            return (
+              <div key={prop.prop.key} className="flex flex-col gap-2">
+                <label htmlFor={prop.prop.key}>{prop.prop.key}</label>
+                <input
+                  className="rounded-md border border-gray-300 p-2"
+                  type="text"
+                  id={prop.prop.key}
+                  value={prop.value}
+                  onChange={(e) => {
+                    updateElement(selectedElement.id, {
+                      ...selectedElement,
+                      props: selectedElement.props.map((p) => {
+                        if (p.prop.key === prop.prop.key) {
+                          return {
+                            ...p,
+                            value: e.target.value,
+                          };
+                        }
+                        return p;
+                      }),
+                    });
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {!selectedElement &&
+        SIDEBAR_COMPONENTS.map((component) => {
+          return <SidebarComponent component={component} key={component.id} />;
+        })}
     </div>
   );
 }
@@ -514,49 +545,6 @@ function Designer() {
   );
 }
 
-export function VStack({
-  className,
-  children,
-}: {
-  className: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={cn("flex flex-col bg-gray-100 rounded-md p-4", className)}>
-      {children}
-    </div>
-  );
-}
-
-export function Text({ className, text }: { className: string; text: string }) {
-  return (
-    <div className={cn("font-bold", className)}>
-      {text || "Üzerine tıklayarak düzenleyebilirsiniz"}
-    </div>
-  );
-}
-
-function createTree(components: PageComponent[]) {
-  const map: { [key: number]: PageComponent } = {};
-
-  components.forEach((component) => {
-    map[component.id] = { ...component, children: [] };
-  });
-
-  function addChildren(component: PageComponent) {
-    components.forEach((child) => {
-      if (child.belong_component_id === component.id) {
-        component.children?.push(addChildren({ ...child, children: [] }));
-      }
-    });
-    return component;
-  }
-
-  return components
-    .filter((component) => !component.belong_component_id)
-    .map((root) => addChildren(map[root.id]));
-}
-
 const DesignWrapper = ({
   hoveredElement,
   setHoveredElement,
@@ -630,10 +618,6 @@ const DesignWrapper = ({
           prev.filter((item) => item !== component.id)
         )
       }
-      onClick={(e) => {
-        e.stopPropagation();
-        setSelectedElement(component);
-      }}
       className="border relative group border-dashed border-gray-400 rounded-md flex flex-col"
     >
       <div
@@ -668,7 +652,15 @@ const DesignWrapper = ({
             : "hidden"
         )}
       >
-        <Button variant="default" size="icon" className="h-6 w-6 p-1">
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedElement(component);
+          }}
+          variant="default"
+          size="icon"
+          className="h-6 w-6 p-1"
+        >
           <Pencil2Icon />
         </Button>
         <Button

@@ -48,6 +48,8 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
       newElements[index] = element;
       return newElements;
     });
+
+    setSelectedElement(element);
   };
 
   return (
