@@ -1,5 +1,5 @@
 "use client";
-import { Component } from "@/types/page-component";
+import { PageComponent } from "@/types/page-component";
 import {
   Dispatch,
   ReactNode,
@@ -10,26 +10,26 @@ import {
 import { useContext } from "react";
 
 type DesignerContextType = {
-  elements: Component[];
-  setElements: Dispatch<SetStateAction<Component[]>>;
-  addElement: (index: number, element: Component) => void;
+  elements: PageComponent[];
+  setElements: Dispatch<SetStateAction<PageComponent[]>>;
+  addElement: (index: number, element: PageComponent) => void;
   removeElement: (id: number) => void;
 
-  selectedElement: Component | null;
-  setSelectedElement: Dispatch<SetStateAction<Component | null>>;
+  selectedElement: PageComponent | null;
+  setSelectedElement: Dispatch<SetStateAction<PageComponent | null>>;
 
-  updateElement: (id: number, element: Component) => void;
+  updateElement: (id: number, element: PageComponent) => void;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
 
 export function DesignerContextProvider({ children }: { children: ReactNode }) {
-  const [elements, setElements] = useState<Component[]>([]);
-  const [selectedElement, setSelectedElement] = useState<Component | null>(
+  const [elements, setElements] = useState<PageComponent[]>([]);
+  const [selectedElement, setSelectedElement] = useState<PageComponent | null>(
     null
   );
 
-  const addElement = (index: number, element: Component) => {
+  const addElement = (index: number, element: PageComponent) => {
     setElements((prev) => {
       const newElements = [...prev];
       newElements.splice(index, 0, element);
@@ -41,7 +41,7 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
     setElements((prev) => prev.filter((element) => element.id !== id));
   };
 
-  const updateElement = (id: number, element: Component) => {
+  const updateElement = (id: number, element: PageComponent) => {
     setElements((prev) => {
       const newElements = [...prev];
       const index = newElements.findIndex((el) => el.id === id);

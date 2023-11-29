@@ -2,7 +2,7 @@ import { Active, DragOverlay, useDndMonitor } from "@dnd-kit/core";
 import { useState } from "react";
 import { componentTags, createChildrenTree } from "../block-builder";
 import { useDesigner } from "@/contexts/designer-context";
-import { Component } from "@/types/page-component";
+import { PageComponent } from "@/types/page-component";
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);
@@ -35,7 +35,7 @@ function DragOverlayWrapper() {
     if (!component) {
       node = <div>Element not found!</div>;
     } else {
-      const getComponent = (componentWithoutChildren: Component) => {
+      const getComponent = (componentWithoutChildren: PageComponent) => {
         const component = createChildrenTree(
           componentWithoutChildren,
           elements

@@ -1,4 +1,4 @@
-export interface Component {
+export interface PageComponent {
   id: number;
   block_id: number;
   name: string;
@@ -9,7 +9,15 @@ export interface Component {
   order: number;
   belong_component_id: number | null;
   props: ComponentProp[];
-  children?: Component[];
+  children?: PageComponent[];
+}
+export interface Component {
+  id: number;
+  name: string;
+  tag: string;
+  type: Type;
+  props: Prop[];
+  hasChildren?: boolean;
 }
 
 export interface Type {
@@ -18,7 +26,6 @@ export interface Type {
 }
 
 export interface ComponentProp {
-  id: number;
   prop: Prop;
   value: string;
 }
