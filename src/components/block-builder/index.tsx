@@ -25,10 +25,11 @@ import React, { useCallback, useEffect, useState } from "react";
 import DragOverlayWrapper from "../drag-overlay-wrapper";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
 import { componentTags } from "./utils/component-tags";
 import { createTree } from "./utils/tree-operations";
-import { Switch } from "../ui/switch";
+import JSONEditInput from "./components/json-edit-input";
 
 const COMPONENTS: PageComponent[] = [
   {
@@ -215,7 +216,7 @@ function DesignerSidebar() {
   const { selectedElement, isPreview, updateElement, setIsPreview } =
     useDesigner();
   return (
-    <div className="bg-white px-4 py-10 h-full min-w-[300px]">
+    <div className="bg-white px-4 py-10 h-full min-w-[200px]">
       <div className="flex items-center justify-between  w-full space-x-2">
         <Label htmlFor="preview-mode">Preview Mode</Label>
         <Switch
@@ -227,6 +228,8 @@ function DesignerSidebar() {
       {selectedElement && (
         <div className="flex flex-col w-full  gap-2">
           <h1 className="text-2xl font-bold">Properties</h1>
+          <JSONEditInput />
+
           {selectedElement.props.map((prop) => {
             return (
               <div key={prop.prop.key} className="flex w-full  flex-col gap-2">
@@ -658,8 +661,7 @@ const DesignWrapper = ({
   component: PageComponent;
   [key: string]: any;
 }) => {
-  const { removeElement, selectedElement, setSelectedElement } = useDesigner();
-  const [mouseIsOver, setMouseIsOver] = useState<boolean>(false);
+  const { removeElement, setSelectedElement } = useDesigner();
   const topHalf = useDroppable({
     id: component.code + "-top",
     data: {
