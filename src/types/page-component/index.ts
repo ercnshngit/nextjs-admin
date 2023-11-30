@@ -1,13 +1,16 @@
 export interface PageComponent {
-  id: number;
+  code: string;
   block_id: number;
-  name: string;
-  tag: string;
+  component: {
+    id: number;
+    name: string;
+    tag: string;
+  };
   hasChildren?: boolean;
   type: Type;
   depth: number;
   order: number;
-  belong_component_id: number | null;
+  belong_component_id: string | null;
   props: ComponentProp[];
   children?: PageComponent[];
 }
@@ -18,6 +21,7 @@ export interface Component {
   type: Type;
   props: Prop[];
   hasChildren?: boolean;
+  icon: string;
 }
 
 export interface Type {
@@ -33,4 +37,5 @@ export interface ComponentProp {
 export interface Prop {
   id: number;
   key: string;
+  type: string;
 }

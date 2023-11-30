@@ -7,7 +7,7 @@ export function createChildrenTree(
   const temp: PageComponent = { ...component, children: [] };
 
   components.forEach((component) => {
-    if (component.belong_component_id === temp.id) {
+    if (component.belong_component_id === temp.code) {
       temp.children?.push(component);
     }
   });
@@ -16,15 +16,15 @@ export function createChildrenTree(
 }
 
 export function createTree(components: PageComponent[]) {
-  const map: { [key: number]: PageComponent } = {};
+  const map: { [key: string]: PageComponent } = {};
 
   components.forEach((component) => {
-    map[component.id] = { ...component, children: [] };
+    map[component.code] = { ...component, children: [] };
   });
 
   function addChildren(component: PageComponent) {
     components.forEach((child) => {
-      if (child.belong_component_id === component.id) {
+      if (child.belong_component_id === component.code) {
         component.children?.push(addChildren({ ...child, children: [] }));
       }
     });
@@ -33,5 +33,5 @@ export function createTree(components: PageComponent[]) {
 
   return components
     .filter((component) => !component.belong_component_id)
-    .map((root) => addChildren(map[root.id]));
+    .map((root) => addChildren(map[root.code]));
 }

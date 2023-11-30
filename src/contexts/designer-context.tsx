@@ -13,12 +13,13 @@ type DesignerContextType = {
   elements: PageComponent[];
   setElements: Dispatch<SetStateAction<PageComponent[]>>;
   addElement: (index: number, element: PageComponent) => void;
-  removeElement: (id: number) => void;
-
+  removeElement: (code: string) => void;
+  isPreview: boolean;
+  setIsPreview: Dispatch<SetStateAction<boolean>>;
   selectedElement: PageComponent | null;
   setSelectedElement: Dispatch<SetStateAction<PageComponent | null>>;
 
-  updateElement: (id: number, element: PageComponent) => void;
+  updateElement: (code: string, element: PageComponent) => void;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
@@ -28,6 +29,7 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [selectedElement, setSelectedElement] = useState<PageComponent | null>(
     null
   );
+  const [isPreview, setIsPreview] = useState(false);
 
   const addElement = (index: number, element: PageComponent) => {
     setElements((prev) => {
@@ -37,14 +39,14 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const removeElement = (id: number) => {
-    setElements((prev) => prev.filter((element) => element.id !== id));
+  const removeElement = (code: string) => {
+    setElements((prev) => prev.filter((element) => element.code !== code));
   };
 
-  const updateElement = (id: number, element: PageComponent) => {
+  const updateElement = (code: string, element: PageComponent) => {
     setElements((prev) => {
       const newElements = [...prev];
-      const index = newElements.findIndex((el) => el.id === id);
+      const index = newElements.findIndex((el) => el.code === code);
       newElements[index] = element;
       return newElements;
     });
@@ -59,7 +61,8 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
         setElements,
         addElement,
         removeElement,
-
+        isPreview,
+        setIsPreview,
         selectedElement,
         setSelectedElement,
 

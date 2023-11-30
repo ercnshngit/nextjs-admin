@@ -1,34 +1,43 @@
 "use client";
-import { Component, PageComponent } from "@/types/page-component";
-import React, { useCallback, useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { MoveIcon, Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
+import { useDesigner } from "@/contexts/designer-context";
 import { cn } from "@/libs/utils";
+import { Component, PageComponent } from "@/types/page-component";
 import {
   DndContext,
   DragEndEvent,
   MouseSensor,
   TouchSensor,
-  closestCorners,
   useDndMonitor,
   useDraggable,
   useDroppable,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import {
+  CopyIcon,
+  HeightIcon,
+  LetterCaseCapitalizeIcon,
+  MoveIcon,
+  Pencil2Icon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
+import React, { useCallback, useEffect, useState } from "react";
 import DragOverlayWrapper from "../drag-overlay-wrapper";
-import { useDesigner } from "@/contexts/designer-context";
+import { Button } from "../ui/button";
+import { Label } from "../ui/label";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
-import { VStack } from "./components/v-stack";
-import { Text } from "./components/text";
 import { componentTags } from "./utils/component-tags";
 import { createTree } from "./utils/tree-operations";
+import { Switch } from "../ui/switch";
 
 const COMPONENTS: PageComponent[] = [
   {
-    id: 1,
-    name: "Text",
-    tag: "Text",
+    code: "1",
+    component: {
+      id: 1,
+      name: "Text",
+      tag: "Text",
+    },
     block_id: 1,
     type: {
       id: 1,
@@ -36,12 +45,13 @@ const COMPONENTS: PageComponent[] = [
     },
     depth: 1,
     order: 1,
-    belong_component_id: 2,
+    belong_component_id: "2",
     props: [
       {
         prop: {
           id: 1,
           key: "className",
+          type: "string",
         },
         value: "font-bold text-xl",
       },
@@ -49,28 +59,33 @@ const COMPONENTS: PageComponent[] = [
         prop: {
           id: 2,
           key: "text",
+          type: "string",
         },
         value: "Hello World",
       },
     ],
   },
   {
-    id: 3,
-    name: "Text",
-    tag: "Text",
+    code: "3",
+    component: {
+      id: 1,
+      name: "Text",
+      tag: "Text",
+    },
     block_id: 1,
     type: {
       id: 1,
       name: "Page",
     },
     depth: 1,
-    order: 1,
-    belong_component_id: 2,
+    order: 2,
+    belong_component_id: "2",
     props: [
       {
         prop: {
           id: 1,
           key: "className",
+          type: "string",
         },
         value: "font-bold text-xl text-red-500",
       },
@@ -78,15 +93,19 @@ const COMPONENTS: PageComponent[] = [
         prop: {
           id: 2,
           key: "text",
+          type: "string",
         },
         value: "Asfsdfdsfsdfdsf",
       },
     ],
   },
   {
-    id: 2,
-    name: "Vertical Stack",
-    tag: "VStack",
+    code: "2",
+    component: {
+      id: 2,
+      name: "Vertical Stack",
+      tag: "VStack",
+    },
     hasChildren: true,
     block_id: 1,
     type: {
@@ -101,6 +120,7 @@ const COMPONENTS: PageComponent[] = [
         prop: {
           id: 1,
           key: "className",
+          type: "string",
         },
         value: "",
       },
@@ -113,6 +133,7 @@ const SIDEBAR_COMPONENTS: Component[] = [
     id: 1,
     name: "Text",
     tag: "Text",
+    icon: "LetterCaseCapitalize",
     type: {
       id: 1,
       name: "Page",
@@ -121,17 +142,20 @@ const SIDEBAR_COMPONENTS: Component[] = [
       {
         id: 1,
         key: "className",
+        type: "string",
       },
 
       {
         id: 2,
         key: "text",
+        type: "string",
       },
     ],
   },
   {
     id: 2,
     name: "Vertical Stack",
+    icon: "Height",
     tag: "VStack",
     hasChildren: true,
     type: {
@@ -142,10 +166,16 @@ const SIDEBAR_COMPONENTS: Component[] = [
       {
         id: 1,
         key: "className",
+        type: "string",
       },
     ],
   },
 ];
+
+export const Icons = {
+  LetterCaseCapitalize: LetterCaseCapitalizeIcon,
+  Height: HeightIcon,
+};
 
 export default function BlockBuilder() {
   const mouseSensor = useSensor(MouseSensor, {
@@ -182,23 +212,32 @@ export default function BlockBuilder() {
 }
 
 function DesignerSidebar() {
-  const { selectedElement, updateElement } = useDesigner();
+  const { selectedElement, isPreview, updateElement, setIsPreview } =
+    useDesigner();
   return (
-    <div className="bg-white px-4 py-10 h-full min-w-[200px]">
+    <div className="bg-white px-4 py-10 h-full min-w-[300px]">
+      <div className="flex items-center justify-between  w-full space-x-2">
+        <Label htmlFor="preview-mode">Preview Mode</Label>
+        <Switch
+          id="preview-mode"
+          onCheckedChange={() => setIsPreview((prev) => !prev)}
+          checked={isPreview}
+        />
+      </div>
       {selectedElement && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col w-full  gap-2">
           <h1 className="text-2xl font-bold">Properties</h1>
           {selectedElement.props.map((prop) => {
             return (
-              <div key={prop.prop.key} className="flex flex-col gap-2">
+              <div key={prop.prop.key} className="flex w-full  flex-col gap-2">
                 <label htmlFor={prop.prop.key}>{prop.prop.key}</label>
                 <input
-                  className="rounded-md border border-gray-300 p-2"
+                  className="rounded-md border w-full border-gray-300 p-2"
                   type="text"
                   id={prop.prop.key}
                   value={prop.value}
                   onChange={(e) => {
-                    updateElement(selectedElement.id, {
+                    updateElement(selectedElement.code, {
                       ...selectedElement,
                       props: selectedElement.props.map((p) => {
                         if (p.prop.key === prop.prop.key) {
@@ -217,11 +256,14 @@ function DesignerSidebar() {
           })}
         </div>
       )}
-
-      {!selectedElement &&
-        SIDEBAR_COMPONENTS.map((component) => {
-          return <SidebarComponent component={component} key={component.id} />;
-        })}
+      <div className="grid grid-cols-2 gap-2">
+        {!selectedElement &&
+          SIDEBAR_COMPONENTS.map((component) => {
+            return (
+              <SidebarComponent component={component} key={component.id} />
+            );
+          })}
+      </div>
     </div>
   );
 }
@@ -236,19 +278,20 @@ function SidebarComponent({
   const draggable = useDraggable({
     id: component.id + "-sidebar-drag-handler",
     data: {
-      id: component.id,
       component: component,
       isSidebarComponent: true,
     },
   });
+  const Icon = Icons[component.icon as keyof typeof Icons];
   return (
     <div
       ref={draggable.setNodeRef}
       {...draggable.listeners}
       {...draggable.attributes}
-      className="p-4 border rounded-md mb-4 cursor-pointer"
+      className="p-4 border aspect-square flex flex-col justify-center items-center gap-4 bg-white rounded-md mb-4 cursor-pointer"
     >
-      <h1>{component.name}</h1>
+      <Icon />
+      <h1 className="text-center">{component.name}</h1>
     </div>
   );
 }
@@ -260,6 +303,7 @@ function Designer() {
     selectedElement,
     setSelectedElement,
     removeElement,
+    isPreview,
   } = useDesigner();
 
   const [tree, setTree] = useState<PageComponent[]>([]);
@@ -267,7 +311,7 @@ function Designer() {
     setTree(createTree(elements));
   }, [elements]);
 
-  const [hoveredElement, setHoveredElement] = useState<number[]>([]);
+  const [hoveredElement, setHoveredElement] = useState<string[]>([]);
   const droppable = useDroppable({
     id: "designer-drop-area",
     data: {
@@ -282,23 +326,24 @@ function Designer() {
       const { active, over } = event;
       if (!active || !over) return;
 
-      const draggedElement = active.data?.current;
-      const droppedArea = over.data?.current;
+      type DraggedElement = {
+        component: PageComponent | Component;
+        isComponent?: boolean;
+        isSidebarComponent?: boolean;
+      };
+
+      type DroppedArea = {
+        component: PageComponent;
+        hasChildren?: boolean;
+        isTopHalf?: boolean;
+        isBottomHalf?: boolean;
+        isDesignerDropArea?: boolean;
+      };
+
+      const draggedElement = active.data?.current as DraggedElement;
+      const droppedArea = over.data?.current as DroppedArea;
 
       if (!draggedElement || !droppedArea) return;
-      console.log({
-        "component mi:": draggedElement?.isComponent,
-        "sidebar component mi:": draggedElement?.isSidebarComponent,
-        "bırakılan yer component mi:": droppedArea?.isComponent,
-        "bırakılan yer designer drop area mı:": droppedArea?.isDesignerDropArea,
-        "bırakılan yerin çocuğu var mı:": droppedArea?.hasChildren,
-        "bırakılan yerin üst yarısı mı:": droppedArea?.isTopHalf,
-        "bırakılan yerin alt yarısı mı:": droppedArea?.isBottomHalf,
-        "bırakılan yerin depthi:": droppedArea?.depth,
-        "bırakılan yerin belong component idsi:":
-          droppedArea?.belong_component_id,
-        "bırakılan yerin idsi:": droppedArea?.id,
-      });
 
       const isSidebarComponentDroppingOverDesignerDropArea =
         draggedElement?.isSidebarComponent && droppedArea?.isDesignerDropArea;
@@ -327,9 +372,12 @@ function Designer() {
         console.log("1");
         const sidebarComponent = draggedElement?.component as Component;
         const newElement = {
-          id: crypto.getRandomValues(new Uint32Array(1))[0],
-          name: sidebarComponent.name,
-          tag: sidebarComponent.tag,
+          code: crypto.randomUUID(),
+          component: {
+            id: sidebarComponent.id,
+            name: sidebarComponent.name,
+            tag: sidebarComponent.tag,
+          },
           block_id: 0,
           type: {
             id: sidebarComponent.type.id,
@@ -344,6 +392,7 @@ function Designer() {
             prop: {
               id: prop.id,
               key: prop.key,
+              type: prop.type,
             },
             value: "",
           })),
@@ -354,8 +403,8 @@ function Designer() {
       } else if (isSidebarComponentDroppingOverComponent) {
         console.log("2");
         const sidebarComponent = draggedElement?.component as Component;
-        const overId = droppedArea?.id;
-        const overElementIndex = elements.findIndex((el) => el.id === overId);
+        const overId = droppedArea?.component.code;
+        const overElementIndex = elements.findIndex((el) => el.code === overId);
         if (overElementIndex === -1) {
           throw new Error("element not found");
         }
@@ -366,23 +415,27 @@ function Designer() {
         }
         console.log("bırakılan yer", droppedArea);
         const newElement = {
-          id: crypto.getRandomValues(new Uint32Array(1))[0],
-          name: sidebarComponent.name,
-          tag: sidebarComponent.tag,
+          code: crypto.randomUUID(),
+          component: {
+            id: sidebarComponent.id,
+            name: sidebarComponent.name,
+            tag: sidebarComponent.tag,
+          },
           block_id: 0,
           type: {
             id: sidebarComponent.type.id,
             name: sidebarComponent.type.name,
           },
-          depth: droppedArea?.depth,
+          depth: droppedArea?.component.depth,
           hasChildren: sidebarComponent.hasChildren,
           children: sidebarComponent.hasChildren ? [] : undefined,
           order: indexForNewElement,
-          belong_component_id: droppedArea?.belong_component_id,
+          belong_component_id: droppedArea?.component.belong_component_id,
           props: sidebarComponent.props.map((prop) => ({
             prop: {
               id: prop.id,
               key: prop.key,
+              type: prop.type,
             },
             value: "",
           })),
@@ -395,9 +448,12 @@ function Designer() {
         const sidebarComponent = draggedElement?.component as Component;
 
         const newElement = {
-          id: crypto.getRandomValues(new Uint32Array(1))[0],
-          name: sidebarComponent.name,
-          tag: sidebarComponent.tag,
+          code: crypto.randomUUID(),
+          component: {
+            id: sidebarComponent.id,
+            name: sidebarComponent.name,
+            tag: sidebarComponent.tag,
+          },
           block_id: 0,
           type: {
             id: sidebarComponent.type.id,
@@ -405,13 +461,14 @@ function Designer() {
           },
           hasChildren: sidebarComponent.hasChildren,
           children: sidebarComponent.hasChildren ? [] : undefined,
-          depth: parseFloat(droppedArea?.depth) + 1,
+          depth: droppedArea?.component.depth + 1,
           order: 0,
-          belong_component_id: droppedArea?.id,
+          belong_component_id: droppedArea?.component.code,
           props: sidebarComponent.props.map((prop) => ({
             prop: {
               id: prop.id,
               key: prop.key,
+              type: prop.type,
             },
             value: "",
           })),
@@ -422,16 +479,19 @@ function Designer() {
         return;
       } else if (isComponentOverComponent) {
         console.log("4");
-        const activeId = draggedElement?.id;
-        const overId = droppedArea?.id;
+        if (!("code" in draggedElement?.component)) {
+          throw new Error("dragged element is not component");
+        }
+        const activeCode = draggedElement?.component?.code;
+        const overId = droppedArea?.component.code;
         const activeElementIndex = elements.findIndex(
-          (el) => el.id === activeId
+          (el) => el.code === activeCode
         );
-        const overElementIndex = elements.findIndex((el) => el.id === overId);
+        const overElementIndex = elements.findIndex((el) => el.code === overId);
         if (activeElementIndex === -1 || overElementIndex === -1) {
           throw new Error("element not found");
         }
-        removeElement(activeId);
+        removeElement(activeCode);
         let indexForNewElement = overElementIndex; // i assume i'm on top-half
         if (droppedArea?.isBottomHalf) {
           indexForNewElement = overElementIndex + 1;
@@ -443,8 +503,8 @@ function Designer() {
             ...elements[activeElementIndex],
             children: draggedElement.component.hasChildren ? [] : undefined,
             hasChildren: draggedElement.component.hasChildren,
-            belong_component_id: droppedArea.id,
-            depth: droppedArea.depth + 1,
+            belong_component_id: droppedArea.component.code,
+            depth: droppedArea.component.depth + 1,
           };
           addElement(indexForNewElement, newElement);
 
@@ -454,15 +514,18 @@ function Designer() {
           ...elements[activeElementIndex],
           children: draggedElement.component.hasChildren ? [] : undefined,
           hasChildren: draggedElement.component.hasChildren,
-          belong_component_id: droppedArea.belong_component_id,
-          depth: droppedArea.depth,
+          belong_component_id: droppedArea.component.belong_component_id,
+          depth: droppedArea.component.depth,
         };
         addElement(indexForNewElement, newElement);
       } else if (isComponentOverDesignerDropArea) {
         console.log("5");
-        const activeId = draggedElement?.id;
+        if (!("code" in draggedElement?.component)) {
+          throw new Error("dragged element is not component");
+        }
+        const activeCode = draggedElement?.component.code;
         const activeElementIndex = elements.findIndex(
-          (el) => el.id === activeId
+          (el) => el.code === activeCode
         );
         if (activeElementIndex === -1) {
           throw new Error("element not found");
@@ -474,13 +537,13 @@ function Designer() {
           depth: 0,
           belong_component_id: null,
         };
-        removeElement(activeId);
+        removeElement(activeCode);
         addElement(elements.length, activeElement);
       }
     },
   });
 
-  const renderComponent = (component: PageComponent) => {
+  const renderDesignWrapper = (component: PageComponent) => {
     return (
       <DesignWrapper
         hoveredElement={hoveredElement}
@@ -489,17 +552,45 @@ function Designer() {
         {...Object.fromEntries(
           component.props.map((prop) => [prop.prop.key, prop.value])
         )}
-        key={component.id}
+        key={component.code}
       >
         {component.hasChildren &&
           component.children &&
           component.children.map((child) => {
-            if (child.tag in componentTags) {
-              return renderComponent(child);
+            if (child.component.tag in componentTags) {
+              return renderDesignWrapper(child);
             }
             return null;
           })}
       </DesignWrapper>
+    );
+  };
+
+  const renderPreview = (component: PageComponent) => {
+    const Component = componentTags[component.component.tag];
+    return (
+      <Component
+        {...Object.fromEntries(
+          component.props.map((prop) => [prop.prop.key, prop.value])
+        )}
+        key={component.code}
+      >
+        {component.children?.map((child) => {
+          if (child.component.tag in componentTags) {
+            const ChildComponent = componentTags[child.component.tag];
+
+            return (
+              <ChildComponent
+                key={child.code}
+                {...Object.fromEntries(
+                  child.props.map((prop) => [prop.prop.key, prop.value])
+                )}
+              />
+            );
+          }
+          return null;
+        })}
+      </Component>
     );
   };
 
@@ -529,16 +620,26 @@ function Designer() {
               <div className="h-[120px] rounded-md bg-primary/20"></div>
             </div>
           )}
-          {elements.length > 0 && (
-            <div className="flex flex-col  w-full gap-2 p-4">
-              {tree.map((component) => {
-                if (component.tag in componentTags) {
-                  return renderComponent(component);
-                }
-                return null;
-              })}
-            </div>
-          )}
+          {elements.length > 0 &&
+            (isPreview ? (
+              <div className="flex flex-col  w-full gap-2 p-4">
+                {tree.map((component) => {
+                  if (component.component.tag in componentTags) {
+                    return renderPreview(component);
+                  }
+                  return null;
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col  w-full gap-2 p-4">
+                {tree.map((component) => {
+                  if (component.component.tag in componentTags) {
+                    return renderDesignWrapper(component);
+                  }
+                  return null;
+                })}
+              </div>
+            ))}
         </div>
       </div>
     </div>
@@ -552,73 +653,83 @@ const DesignWrapper = ({
   tag: string,
   ...props
 }: {
-  hoveredElement: number[];
-  setHoveredElement: React.Dispatch<React.SetStateAction<number[]>>;
+  hoveredElement: string[];
+  setHoveredElement: React.Dispatch<React.SetStateAction<string[]>>;
   component: PageComponent;
   [key: string]: any;
 }) => {
   const { removeElement, selectedElement, setSelectedElement } = useDesigner();
   const [mouseIsOver, setMouseIsOver] = useState<boolean>(false);
   const topHalf = useDroppable({
-    id: component.id + "-top",
+    id: component.code + "-top",
     data: {
-      tag: component.tag,
-      id: component.id,
       isTopHalf: true,
       component: component,
-      depth: component.depth,
-      belong_component_id: component.belong_component_id,
     },
   });
   const bottomHalf = useDroppable({
-    id: component.id + "-bottom",
+    id: component.code + "-bottom",
     data: {
-      tag: component.tag,
-      id: component.id,
       component: component,
       isBottomHalf: true,
-      depth: component.depth,
-      belong_component_id: component.belong_component_id,
     },
   });
   const children = useDroppable({
-    id: component.id + "-children",
+    id: component.code + "-children",
     data: {
-      tag: component.tag,
-      id: component.id,
       component: component,
       hasChildren: component.hasChildren,
-      depth: component.depth,
-      belong_component_id: component.belong_component_id,
     },
   });
   const draggable = useDraggable({
-    id: component.id + "-drag-handler",
+    id: component.code + "-drag-handler",
     data: {
-      tag: component.tag,
-      id: component.id,
       component: component,
       isComponent: true,
-      depth: component.depth,
-      belong_component_id: component.belong_component_id,
     },
   });
-  if (draggable.isDragging) return null; // temporary remove the element from designer
 
-  const Component = componentTags[component.tag];
+  const Component = componentTags[component.component.tag];
+  const { addElement } = useDesigner();
+  const duplicateElement = useCallback(
+    (component: PageComponent, parentCode?: string) => {
+      const code = crypto.randomUUID();
+      const newElement = {
+        ...component,
+        code: code,
+        order: parentCode ? component.order : component.order + 1,
+        belong_component_id: parentCode
+          ? parentCode
+          : component.belong_component_id,
+      };
+      if (parentCode) {
+        addElement(component.order, newElement);
+      } else {
+        addElement(component.order + 2, newElement);
+      }
+      component.children?.forEach((child) => {
+        if (child.component.tag in componentTags) {
+          duplicateElement(child, code);
+        }
+      });
+    },
+    [addElement]
+  );
+
+  if (draggable.isDragging) return null; // temporary remove the element from designer
 
   return (
     <div
       ref={draggable.setNodeRef}
       onMouseEnter={() => {
-        setHoveredElement((prev) => [...prev, component.id]);
+        setHoveredElement((prev) => [...prev, component.code]);
       }}
       onMouseLeave={() =>
         setHoveredElement((prev) =>
-          prev.filter((item) => item !== component.id)
+          prev.filter((item) => item !== component.code)
         )
       }
-      className="border relative group border-dashed border-gray-400 rounded-md flex flex-col"
+      className="border relative group border-dashed border-gray-400 rounded-md"
     >
       <div
         ref={topHalf.setNodeRef}
@@ -639,7 +750,7 @@ const DesignWrapper = ({
       <div
         className={cn(
           "absolute bg-black/40 inset-0 transition-opacity duration-300",
-          hoveredElement[hoveredElement.length - 1] === component.id
+          hoveredElement[hoveredElement.length - 1] === component.code
             ? "block"
             : "hidden"
         )}
@@ -647,11 +758,22 @@ const DesignWrapper = ({
       <div
         className={cn(
           "absolute top-0 right-0 gap-1 z-20",
-          hoveredElement[hoveredElement.length - 1] === component.id
+          hoveredElement[hoveredElement.length - 1] === component.code
             ? "flex"
             : "hidden"
         )}
       >
+        <Button
+          onClick={(e) => {
+            e.stopPropagation();
+            duplicateElement(component);
+          }}
+          variant="default"
+          size="icon"
+          className="h-6 w-6 p-1"
+        >
+          <CopyIcon />
+        </Button>
         <Button
           onClick={(e) => {
             e.stopPropagation();
@@ -666,7 +788,7 @@ const DesignWrapper = ({
         <Button
           onClick={(e) => {
             e.stopPropagation(); // avoid selection of element while deleting
-            removeElement(component.id);
+            removeElement(component.code);
           }}
           variant="destructive"
           size="icon"
@@ -691,6 +813,14 @@ const DesignWrapper = ({
         <div className="absolute top-1/3 w-full rounded-md h-1/3 bg-primary " />
       )}
       <div className="p-2">
+        kod: {component.code}
+        <br />
+        depth: {component.depth}
+        <br />
+        order: {component.order}
+        <br />
+        belong_component_id: {component.belong_component_id}
+        <br />
         <Component {...props} />
       </div>
       {bottomHalf.isOver && (
