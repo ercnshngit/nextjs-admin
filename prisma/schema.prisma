@@ -107,17 +107,25 @@ model types {
   id         Int    @id @default(autoincrement())
   name       String
   table_name String
+
+  block     block[]     @relation("fk_block_type_id") //one to many
+  component component[] @relation("fk_component_type_id") //one to many
+  prop      prop[]      @relation("fk_prop_type_id") //one to many
 }
 
 model tag {
   id   Int    @id @default(autoincrement())
   name String
+
+  component component[] @relation("fk_component_tag_id") //one to many
 }
 
 model block {
   id      Int    @id @default(autoincrement())
   title   String
   type_id Int
+
+  types types? @relation("fk_block_type_id", fields: [type_id], references: [id]) //many to one
 
   block_component block_component[] @relation("fk_bcomp_table_id") //one to many
 }
@@ -132,9 +140,11 @@ model block_component {
   code                String
   hasChildren         Boolean
 
-  component component? @relation("fk_bcomp_component_id", fields: [component_id], references: [id])
-  block     block?     @relation("fk_bcomp_table_id", fields: [block_id], references: [id]) //many to one
-  
+  component        component? @relation("fk_bcomp_component_id", fields: [component_id], references: [id]) //many to one
+  block            block?     @relation("fk_bcomp_table_id", fields: [block_id], references: [id]) //many to one
+  belong_component component? @relation("fk_bcomp_belong_component_id", fields: [belong_component_id], references: [id]) //many to one
+
+  block_component_prop block_component_prop[] @relation("fk_bcomp_block_component_id") //one to many
 }
 
 model block_component_prop {
@@ -142,6 +152,9 @@ model block_component_prop {
   prop_id            Int
   block_component_id Int
   value              String
+
+  prop            prop?            @relation("fk_bcomp_prop_id", fields: [prop_id], references: [id]) //many to one
+  block_component block_component? @relation("fk_bcomp_block_component_id", fields: [block_component_id], references: [id]) //many to one
 }
 
 model component {
@@ -151,18 +164,30 @@ model component {
   type_id Int
   icon    String?
 
-  block_component block_component[] @relation("fk_bcomp_component_id") //one to many
+  tag   tag?   @relation("fk_component_tag_id", fields: [tag_id], references: [id]) //many to one
+  types types? @relation("fk_component_type_id", fields: [type_id], references: [id]) //many to one
 
+  block_component       block_component[] @relation("fk_bcomp_component_id") //one to many
+  block_componentBelong block_component[] @relation("fk_bcomp_belong_component_id") //one to many
+  component_prop        component_prop[]  @relation("fk_comp_component_id") //one to many
 }
 
 model component_prop {
   id           Int @id @default(autoincrement())
   component_id Int
   prop_id      Int
+
+  component component? @relation("fk_comp_component_id", fields: [component_id], references: [id]) //many to one
+  prop      prop?      @relation("fk_comp_prop_id", fields: [prop_id], references: [id]) //many to one
 }
 
 model prop {
   id      Int    @id @default(autoincrement())
   key     String
   type_id Int
+
+  types types? @relation("fk_prop_type_id", fields: [type_id], references: [id]) //many to one
+
+  block_component_prop block_component_prop[] @relation("fk_bcomp_prop_id") //one to many
+  component_prop       component_prop[]       @relation("fk_comp_prop_id") //one to many
 }
