@@ -169,7 +169,24 @@ export class ErrorMessages {
          en: "Type not found."
       }
    }
-
+   static TABLE_NOT_FOUND_ERROR() {
+      return {
+         tr: "Tablo bulunamadı.",
+         en: "Table not found."
+      }
+   }
+   static TABLE_CANNOT_CREATED_ERROR() {
+      return {
+         tr: "Tablo oluşturulamadı.",
+         en: "Table cannot create."
+      }
+   }
+   static TABLE_UPDATE_FAILED_ERROR() {
+      return {
+         tr: "Tablo güncellenemedi.",
+         en: "Table cannot update."
+      }
+   }
 }
 
 export class ConfirmMessages {
@@ -222,6 +239,24 @@ export class ConfirmMessages {
       return {
          tr: "Güncelleme işlemi başarılı.",
          en: "Update successful."
+      }
+   }
+   static TABLE_UPDATE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Tablo güncelleme işlemi başarılı.",
+         en: "Table update successful."
+      }
+   }
+   static TABLE_DELETE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Tablo silme işlemi başarılı.",
+         en: "Table delete successful."
+      }
+   }
+   static TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Tablo config data güncelleme işlemi başarılı.",
+         en: "Table config data update successful."
       }
    }
 }
