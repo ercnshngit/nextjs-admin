@@ -1,12 +1,12 @@
+import { BlockComponentService } from "@/services/block_component.service"
 import { BlockService } from "@/services/block.service"
-import { BlockDto } from "@/services/dto/block.dto"
 
 export async function GET(
     req: Request
 ) {
     try {
-        const blockService = new BlockService()
-        return await blockService.getBlocks()
+        const blockComponentService = new BlockComponentService()
+        return await blockComponentService.getBlockComponents()
     } catch (error) {
         console.log(error)
         throw new Error("Internal server error")
@@ -17,9 +17,9 @@ export async function POST(
     req: Request
 ) {
     try {
-        const blockService = new BlockService()
+        const blockComponentService = new BlockComponentService()
         const body = await req.json()
-        return await blockService.createBlock(body)
+        return await blockComponentService.createBlockComponent(body)
     } catch (error) {
         console.log(error)
         throw new Error("Internal server error")

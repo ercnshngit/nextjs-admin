@@ -138,8 +138,8 @@ model block_component {
   belong_component_id Int?
   depth               Int
   order               Int
-  code                String
-  hasChildren         Boolean
+  code                String?
+  hasChildren         Boolean @default(false)
 
   component        component? @relation("fk_bcomp_component_id", fields: [component_id], references: [id]) //many to one
   block            block?     @relation("fk_bcomp_table_id", fields: [block_id], references: [id]) //many to one
