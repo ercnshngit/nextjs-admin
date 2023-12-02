@@ -20,6 +20,8 @@ model database_table {
   columns                     database_table_column[] @relation("fk_dbtc_table_id")
   referenced_column_relations column_relation[]       @relation("fk_cr_referenced_table_id")
   pivoted_column_relations    column_relation[]       @relation("fk_cr_pivot_table_id")
+
+  @@map("database_table")
 }
 
 model database_table_column {
