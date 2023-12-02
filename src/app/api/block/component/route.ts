@@ -1,11 +1,13 @@
-import { BlockComponentService } from "@/services/block_component.service"
+import { BlockService } from "@/services/block.service"
+import { ComponentService } from "@/services/component.service"
 
 export async function GET(
-    req: Request
+    req: Request,
+    { params }: { params: { id: number } }
 ) {
     try {
-        const blockComponentService = new BlockComponentService()
-        return await blockComponentService.getBlockComponents()
+        const componentService = new ComponentService()
+        return await componentService.getBlockComponents()
     } catch (error) {
         console.log(error)
         throw new Error("Internal server error")
@@ -16,9 +18,9 @@ export async function POST(
     req: Request
 ) {
     try {
-        const blockComponentService = new BlockComponentService()
+        const blockService = new BlockService()
         const body = await req.json()
-        return await blockComponentService.createBlockComponent(body)
+        return await blockService.createBlock(body)
     } catch (error) {
         console.log(error)
         throw new Error("Internal server error")

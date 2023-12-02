@@ -1,5 +1,4 @@
 import { BlockService } from "@/services/block.service"
-import { BlockDto } from "@/services/dto/block.dto"
 
 export async function GET(
     req: Request

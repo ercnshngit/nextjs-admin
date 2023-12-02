@@ -1,14 +1,26 @@
-import { BlockComponentService } from "@/services/block_component.service"
 import { BlockService } from "@/services/block.service"
-import { NextRequest } from "next/server"
+import { ComponentService } from "@/services/component.service"
 
 export async function GET(
     req: Request,
-    { params = { id: 0 } }: { params?: { id: number } }
+    { params }: { params: { id: number } }
 ) {
     try {
-        const blockComponentService = new BlockComponentService()
-        return await blockComponentService.getBlockComponent(Number(params.id))
+        const componentService = new ComponentService()
+        return await componentService.getBlockComponent(Number(params.id))
+    } catch (error) {
+        console.log(error)
+        throw new Error("Internal server error")
+    }
+}
+
+export async function POST(
+    req: Request
+) {
+    try {
+        const blockService = new BlockService()
+        const body = await req.json()
+        return await blockService.createBlock(body)
     } catch (error) {
         console.log(error)
         throw new Error("Internal server error")

@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 5008",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 5008",
     "lint": "next lint",
+    "set-project": "npm install && npm run gen-prisma && npm run build",
+    "gen-prisma": "npx prisma generate",
     "gen-mig": "npx prisma migrate dev --create-only --name ",
     "run-mig": "npx prisma migrate deploy"
   },
