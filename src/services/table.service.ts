@@ -3,6 +3,7 @@ import { SqlConstants } from "../../constants/sql";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { config } from "dotenv";
 import { DatabaseTableDto } from "./dto/database-table.dto";
+import { Data } from "@dnd-kit/core";
 
 config();    
 export class TableService{
@@ -147,14 +148,102 @@ export class TableService{
         }
     }
 
-    async updateTableConfig(body : DatabaseTableDto){
+    async updateTableConfig(body : any){
         try {
-            const object = Object.assign(prisma.database_table ,body )
-            //const result = await prisma.database_table.update(body);
-            //if(!result){ return new Response(JSON.stringify({message : ErrorMessages.TABLE_UPDATE_FAILED_ERROR()})); }
-            //return new Response(JSON.stringify({message : ConfirmMessages.TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM()}));
+            const tableData = body[0]
+            const talbeDatas = Object.assign(tableData , new DatabaseTableDto())
+            const deneme = await prisma.database_table.update({
+                where : { id : tableData.id },
+                data : {
+                    name : tableData.name,
+                    icon : tableData.icon,
+                    is_hidden : tableData.is_hidden,
+                    can_create : tableData.can_create,
+                    can_update : tableData.can_update,
+                    columns : {
+                        set : talbeDatas.columns
+                    }
+                },
+                include : {
+                    columns : {
+                        include : {
+                            type : true,
+                            input_type : true,
+                            database_table : true,
+                            create_crud_option : {
+                                include : {
+                                    InputType : true
+                                }
+                            },
+                            read_crud_option :{
+                                include : {
+                                    InputType : true
+                                }
+                            },
+                            update_crud_option :{
+                                include : {
+                                    InputType : true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            console.log("deneme ::",deneme)
+            const columns = Object.values(talbeDatas.columns)
+            //console.log({columns : columns})
+            const result = await prisma.database_table.update({
+                where : {
+                    id : tableData.id
+                },
+                data : 
+                {
+                    name : tableData.name,
+                    icon : tableData.icon,
+                    is_hidden : tableData.is_hidden,
+                    can_create : tableData.can_create,
+                    can_update : tableData.can_update,
+                    columns : {
+                        updateMany : {
+                            data : columns,
+                            where : {
+                                id : {
+                                    in : columns.map((column : any) => column.id)
+                                }
+                            }
+                        },
+                    }
+                },
+                    
+                include : {
+                    columns : {
+                        include : {
+                            type : true,
+                            input_type : true,
+                            create_crud_option : {
+                                include : {
+                                    InputType : true
+                                }
+                            },
+                            read_crud_option :{
+                                include : {
+                                    InputType : true
+                                }
+                            },
+                            update_crud_option :{
+                                include : {
+                                    InputType : true
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            if(!result){ return new Response(JSON.stringify({message : ErrorMessages.TABLE_UPDATE_FAILED_ERROR()})); }
+            return new Response(JSON.stringify({message : ConfirmMessages.TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM()}));
         } catch (error) {
-            
+            console.log(error)
+            return new Response(JSON.stringify({status : "error" , message : error}));
         }
     }
 }
