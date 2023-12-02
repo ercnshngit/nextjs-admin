@@ -1,5 +1,4 @@
 import { BlockComponentService } from "@/services/block_component.service"
-import { BlockService } from "@/services/block.service"
 
 export async function GET(
     req: Request

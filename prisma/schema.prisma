@@ -17,7 +17,7 @@ model database_table {
   can_update Boolean
 
   column_relations            column_relation[]       @relation("fk_cr_table_id")
-  columns       database_table_column[] @relation("fk_dbtc_table_id")
+  columns                     database_table_column[] @relation("fk_dbtc_table_id")
   referenced_column_relations column_relation[]       @relation("fk_cr_referenced_table_id")
   pivoted_column_relations    column_relation[]       @relation("fk_cr_pivot_table_id")
 }
