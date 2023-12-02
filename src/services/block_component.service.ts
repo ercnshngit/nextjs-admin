@@ -1,6 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { BlockComponentDto } from "./dto/block_component.dto";
+import { BlockComponentDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
 
 export class BlockComponentService {
     async getBlockComponent(id: number) {
@@ -124,22 +124,35 @@ export class BlockComponentService {
         }
     }
 
-    /*async updateBlockComponent(id: number, data: BlockComponentDto) {
+    async updateBlockComponent(id: number, data: UpdateBlockComponentDto) {
         try {
-            const msg = await this.checkBlockComponents(data)
-            if (msg) { return new Response(JSON.stringify({ message: msg })); }
+            let msg: any = '';
+            let check_component: any = 'null', check_block: any = 'null', check_belong_component: any = 'null';
             const block_component = await prisma.block_component.findUnique({ where: { id } })
             if (!block_component) { return new Response(JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() })); }
-            Object.assign(block_component, data)
-            const new_block_component = await prisma.block_component.update({ where: { id }, data })
-            if (!new_block_component) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })); }
-            return new Response(JSON.stringify(new_block_component));
+
+            Object.assign(block_component, data);
+
+            if (data.component_id != undefined) { check_component = await prisma.component.findUnique({ where: { id: data.component_id } }) }
+            if (data.block_id != undefined) { check_block = await prisma.block.findUnique({ where: { id: data.block_id } }) }
+            if (data.belong_component_id != undefined) { check_belong_component = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
+            !check_component ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
+                !check_block ? msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en :
+                    !check_belong_component ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
+
+            if (msg) { return new Response(JSON.stringify({ message: msg })); }
+            const update = await prisma.block_component.update({ where: { id }, data })
+            if (!update) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })); }
+
+            return new Response(JSON.stringify({ message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM() }));
+
+
         }
         catch (error) {
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
-    }*/
+    }
 
     async deleteBlockComponent(id: number) {
         try {
@@ -166,7 +179,6 @@ export class BlockComponentService {
         !checkBlock ? msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en :
             !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
                 !checkBelongComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
-
         if (msg) { return msg }
         return null
     }

@@ -1,6 +1,4 @@
-import { BlockService } from "@/services/block.service"
 import { BlockComponentService } from "@/services/block_component.service"
-import { NextRequest } from "next/server"
 
 export async function POST(
     req: Request,
