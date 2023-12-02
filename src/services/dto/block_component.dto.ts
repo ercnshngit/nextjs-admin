@@ -1,9 +1,13 @@
+import { ComponentDto } from "./component.dto";
+import { PropDto } from "./prop.dto";
+
 export interface BlockComponentDto {
-    component_id: number;
+    component: ComponentDto;
     block_id: number;
-    belong_component_id: number;
+    belong_component_id?: number;
     depth: number;
     order: number;
-    code: string;
+    code?: string;
     hasChildren: boolean;
+    props: PropDto[];
 }
