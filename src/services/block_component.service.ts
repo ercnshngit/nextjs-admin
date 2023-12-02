@@ -1,5 +1,5 @@
 import { prisma } from "@/libs/prisma";
-import { ErrorMessages } from "../../constants/messages.constants";
+import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { BlockComponentDto } from "./dto/block_component.dto";
 
 export class BlockComponentService {
@@ -139,12 +139,14 @@ export class BlockComponentService {
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
-    }
+    }*/
 
     async deleteBlockComponent(id: number) {
         try {
             const block_component = await prisma.block_component.findUnique({ where: { id } })
             if (!block_component) { return new Response(JSON.stringify({ message: ErrorMessages.BLOCK_NOT_FOUND_ERROR() })); }
+            const delete_block_component_props = await prisma.block_component_prop.deleteMany({ where: { block_component_id: id } })
+            if (!delete_block_component_props) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() })); }
             const delete_block_component = await prisma.block_component.delete({ where: { id } })
             if (!delete_block_component) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() })); }
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }));
@@ -153,13 +155,13 @@ export class BlockComponentService {
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
-    }*/
+    }
 
     async checkBlockComponents(data: BlockComponentDto, code?: string) {
         let msg = '';
         let checkComponent: any = 'null', checkBlock: any = 'null', checkBelongComponent: any = 'null';
         if (data.block_id != undefined) { checkBlock = await prisma.block.findUnique({ where: { id: data.block_id } }) }
-        //if (code == undefined && data.component.id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component.id } }) }
+        if (code == undefined && data.component.id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component.id } }) }
         if (data.belong_component_id != undefined) { checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
         !checkBlock ? msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en :
             !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
