@@ -8,6 +8,6 @@ export interface BlockComponentDto {
     depth: number;
     order: number;
     code?: string;
-    hasChildren: boolean;
-    props: PropDto[];
+    hasChildren?: boolean;
+    props?: PropDto[];
 }

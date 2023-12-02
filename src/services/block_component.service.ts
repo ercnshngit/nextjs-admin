@@ -81,21 +81,23 @@ export class BlockComponentService {
             })
 
             let props: any = [];
-            for (let i = 0; i < data.props.length; i++) {
-                const prop = await prisma.prop.create({
-                    data: {
-                        key: data.props[i].prop.key,
-                        type_id: data.props[i].prop.type_id
-                    }
-                })
-                props.push(prop);
-                await prisma.block_component_prop.create({
-                    data: {
-                        prop_id: prop.id,
-                        block_component_id: block_component.id,
-                        value: data.props[i].value
-                    }
-                })
+            if (data.props) {
+                for (let i = 0; i < data.props.length; i++) {
+                    const prop = await prisma.prop.create({
+                        data: {
+                            key: data.props[i].prop.key,
+                            type_id: data.props[i].prop.type_id
+                        }
+                    })
+                    props.push(prop);
+                    await prisma.block_component_prop.create({
+                        data: {
+                            prop_id: prop.id,
+                            block_component_id: block_component.id,
+                            value: data.props[i].value
+                        }
+                    })
+                }
             }
 
             const result = {
