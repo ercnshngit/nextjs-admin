@@ -1,6 +1,7 @@
 import { DataBaseTableColumnDto } from "./database-table-column.dto";
+import { prisma } from "@/libs/prisma";
 
-export class DatabaseTableDto {
+export interface DatabaseTableDto{
     id?: number;
     name?: string;
     icon?: string;
@@ -8,4 +9,7 @@ export class DatabaseTableDto {
     can_create?: boolean;
     can_update?: boolean;
     columns?: DataBaseTableColumnDto[];
+    column_relations? : any[];
+    referenced_column_relations? : any[];
+    pivoted_column_relations? : any[];
 }

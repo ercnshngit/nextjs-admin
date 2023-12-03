@@ -3,7 +3,6 @@ import { SqlConstants } from "../../constants/sql";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { config } from "dotenv";
 import { DatabaseTableDto } from "./dto/database-table.dto";
-import { Data } from "@dnd-kit/core";
 
 config();    
 export class TableService{
@@ -148,11 +147,43 @@ export class TableService{
         }
     }
 
-    async updateTableConfig(body : any){
+    async updateTableConfig(id: number, data : DatabaseTableDto[]){
         try {
-            const tableData = body[0]
-            const talbeDatas = Object.assign(tableData , new DatabaseTableDto())
-            const deneme = await prisma.database_table.update({
+            const tableData = await prisma.database_table.findUnique({
+                where : {id : +id},
+                include : {
+                    columns : {
+                        select : {
+                            id : true,
+                            name : true,
+                            type_id : true,
+                            input_type_id : true,
+                            is_primary: true,
+                            is_required: true,
+                            is_unique: true,
+                            is_hidden: true,
+                            is_filterable: true,
+                            is_searchable: true,
+                            is_sortable: true,
+                            create_crud_option_id : true,
+                            read_crud_option_id : true,
+                            update_crud_option_id : true,
+                            type : true,
+                            input_type : true,
+                            create_crud_option : true,
+                            read_crud_option : true,
+                            update_crud_option : true,
+                        }
+                    }
+                }
+            })
+            if(!tableData){ return new Response(JSON.stringify({message : ErrorMessages.TABLE_NOT_FOUND_ERROR()})); }
+            if(!data[0]){ return new Response(JSON.stringify({message : "ss"})); }
+            if(!data[0].columns){ return new Response(JSON.stringify({message : "ss"})); }
+            if(!tableData.columns){ return new Response(JSON.stringify({message : "ss"})); }
+            Object.assign(tableData , data[0])
+            
+            const result = await prisma.database_table.update({
                 where : { id : tableData.id },
                 data : {
                     name : tableData.name,
@@ -161,84 +192,45 @@ export class TableService{
                     can_create : tableData.can_create,
                     can_update : tableData.can_update,
                     columns : {
-                        set : talbeDatas.columns
+                        upsert: tableData.columns.map((column) => ({
+                            where: { id: column.id }, // Sütunun ID'sine göre kontrol et
+                            update: {
+                                name: column.name,
+                                is_filterable: column.is_filterable,
+                                is_hidden: column.is_hidden,
+                                is_unique: column.is_unique,
+                                is_required: column.is_required,
+                                is_searchable: column.is_searchable,
+                                is_sortable: column.is_sortable,
+                                is_primary: column.is_primary,
+                                type_id: column.type_id,
+                                input_type_id: column.input_type_id,
+                                create_crud_option_id: column.create_crud_option_id,
+                                read_crud_option_id: column.read_crud_option_id,
+                                update_crud_option_id: column.update_crud_option_id,
+                            },
+                            create: {
+                                name: column.name,
+                                is_filterable: column.is_filterable,
+                                is_hidden: column.is_hidden,
+                                is_unique: column.is_unique,
+                                is_required: column.is_required,
+                                is_searchable: column.is_searchable,
+                                is_sortable: column.is_sortable,
+                                is_primary: column.is_primary,
+                                type_id: column.type_id,
+                                input_type_id: column.input_type_id,
+                                create_crud_option_id: column.create_crud_option_id,
+                                read_crud_option_id: column.read_crud_option_id,
+                                update_crud_option_id: column.update_crud_option_id,
+                            }
+                          })),
                     }
                 },
                 include : {
-                    columns : {
-                        include : {
-                            type : true,
-                            input_type : true,
-                            database_table : true,
-                            create_crud_option : {
-                                include : {
-                                    InputType : true
-                                }
-                            },
-                            read_crud_option :{
-                                include : {
-                                    InputType : true
-                                }
-                            },
-                            update_crud_option :{
-                                include : {
-                                    InputType : true
-                                }
-                            }
-                        }
-                    }
+                    columns :true
                 }
             })
-            console.log("deneme ::",deneme)
-            const columns = Object.values(talbeDatas.columns)
-            //console.log({columns : columns})
-            const result = await prisma.database_table.update({
-                where : {
-                    id : tableData.id
-                },
-                data : 
-                {
-                    name : tableData.name,
-                    icon : tableData.icon,
-                    is_hidden : tableData.is_hidden,
-                    can_create : tableData.can_create,
-                    can_update : tableData.can_update,
-                    columns : {
-                        updateMany : {
-                            data : columns,
-                            where : {
-                                id : {
-                                    in : columns.map((column : any) => column.id)
-                                }
-                            }
-                        },
-                    }
-                },
-                    
-                include : {
-                    columns : {
-                        include : {
-                            type : true,
-                            input_type : true,
-                            create_crud_option : {
-                                include : {
-                                    InputType : true
-                                }
-                            },
-                            read_crud_option :{
-                                include : {
-                                    InputType : true
-                                }
-                            },
-                            update_crud_option :{
-                                include : {
-                                    InputType : true
-                                }
-                            }
-                        }
-                    }
-                }
-            });
             if(!result){ return new Response(JSON.stringify({message : ErrorMessages.TABLE_UPDATE_FAILED_ERROR()})); }
             return new Response(JSON.stringify({message : ConfirmMessages.TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM()}));
         } catch (error) {
