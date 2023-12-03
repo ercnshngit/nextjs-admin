@@ -62,6 +62,12 @@ export class ErrorMessages {
    }
    static WRONG_PASSWORD_ERROR() {
       return {
+         TR: "Girdiğiniz şifre yanlış.",
+         EN: "The password you entered is incorrect."
+      }
+   }
+   static WRONG_OLD_PASSWORD_ERROR() {
+      return {
          TR: "Eski sifrenizi yanlış girdiniz.",
          EN: "You entered your old password incorrectly."
       }
@@ -185,6 +191,66 @@ export class ErrorMessages {
       return {
          tr: "Tablo güncellenemedi.",
          en: "Table cannot update."
+      }
+   }
+   static REGISTER_ERROR_REQUIRED_FIELDS() {
+      return {
+         tr: "Lütfen gerekli alanları doldurunuz.",
+         en: "Please fill in the required fields."
+      }
+   }
+   static CHANGE_PASSWORD_ERROR_REQUIRED_FIELDS() {
+      return {
+         tr: "Lütfen gerekli alanları doldurunuz. ( email , eski şifre , yeni şifre )",
+         en: "Please fill in the required fields. ( email , old password , new password )"
+      }
+   }
+   static OLD_PASSWORD_NOT_MATCH_ERROR() {
+      return {
+         tr: "Eski şifreniz yanlış.",
+         en: "Your old password is incorrect."
+      }
+   }
+   static OLD_PASSWORD_AND_NEW_PASSWORD_NOT_SAME_ERROR() {
+      return {
+         tr: "Eski şifreniz ile yeni şifreniz aynı olamaz.",
+         en: "Your old password cannot be the same as your new password."
+      }
+   }
+   static UNAUTHORIZED_ERROR() {
+      return {
+         tr: "Yetkisiz işlem.",
+         en: "Unauthorized operation."
+      }
+   }
+   static TOKEN_EXPIRED_ERROR() {
+      return {
+         tr: "Token süresi dolmuş.",
+         en: "Token expired."
+      }
+   }
+   static TOKEN_INVALID_ERROR() {
+      return {
+         tr: "Token geçersiz.",
+         en: "Token invalid."
+      }
+   }
+   static USER_ALREADY_EXISTS_ERROR() {
+      return {
+         tr: "Bu e-mail adresi ile kayıtlı kullanıcı zaten mevcut.",
+         en: "There is already a registered user with this e-mail address."
+      }
+   }
+   static JWT_ACCESS_SECRET_NOT_FOUND_ERROR() {
+      return {
+         tr : "Jwt access secret bulunamadı.",
+         en : "Jwt access secret not found."
+      }
+   }
+   static ACOOUNTS_DIFFERENT_ERROR() {
+      return {
+         tr : "Hesaplar farklı.",
+         en : "Accounts different."
       }
    }
 }

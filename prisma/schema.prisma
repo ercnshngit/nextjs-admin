@@ -213,3 +213,25 @@ model language{
   translations translation[] @relation("fk_trs_language_code")
   @@unique(name : "ui_code" ,fields : [code])
 }
+
+model user{
+  id      Int    @id @default(autoincrement())
+  first_name     String
+  last_name     String
+  email String
+  password String
+  role_id Int?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  role role? @relation("fk_u_role_id", fields: [role_id], references: [id], map: "fk_u_role_id")
+
+  @@unique(name : "ui_email" ,fields : [email])
+}
+
+model role{
+  id      Int    @id @default(autoincrement())
+  name     String
+
+  users user[] @relation("fk_u_role_id")
+}
