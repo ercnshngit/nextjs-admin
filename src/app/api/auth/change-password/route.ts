@@ -1,9 +1,8 @@
 import { AuthService } from "@/services/auth/auth.service";
 import { isAuthenticated } from "@/services/auth/authenticator";
-import { NextApiRequest } from "next";
 
 export async function POST(
-    request: NextApiRequest,
+    request: Request,
 ) { 
     const authentication  = isAuthenticated(request)
     if(!authentication.status){

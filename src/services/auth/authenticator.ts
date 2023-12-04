@@ -5,7 +5,7 @@ import { NextApiRequest } from 'next';
 
 config();
 
-export function isAuthenticated(req : NextApiRequest) : {status : boolean , message : any, httpStatus : number, user? : any}{
+export function isAuthenticated(req : any) : {status : boolean , message : any, httpStatus : number, user? : any}{
     const { authorization } = req.headers;
     console.log(req.headers.authorization)
     const accessSecret = process.env.JWT_ACCESS_SECRET;
