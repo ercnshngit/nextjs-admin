@@ -86,7 +86,9 @@ export class TableService{
         try {
             let new_result: any[] = [];
             const query = "SELECT table_name as 'table_name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" + process.env.DB_NAME + "' GROUP BY table_name"
-            const result = await prisma.$queryRaw`${query}`;
+            console.log(query)
+            const result = await prisma.$queryRawUnsafe(query)
+            //const result = await prisma.$queryRaw`${query}`;
             Object.assign(new_result, result);
             new_result.forEach(element => {
             element.columns = JSON.parse(element.columns);
@@ -106,6 +108,7 @@ export class TableService{
             });
             return new Response(JSON.stringify(new_result));
         } catch (error) {
+            console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }

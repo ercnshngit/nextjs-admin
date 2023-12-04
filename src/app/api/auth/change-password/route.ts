@@ -1,8 +1,7 @@
 import { AuthService } from "@/services/auth/auth.service";
 import { isAuthenticated } from "@/services/auth/authenticator";
-import { NextRequest } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   const authentication = isAuthenticated(request);
   if (!authentication.status) {
     return new Response(
