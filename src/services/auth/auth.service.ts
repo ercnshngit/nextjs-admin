@@ -18,7 +18,6 @@ export class AuthService{
             if(user == null){
                 return new Response(JSON.stringify({status : "error" , message : ErrorMessages.USER_NOT_FOUND_ERROR()}));
             }
-            console.log(data.password," ", user.password)
             const passwordIsValid = await encryptor.isPasswordCorrect(data.password, user.password);
             if(!passwordIsValid){
                 return new Response(JSON.stringify({status : "error" , message : ErrorMessages.WRONG_PASSWORD_ERROR()}));
@@ -68,32 +67,31 @@ export class AuthService{
     }
 
     async changePassword(data : any, user_id : any){
-        const user = data as UserChangePasswordDto;
-        if(user.email == undefined || user.old_password == undefined || user.new_password == undefined){
-            return new Response(JSON.stringify({status : "error" , message : ErrorMessages.CHANGE_PASSWORD_ERROR_REQUIRED_FIELDS()}));
-        }
-        const userResult = await prisma.user.findUnique({
-            where : {
-                email : user.email
-            }
-        });
-        if(userResult == null){
-            return new Response(JSON.stringify({status : "error" , message : ErrorMessages.USER_NOT_FOUND_ERROR()}));
-        }else if(userResult.id != user_id){
-            return new Response(JSON.stringify({status : "error" , message : ErrorMessages.ACOOUNTS_DIFFERENT_ERROR()}));
-        }
-        const hashedOldPassword = await encryptor.hashPassword(user.old_password);
-        if(hashedOldPassword != userResult.password){
-            return new Response(JSON.stringify({status : "error" , message : ErrorMessages.OLD_PASSWORD_NOT_MATCH_ERROR()}));
-        }
-        if(user.old_password == user.new_password){
-            return new Response(JSON.stringify({status : "error" , message : ErrorMessages.OLD_PASSWORD_AND_NEW_PASSWORD_NOT_SAME_ERROR()}));
-        }
-        user.new_password = await encryptor.hashPassword(user.new_password);
         try {
-            const result = await prisma.user.update({
+            const user = data as UserChangePasswordDto;
+            if(user.email == undefined || user.old_password == undefined || user.new_password == undefined){
+                return new Response(JSON.stringify({status : "error" , message : ErrorMessages.CHANGE_PASSWORD_ERROR_REQUIRED_FIELDS()}));
+            }
+            const userResult = await prisma.user.findFirst({
                 where : {
                     email : user.email
+                }
+            });
+            if(userResult == null){
+                return new Response(JSON.stringify({status : "error" , message : ErrorMessages.USER_NOT_FOUND_ERROR()}));
+            }else if(userResult.id != user_id){
+                return new Response(JSON.stringify({status : "error" , message : ErrorMessages.ACOOUNTS_DIFFERENT_ERROR()}));
+            }
+            if(!await encryptor.isPasswordCorrect(user.old_password, userResult.password)){
+                return new Response(JSON.stringify({status : "error" , message : ErrorMessages.OLD_PASSWORD_NOT_MATCH_ERROR()}));
+            }
+            if(user.old_password == user.new_password){
+                return new Response(JSON.stringify({status : "error" , message : ErrorMessages.OLD_PASSWORD_AND_NEW_PASSWORD_NOT_SAME_ERROR()}));
+            }
+            user.new_password = await encryptor.hashPassword(user.new_password);
+            const result = await prisma.user.update({
+                where : {
+                    id : userResult.id,
                 },
                 data : {
                     password : user.new_password
@@ -101,6 +99,7 @@ export class AuthService{
             });
             return new Response(JSON.stringify({status : "success" , message : ConfirmMessages.PASSWORD_CHANGE_SUCCESS()}));
         } catch (error) {
+            console.log(error);
             return new Response(JSON.stringify({status : "error" , message : error}));
         }
     }
