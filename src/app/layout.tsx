@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/providers/theme-provider";
+import { ThemeProvider } from "@/components/theme-provider/theme-provider";
+import { Sidebar } from "@/components/sidebar";
+import Providers from "./providers";
+import { ToastContainer } from "react-toastify";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,15 +21,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {" "}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}{" "}
-        </ThemeProvider>
+        <Providers>
+          {children}
+
+          <div className="w-1/5 min-h-full shadow">
+            <Sidebar className="flex-shrink hidden sm:block" />
+          </div>
+          <div className="flex flex-col flex-1 w-4/5 min-h-screen bg-gray-50 ">
+            {children}
+          </div>
+        </Providers>
+        <ToastContainer />
       </body>
     </html>
   );

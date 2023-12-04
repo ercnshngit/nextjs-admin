@@ -216,7 +216,7 @@ function DesignerSidebar() {
   const { selectedElement, isPreview, updateElement, setIsPreview } =
     useDesigner();
   return (
-    <div className="bg-white px-4 py-10 h-full min-w-[200px]">
+    <div className="bg-white px-4 py-10 h-full min-w-[300px]">
       <div className="flex items-center justify-between  w-full space-x-2">
         <Label htmlFor="preview-mode">Preview Mode</Label>
         <Switch
@@ -815,14 +815,6 @@ const DesignWrapper = ({
         <div className="absolute top-1/3 w-full rounded-md h-1/3 bg-primary " />
       )}
       <div className="p-2">
-        kod: {component.code}
-        <br />
-        depth: {component.depth}
-        <br />
-        order: {component.order}
-        <br />
-        belong_component_id: {component.belong_component_id}
-        <br />
         <Component {...props} />
       </div>
       {bottomHalf.isOver && (

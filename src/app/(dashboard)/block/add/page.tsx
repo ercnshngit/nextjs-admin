@@ -1,4 +1,4 @@
-import FormBuilder from "@/components/block-builder";
+import BlockBuilder from "@/components/block-builder";
 import { DesignerContextProvider } from "@/contexts/designer-context";
 import React from "react";
 
@@ -11,7 +11,7 @@ async function BuilderPage({
 }) {
   return (
     <DesignerContextProvider>
-      <FormBuilder />
+      <BlockBuilder />
     </DesignerContextProvider>
   );
 }

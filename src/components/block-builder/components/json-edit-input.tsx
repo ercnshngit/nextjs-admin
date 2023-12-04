@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import "prismjs/themes/prism-tomorrow.css";
-import "prismjs/components/prism-json";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/libs/utils";
 import { highlight, languages } from "prismjs";
 import Editor from "react-simple-code-editor";
+import "prismjs/components/prism-json";
+import "prismjs/themes/prism.css";
 
 export default function JSONEditInput() {
   const [code, setCode] = useState('[{"dsfsdfds":"sdfsdfsdf"}]');
