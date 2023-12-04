@@ -1,7 +1,6 @@
 import { config } from "dotenv";
 import jwt from "jsonwebtoken";
 import { ErrorMessages } from "../../../constants/messages.constants";
-import { NextRequest } from "next/server";
 
 config();
 
@@ -27,6 +26,5 @@ export function isAuthenticated(req : any) : {status : boolean , message : any, 
             return {status : false , message : ErrorMessages.TOKEN_INVALID_ERROR(), httpStatus : 401};
         }
     }
-  }
-  return { status: true, message: "OK", httpStatus: 200, user: "payload" };
+    return { status: true, message: "OK", httpStatus: 200, user: "payload" };
 }
