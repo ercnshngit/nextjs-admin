@@ -1,6 +1,13 @@
 
 export class ErrorMessages {
 
+   static MENU_BELONG_DELETE_ERROR() {
+      return {
+         TR: "Bu menüye ait alt menüler bulunmaktadır. Lütfen önce alt menüleri siliniz.",
+         EN: "There are submenus belonging to this menu. Please delete the submenus first."
+      }
+   }
+
    static MENU_NOT_FOUND_ERROR() {
       return {
          TR: "Menü bulunamadı.",

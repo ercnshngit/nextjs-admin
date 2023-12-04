@@ -133,7 +133,7 @@ model menu {
   route          String?  @db.Text
   menu_belong_id Int?
   type_id        Int
-  status         Int
+  status         Int      @default(0)
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
 

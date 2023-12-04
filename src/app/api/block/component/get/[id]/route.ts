@@ -15,12 +15,13 @@ export async function GET(
 }
 
 export async function POST(
-    req: Request
+    req: Request,
+    { params }: { params: { id: number } }
 ) {
     try {
-        const blockService = new BlockService()
+        const blockComponentService = new BlockComponentService()
         const body = await req.json()
-        return await blockService.createBlock(body)
+        return await blockComponentService.updateBlockComponent(Number(params.id), body)
     } catch (error) {
         console.log(error)
         throw new Error("Internal server error")
