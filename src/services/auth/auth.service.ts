@@ -1,5 +1,5 @@
 import { prisma } from "@/libs/prisma";
-import { Encryptor } from "./encrypt.data";
+import { Encryptor } from "../functions/encryptor";
 import { UserChangePasswordDto, UserRegisterDto } from "../dto/user.dto";
 import { ConfirmMessages, ErrorMessages } from "../../../constants/messages.constants";
 import { generateAccessToken } from "./jwt";

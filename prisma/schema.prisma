@@ -107,16 +107,16 @@ model column_option {
 }
 
 model types {
-  id             Int     @id @default(autoincrement())
-  name           String
-  table_name     String
-  langueage_code String?
+  id            Int     @id @default(autoincrement())
+  name          String
+  table_name    String
+  language_code String? @map("langueage_code")
 
   menu      menu[]      @relation("fk_menu_type_id") //one to many
   block     block[]     @relation("fk_bk_type_id") //one to many
   component component[] @relation("fk_comp_type_id") //one to many
   prop      prop[]      @relation("fk_prop_type_id") //one to many
-  language  language?   @relation("fk_type_language_code", fields: [langueage_code], references: [code], map: "fk_type_language_code")
+  language  language?   @relation("fk_type_language_code", fields: [language_code], references: [code], map: "fk_type_language_code")
 }
 
 model tag {

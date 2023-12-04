@@ -1,4 +1,4 @@
-export class Function {
+export class MenuFunctions {
     async convertTurkishWords(text: string) {
         const turkishChars = 'çğıöşüÇĞİÖŞÜ ';
         const englishChars = 'cgiosuCGIOSU-';

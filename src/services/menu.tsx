@@ -38,9 +38,9 @@ export const getMenuItems = async ({
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { MenuDto } from "./dto/menu.dto";
-import { Function } from "./functions/function";
+import { MenuFunctions } from "./functions/menu-functions";
 
-const func = new Function;
+const func = new MenuFunctions;
 
 export class MenuService {
 
