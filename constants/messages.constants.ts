@@ -1,6 +1,13 @@
 
 export class ErrorMessages {
 
+   static MENU_NOT_FOUND_ERROR() {
+      return {
+         TR: "Menü bulunamadı.",
+         EN: "Menu not found."
+      }
+   }
+
    static COMPONENT_NOT_FOUND_ERROR() {
       return {
          TR: "Component bulunamadı.",
@@ -243,14 +250,14 @@ export class ErrorMessages {
    }
    static JWT_ACCESS_SECRET_NOT_FOUND_ERROR() {
       return {
-         tr : "Jwt access secret bulunamadı.",
-         en : "Jwt access secret not found."
+         tr: "Jwt access secret bulunamadı.",
+         en: "Jwt access secret not found."
       }
    }
    static ACOOUNTS_DIFFERENT_ERROR() {
       return {
-         tr : "Hesaplar farklı.",
-         en : "Accounts different."
+         tr: "Hesaplar farklı.",
+         en: "Accounts different."
       }
    }
 }
