@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 export default function Menu() {
   const router = useRouter();
   useEffect(() => {
-    router.push("/admin/menu_type");
+    router.push("/menu_type");
     console.log("menu");
   }, []);
   return <div>Menu</div>;

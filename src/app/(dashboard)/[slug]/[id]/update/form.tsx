@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 import { useQueryClient } from "@tanstack/react-query";
 import { UPDATE_TABLE_ITEM } from "@/types/panel";
 import { useRouter } from "next/navigation";
-import { queryClient } from "@/lib/react-query";
+import { queryClient } from "@/libs/react-query";
 import { DATABASE_TABLE } from "@/config/general";
 
 export default function Form({
@@ -40,7 +40,7 @@ export default function Form({
           queryKey: [table.name, table.name + "/" + id],
         });
         toast.success("Kayıt başarıyla güncellendi");
-        router.push("/admin/" + table.name);
+        router.push("/" + table.name);
       },
     }
   );

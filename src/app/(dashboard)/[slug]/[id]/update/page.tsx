@@ -1,6 +1,6 @@
 "use client";
 
-import DeleteItem from "@/components/DeleteItem";
+import DeleteItem from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { DATABASE_TABLE, getDatabaseTable } from "@/config/general";
@@ -31,7 +31,7 @@ export default function Update({
           </h3>
           <div>
             <Button asChild>
-              <Link href={"/admin/" + tableName}>
+              <Link href={"/" + tableName}>
                 <ArrowLeftIcon className="w-4 h-4 mr-2" />
                 Geri Dön
               </Link>

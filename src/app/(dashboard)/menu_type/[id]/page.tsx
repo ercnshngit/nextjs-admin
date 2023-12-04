@@ -28,7 +28,7 @@ export default function MenuType({ params }: { params: { id: string } }) {
   }
 }
 
-export function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
+function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
   const { data, error } = useQuery<{ menus: { menu: MENU_ITEM }[] }, Error>(
     ["menu", slug, lang],
     () => getMenuItems({ slug, lang })
@@ -68,7 +68,7 @@ export function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
         <h3 className="text-lg font-medium">{translate("menu")}</h3>
         <div>
           <Button asChild>
-            <Link href={"/admin/menu/ekle"}>
+            <Link href={"/menu/ekle"}>
               <PlusCircledIcon className="w-4 h-4 mr-2" />
               Yeni {translate("menu")} ekle
             </Link>
@@ -88,7 +88,7 @@ export function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
             ) : (
               <div>
                 Menü yok,{" "}
-                <Link href={"/admin/menu/ekle"}>
+                <Link href={"/menu/ekle"}>
                   yeni menü eklemek için tıklayınız.
                 </Link>
               </div>

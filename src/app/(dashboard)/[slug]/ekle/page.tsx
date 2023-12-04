@@ -21,7 +21,7 @@ export default function Ekle({ params }: { params: { slug: string } }) {
         <h3 className="text-lg font-medium">{translate(tableName)} Ekle</h3>
         <div>
           <Button asChild>
-            <Link href={"/admin/" + tableName}>
+            <Link href={"/" + tableName}>
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Geri Dön
             </Link>

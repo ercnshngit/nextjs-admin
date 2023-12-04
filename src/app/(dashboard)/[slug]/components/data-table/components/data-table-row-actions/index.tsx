@@ -1,6 +1,5 @@
 "use client";
 
-import DeleteItem from "@/components/DeleteItem";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -19,6 +18,7 @@ import { deleteTableItem } from "@/services/panel";
 import { DELETE_TABLE_ITEM, UPDATE_TABLE_ITEM } from "@/types/panel";
 import { getDatabaseTable } from "@/config/general";
 import { toast } from "react-toastify";
+import DeleteItem from "@/components/delete-dialog";
 
 interface DataTableRowActionsProps {
   row: any;
@@ -32,15 +32,12 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
   const table = getDatabaseTable(slug);
   const queryClient = useQueryClient();
   const deleteMutation = useMutation(
-    (deleteData: DELETE_TABLE_ITEM) =>
-      table?.functions?.delete
-        ? table?.functions?.delete({ id: deleteData.id })
-        : deleteTableItem(deleteData),
+    (deleteData: DELETE_TABLE_ITEM) => deleteTableItem(deleteData),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([slug]);
         console.log("deleteMutation");
-        router.push("/admin/" + slug);
+        router.push("/" + slug);
         router.refresh();
       },
       onError: (error) => {
@@ -62,7 +59,7 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
       <Button
         className="bg-blue-500"
         onClick={() => {
-          router.push("/admin/" + slug + "/" + row.original.id);
+          router.push("/" + slug + "/" + row.original.id);
         }}
       >
         Görüntüle
@@ -70,7 +67,7 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
       <Button
         variant={"secondary"}
         onClick={() => {
-          router.push("/admin/" + slug + "/" + row.original.id + "/update");
+          router.push("/" + slug + "/" + row.original.id + "/update");
         }}
       >
         Düzenle

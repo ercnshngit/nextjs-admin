@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { verifyJwtToken } from "@/lib/jose";
+import { verifyJwtToken } from "@/libs/jose";
 
 const isAuthPages = (url: string) =>
   url === "/" || url.startsWith("/?") || url.startsWith("/register");
 
 export async function middleware(request: any) {
+  return;
   const { url, nextUrl, cookies } = request;
   const { value: accessToken } = cookies.get("accessToken") ?? { value: null };
   const hasVerifiedToken = accessToken && (await verifyJwtToken(accessToken));
@@ -15,7 +16,7 @@ export async function middleware(request: any) {
       response.cookies.delete("accessToken");
       return response;
     }
-    request.nextUrl.pathname = "/admin";
+    request.nextUrl.pathname = "/";
     return NextResponse.redirect(request.nextUrl);
   }
 

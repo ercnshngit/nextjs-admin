@@ -22,13 +22,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          {children}
-
-          <div className="w-1/5 min-h-full shadow">
-            <Sidebar className="flex-shrink hidden sm:block" />
-          </div>
-          <div className="flex flex-col flex-1 w-4/5 min-h-screen bg-gray-50 ">
-            {children}
+          <div className="flex min-h-screen bg-gray-100">
+            <div className="w-1/5 min-h-full shadow">
+              <Sidebar className="flex-shrink hidden sm:block" />
+            </div>
+            <div className="flex flex-col flex-1 w-4/5 min-h-screen bg-gray-200 ">
+              {children}
+            </div>
           </div>
         </Providers>
         <ToastContainer />

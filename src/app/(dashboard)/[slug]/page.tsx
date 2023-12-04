@@ -1,14 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  DATABASE_TABLES,
-  getDatabaseTable,
-  getDatabaseTableColumnsFilterable,
-  getDatabaseTableColumnsSearchable,
-} from "@/config/general";
+
 import { translate } from "@/langs";
-import { getTable } from "@/services/panel";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { CircleIcon } from "lucide-react";
@@ -16,6 +10,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { columns } from "./components/data-table/columns";
 import { DataTableExpandable } from "./components/data-table/data-table";
+import {
+  getDatabaseTable,
+  getDatabaseTableColumnsFilterable,
+  getDatabaseTableColumnsSearchable,
+} from "@/config/general";
+import { getTable } from "@/services/panel";
 
 export default function Masraf({ params }: { params: { slug: string } }) {
   const { slug } = params;
@@ -60,7 +60,7 @@ export default function Masraf({ params }: { params: { slug: string } }) {
         {table?.canCreate !== false && (
           <div>
             <Button asChild>
-              <Link href={"/admin/" + tableName + "/ekle"}>
+              <Link href={"/" + tableName + "/ekle"}>
                 <PlusCircledIcon className="w-4 h-4 mr-2" />
                 Yeni {translate(tableName)} ekle
               </Link>

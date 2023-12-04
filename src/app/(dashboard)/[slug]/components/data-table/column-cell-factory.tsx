@@ -1,14 +1,6 @@
-import {
-  DATABASE_TABLE,
-  DATABASE_TABLE_COLUMN,
-  INPUT_TYPE,
-} from "@/config/general";
-import React from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { DATABASE_TABLE_COLUMN } from "@/config/general";
 import ListImageComponent from "./components/ListImageComponent";
 import Pill from "./components/Pill";
-import { useQuery } from "@tanstack/react-query";
-import { getTable } from "@/services/panel";
 
 type ColumnCellFactoryProps = {
   value: any;
