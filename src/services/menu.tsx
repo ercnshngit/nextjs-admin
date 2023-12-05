@@ -70,7 +70,7 @@ export class MenuService {
 
 
   async getMenusByType(type_id: number) {
-    const menu = await prisma.menu.findMany({ where: { types: { id: type_id } } });
+    const menu = await prisma.menu.findMany({ where: { types: { id: type_id }, menu_belong_id: null } });
     if (!menu || menu.length === 0) {
       return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }));
     }
