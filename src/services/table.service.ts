@@ -123,7 +123,7 @@ export class TableService {
     try {
       let new_result: any[] = [];
       const query =
-        "SELECT table_name as 'table_name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" +
+        "SELECT table_name as 'name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" +
         process.env.DB_NAME +
         "' GROUP BY table_name";
       console.log(query);

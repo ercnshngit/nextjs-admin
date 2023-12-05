@@ -1,11 +1,3 @@
-import { tableNames } from "@/config/general";
-
-export type OPTION = {
-  label: string;
-  value: string;
-  icon?: any;
-};
-
 export type INPUT_TYPE =
   | "hidden"
   | "image"
@@ -19,46 +11,47 @@ export type INPUT_TYPE =
   | "date"
   | "richtext";
 
-type CRUD_OPTIONS = {
-  hidden?: boolean;
-  required?: boolean;
-  readonly?: boolean;
-  inputType?: INPUT_TYPE;
-};
-
-export type COLUMN_RELATION<T> = {
-  table: T;
-  keyColumn: string;
-  displayColumn: string;
-  type?: "one" | "many";
-  pivotTable?: string;
-  pivotTableKeyColumn?: string;
-  pivotTableForeignKeyColumn?: string;
-  pivotTableExtraColumns?: DATABASE_TABLE_COLUMN<T>[];
-};
-
-export type DATABASE_TABLE_COLUMN<T> = {
+export type Database_Table = {
+  id: number;
   name: string;
-  type: "string" | "number";
-  default?: any;
-  filterable?: boolean;
-  searchable?: boolean;
-  sortable?: boolean;
-  options?: OPTION[];
-  hidden?: boolean;
-  required?: boolean;
-  inputType?: INPUT_TYPE;
-  create?: CRUD_OPTIONS;
-  update?: CRUD_OPTIONS;
-  read?: CRUD_OPTIONS;
-  relation?: COLUMN_RELATION<T>;
+  icon: string;
+  is_hidden: boolean;
+  can_create: boolean;
+  can_update: boolean;
+  columns: Column[];
 };
 
-export type DATABASE_TABLE_DYNAMIC<T> = {
-  name: T;
-  Icon?: any;
-  hidden?: boolean;
-  canCreate?: boolean;
-  canUpdate?: boolean;
-  columns: DATABASE_TABLE_COLUMN<T>[];
-};
+export interface Column {
+  id: number;
+  name: string;
+  table_id: number;
+  type_id: number;
+  is_primary: boolean;
+  is_required: boolean;
+  is_unique: boolean;
+  is_hidden: boolean;
+  is_filterable: boolean;
+  is_searchable: boolean;
+  is_sortable: boolean;
+  input_type_id: number;
+  create_crud_option_id: any;
+  update_crud_option_id: any;
+  read_crud_option_id: any;
+  type: Type;
+  input_type: InputType;
+  create_crud_option: any;
+  read_crud_option: any;
+  update_crud_option: any;
+}
+
+export interface Type {
+  id: number;
+  name: string;
+  type_category_id: number;
+}
+
+export interface InputType {
+  id: number;
+  name: string;
+  type_category_id: number;
+}

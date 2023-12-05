@@ -10,16 +10,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { columns } from "./components/data-table/columns";
 import { DataTableExpandable } from "./components/data-table/data-table";
-import {
-  getDatabaseTable,
-  getDatabaseTableColumnsFilterable,
-  getDatabaseTableColumnsSearchable,
-} from "@/config/general";
+
 import { getTable } from "@/services/panel";
+import { useDatabase } from "@/hooks/use-database";
 
 export default function Masraf({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const table = getDatabaseTable(slug);
+  const { table } = useDatabase(slug);
   const tableName = table?.name || "";
   const tableColumns = columns(tableName);
 
