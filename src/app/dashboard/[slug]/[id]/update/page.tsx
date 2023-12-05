@@ -3,14 +3,13 @@
 import DeleteItem from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { DATABASE_TABLE, getDatabaseTable } from "@/config/general";
 import { translate } from "@/langs";
-import { getTableItem } from "@/services/panel";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 import Form from "./form";
+import { useDatabase } from "@/hooks/use-database";
+import { Database_Table } from "@/types/config";
 
 export default function Update({
   params,
@@ -19,7 +18,7 @@ export default function Update({
 }) {
   const [open, setOpen] = React.useState(false);
   const { id, slug } = params;
-  const table = getDatabaseTable(slug);
+  const { table } = useDatabase(slug);
   const tableName = table?.name || "";
 
   return (
@@ -55,7 +54,7 @@ export default function Update({
           </CardHeader>
           <CardContent>
             <div className="flex justify-start py-10">
-              <Form id={Number(id)} table={table as DATABASE_TABLE} />
+              <Form id={Number(id)} table={table as Database_Table} />
             </div>
           </CardContent>
         </Card>

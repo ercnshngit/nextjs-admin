@@ -1,4 +1,3 @@
-import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Checkbox from "./components/Checkbox";
@@ -12,10 +11,11 @@ import RichTextBox from "./components/RichTextBox";
 import Select from "./components/Select";
 import String from "./components/String";
 import TextArea from "./components/TextArea";
+import { Column, Database_Table } from "@/types/config";
 
 type FormInputFactoryProps = {
-  field: DATABASE_TABLE_COLUMN;
-  table: DATABASE_TABLE;
+  field: Column;
+  table: Database_Table;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   formType: "create" | "update";
@@ -37,18 +37,20 @@ export default function FormInputFactory({
   ...props
 }: FormInputFactoryProps) {
   const inputType =
-    props.field?.[formType]?.inputType || props.field?.inputType;
+    props.field?.[
+      formType === "create" ? "create_crud_option" : "update_crud_option"
+    ]?.input_type || props.field?.input_type;
 
   if (customInput) {
     const CustomInputItem = customInput.find(
-      (item) => item.for === inputType
+      (item) => item.for === inputType.name
     )?.component;
     if (CustomInputItem) {
       return <CustomInputItem {...props} />;
     }
   }
 
-  switch (inputType) {
+  switch (inputType.name) {
     case "checkbox":
       return <Checkbox {...props} />;
     case "date":

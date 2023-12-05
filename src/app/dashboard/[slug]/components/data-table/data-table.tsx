@@ -26,13 +26,15 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { ColumnDefWithName } from "./columns";
+import { Column } from "@/types/config";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDefWithName<TData>[];
   data: TData[];
-  filterables?: any[];
+  filterables?: any[] | null;
   tableName: string;
-  searchables?: any[];
+  searchables?: any[] | null;
+  databaseTableColumns: Column[];
 }
 
 export function DataTableExpandable<TData, TValue>({
@@ -41,6 +43,7 @@ export function DataTableExpandable<TData, TValue>({
   filterables,
   searchables,
   tableName,
+  databaseTableColumns,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -81,6 +84,7 @@ export function DataTableExpandable<TData, TValue>({
         tableName={tableName}
         filterables={filterables}
         searchables={searchables}
+        databaseTableColumns={databaseTableColumns}
       />
       <div className="bg-white border rounded-md">
         <Table>

@@ -10,13 +10,14 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { CalendarDateRangePicker } from "./date-range-picker";
 import { translate } from "@/langs";
-import { getDatabaseTable, getDatabaseTableColumns } from "@/config/general";
+import { Column } from "@/types/config";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  filterables?: any[];
-  searchables?: any[];
+  filterables?: any[] | null;
+  searchables?: any[] | null;
   tableName: string;
+  databaseTableColumns: Column[];
 }
 
 export function DataTableToolbar<TData>({
@@ -24,9 +25,9 @@ export function DataTableToolbar<TData>({
   filterables,
   searchables,
   tableName,
+  databaseTableColumns,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const databaseTableColumns = getDatabaseTableColumns(tableName);
 
   return (
     <div className="flex items-center justify-between">

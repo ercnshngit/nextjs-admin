@@ -1,5 +1,5 @@
-import { DATABASE_TABLE_COLUMN, getDatabaseTable } from "@/config/general";
 import { getTable } from "@/services/panel";
+import { Column } from "@/types/config";
 import { checkError } from "@/utils/error-handling";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -9,18 +9,16 @@ export default function Pill({
   column,
 }: {
   value: any;
-  column: DATABASE_TABLE_COLUMN;
+  column: Column;
 }) {
   const { data: joinedTableData, error } = useQuery(
     [column.relation!.table],
     () => getTable({ tableName: column.relation!.table })
   );
 
-  const joinedTable = getDatabaseTable(column.relation!.table!);
-
   return (
     <div>
-      {column.inputType === "relation" ? (
+      {column.input_type.name === "relation" ? (
         <div className="flex flex-wrap gap-1">
           {column.relation!.type === "many"
             ? checkError(() => JSON.parse(value))?.map(

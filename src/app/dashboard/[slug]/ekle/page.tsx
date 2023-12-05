@@ -5,14 +5,14 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import React from "react";
 import Form from "./form";
-import { getDatabaseTable } from "@/config/general";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
 import { translate } from "@/langs";
+import { useDatabase } from "@/hooks/use-database";
 
 export default function Ekle({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const table = getDatabaseTable(slug);
+  const { table } = useDatabase(slug);
   const tableName = table?.name || "";
 
   return (
