@@ -1,4 +1,5 @@
 import { TableService } from "@/services/table.service";
+import { Prisma } from "@prisma/client";
 
 export async function POST(
   request: Request,
@@ -19,7 +20,7 @@ export async function GET(
   request: Request,
   { params }: { params: { table_name: string } }
 ) {
-  const table_name = params.table_name;
+  const table_name = params.table_name as Prisma.ModelName;
   const tableService = new TableService();
   try {
     return await tableService.getTable(table_name);
