@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 
 import { translate } from "@/langs";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
@@ -16,9 +15,9 @@ import { useDatabase } from "@/hooks/use-database";
 
 export default function Masraf({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const { table } = useDatabase(slug);
+  const { table, filterables, searchables } = useDatabase(slug);
   const tableName = table?.name || "";
-  const tableColumns = columns(tableName);
+  const tableColumns = columns(slug, table?.columns || []);
 
   const { data, error } = useQuery([tableName], () =>
     getTable({ tableName: tableName })
@@ -29,35 +28,33 @@ export default function Masraf({ params }: { params: { slug: string } }) {
     setTableData(data);
   }, [data]);
 
-  const filterables = getDatabaseTableColumnsFilterable(tableName)?.map(
-    (filterable) => {
-      if (data && Array.isArray(data)) {
-        return {
-          ...filterable,
-          options: Array.from(
-            new Set(data?.map((row: any) => row[filterable.name]))
-          ).map((option) => {
-            return {
-              label: option,
-              value: option,
-              icon: CircleIcon,
-            };
-          }),
-        };
-      }
+  const filterablesData = filterables?.map((filterable) => {
+    if (data && Array.isArray(data)) {
+      return {
+        ...filterable,
+        options: Array.from(
+          new Set(data?.map((row: any) => row[filterable.name]))
+        ).map((option) => {
+          return {
+            label: option,
+            value: option,
+            icon: CircleIcon,
+          };
+        }),
+      };
     }
-  );
+  });
 
-  const searchables = getDatabaseTableColumnsSearchable(tableName);
+  const searchablesData = searchables;
   if (error) return <div>error</div>;
   return (
     <div className="container flex-1 py-10 mx-auto overflow-hidden ">
       <div className="flex justify-between mb-4">
         <h3 className="text-lg font-medium">{translate(tableName)}</h3>
-        {table?.canCreate !== false && (
+        {table?.can_create !== false && (
           <div>
             <Button asChild>
-              <Link href={"/" + tableName + "/ekle"}>
+              <Link href={"/dashboard/" + tableName + "/ekle"}>
                 <PlusCircledIcon className="w-4 h-4 mr-2" />
                 Yeni {translate(tableName)} ekle
               </Link>
@@ -71,8 +68,9 @@ export default function Masraf({ params }: { params: { slug: string } }) {
             tableName={tableName}
             columns={tableColumns}
             data={tableData}
-            filterables={filterables}
-            searchables={searchables}
+            filterables={filterablesData}
+            searchables={searchablesData}
+            databaseTableColumns={table?.columns || []}
           />
         )}
       </div>

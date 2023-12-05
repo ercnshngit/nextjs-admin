@@ -1,8 +1,3 @@
-import {
-  DATABASE_TABLE,
-  DATABASE_TABLE_COLUMN,
-  getDatabaseTable,
-} from "@/config/general";
 import { translate } from "@/langs";
 import { getTable } from "@/services/panel";
 import { useQuery } from "@tanstack/react-query";
@@ -10,11 +5,12 @@ import { PlusCircle } from "lucide-react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "../../form-input-factory";
 import Label from "../Label";
-import { INPUT_TYPE } from "@/types/config";
+import { Column, Database_Table, INPUT_TYPE } from "@/types/config";
+import { useDatabase } from "@/hooks/use-database";
 
 export default function Relation(props: {
-  field: DATABASE_TABLE_COLUMN;
-  table: DATABASE_TABLE;
+  field: Column;
+  table: Database_Table;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   formType: "create" | "update";
@@ -42,8 +38,8 @@ function UpdateRelation({
   setValue,
   control,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: DATABASE_TABLE;
+  field: Column;
+  table: Database_Table;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   formType: "create" | "update";
@@ -51,9 +47,7 @@ function UpdateRelation({
   setValue?: any;
   control: any;
 }) {
-  const joinedTable = getDatabaseTable(
-    field.relation!.table!
-  ) as DATABASE_TABLE;
+  const { table: joinedTable } = useDatabase(field.relation!.table!);
 
   const joinedTableData = useQuery([joinedTable.name], () =>
     getTable({ tableName: joinedTable.name })
@@ -70,7 +64,9 @@ function UpdateRelation({
         {joinedTable?.columns &&
           joinedTable.columns
             .filter((field) =>
-              field[formType]?.hidden || field.hidden ? false : true
+              field.update_crud_option?.is_hidden || field.is_hidden
+                ? false
+                : true
             )
             .map((joinedField) => {
               console.log(joinedField);
@@ -104,8 +100,8 @@ function CreateRelation({
   setValue,
   control,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: DATABASE_TABLE;
+  field: Column;
+  table: Database_Table;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   formType: "create" | "update";
@@ -113,9 +109,7 @@ function CreateRelation({
   setValue?: any;
   control: any;
 }) {
-  const joinedTable = getDatabaseTable(
-    field.relation!.table!
-  ) as DATABASE_TABLE;
+  const { table: joinedTable } = useDatabase(field.relation!.table!);
 
   const joinedTableData = useQuery([joinedTable.name], () =>
     getTable({ tableName: joinedTable.name })
@@ -145,7 +139,9 @@ function CreateRelation({
           {joinedTable?.columns &&
             joinedTable.columns
               .filter((field) =>
-                field[formType]?.hidden || field.hidden ? false : true
+                field.create_crud_option?.is_hidden || field.is_hidden
+                  ? false
+                  : true
               )
               .map((field) => {
                 return (
@@ -177,8 +173,8 @@ function RelationWithPivot({
   setValue,
   control,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: DATABASE_TABLE;
+  field: Column;
+  table: Database_Table;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   formType: "create" | "update";
@@ -186,17 +182,13 @@ function RelationWithPivot({
   setValue?: any;
   control: any;
 }) {
-  const joinedTable = getDatabaseTable(
-    field.relation!.table!
-  ) as DATABASE_TABLE;
+  const { table: joinedTable } = useDatabase(field.relation!.table!);
 
   const joinedTableData = useQuery([joinedTable.name], () =>
     getTable({ tableName: joinedTable.name })
   );
 
-  const pivotTable = getDatabaseTable(
-    field.relation!.pivotTable!
-  ) as DATABASE_TABLE;
+  const { table: pivotTable } = useDatabase(field.relation!.pivotTable!);
   const pivotTableData = useQuery([pivotTable.name + "/" + id], () =>
     getTable({ tableName: pivotTable.name })
   );

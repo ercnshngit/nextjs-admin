@@ -24,8 +24,6 @@ export type Database_Table = {
 export interface Column {
   id: number;
   name: string;
-  table_id: number;
-  type_id: number;
   is_primary: boolean;
   is_required: boolean;
   is_unique: boolean;
@@ -33,15 +31,14 @@ export interface Column {
   is_filterable: boolean;
   is_searchable: boolean;
   is_sortable: boolean;
-  input_type_id: number;
-  create_crud_option_id: any;
-  update_crud_option_id: any;
-  read_crud_option_id: any;
+  create_crud_option_id?: CrudOptionDto;
+  update_crud_option_id?: CrudOptionDto;
+  read_crud_option_id?: CrudOptionDto;
   type: Type;
   input_type: InputType;
-  create_crud_option: any;
-  read_crud_option: any;
-  update_crud_option: any;
+  create_crud_option: CrudOption;
+  read_crud_option: CrudOption;
+  update_crud_option: CrudOption;
 }
 
 export interface Type {
@@ -51,6 +48,20 @@ export interface Type {
 }
 
 export interface InputType {
+  id: number;
+  name: string;
+  type_category_id: number;
+}
+
+export interface CrudOption {
+  id: number;
+  is_hidden: boolean;
+  is_required: boolean;
+  is_readonly: boolean;
+  input_type: null | DataTypeDto;
+}
+
+export interface DataTypeDto {
   id: number;
   name: string;
   type_category_id: number;

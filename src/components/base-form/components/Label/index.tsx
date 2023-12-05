@@ -1,13 +1,13 @@
-import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
 import { translate } from "@/langs";
+import { Column, Database_Table } from "@/types/config";
 import React from "react";
 
 export default function Label({
   field,
   table,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: Partial<DATABASE_TABLE>;
+  field: Column;
+  table: Partial<Database_Table>;
 }) {
   if (field?.name?.split("/")[0] === "relation") {
     return (
