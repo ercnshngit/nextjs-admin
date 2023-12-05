@@ -2,6 +2,10 @@ import { BlockDto } from "./block.dto";
 import { ComponentDto } from "./component.dto";
 import { PropDto } from "./prop.dto";
 
+export interface CreateBlockComponentDto {
+    block_components: BlockComponentDto[];
+}
+
 export interface BlockComponentDto {
     component: ComponentDto;
     block: BlockDto;
@@ -10,7 +14,7 @@ export interface BlockComponentDto {
     order: number;
     code?: string;
     hasChildren?: boolean;
-    props?: PropDto[];
+    props: PropDto[] | [];
 }
 
 export interface UpdateBlockComponentDto {
