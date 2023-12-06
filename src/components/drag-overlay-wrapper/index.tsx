@@ -28,10 +28,11 @@ function DragOverlayWrapper() {
 
   if (draggedItem.data?.current?.isSidebarComponent) {
     const component = draggedItem.data?.current?.component;
-    const Icon = Icons[component.icon as keyof typeof Icons];
+    const Icon =
+      (component.icon && Icons[component.icon as keyof typeof Icons]) || null;
     node = (
       <div className="p-4 border aspect-square flex flex-col justify-center items-center gap-4 bg-white rounded-md mb-4 cursor-pointer">
-        <Icon />
+        {Icon && <Icon />}
         <h1 className="text-center">{component.name}</h1>
       </div>
     );

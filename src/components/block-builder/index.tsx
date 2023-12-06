@@ -31,154 +31,18 @@ import { componentTags } from "./utils/component-tags";
 import { createTree } from "./utils/tree-operations";
 import JSONEditInput from "./components/json-edit-input";
 
-const COMPONENTS: PageComponent[] = [
-  {
-    code: "1",
-    component: {
-      id: 1,
-      name: "Text",
-      tag: "Text",
-    },
-    block_id: 1,
-    type: {
-      id: 1,
-      name: "Page",
-    },
-    depth: 1,
-    order: 1,
-    belong_component_id: "2",
-    props: [
-      {
-        prop: {
-          id: 1,
-          key: "className",
-          type: "string",
-        },
-        value: "font-bold text-xl",
-      },
-      {
-        prop: {
-          id: 2,
-          key: "text",
-          type: "string",
-        },
-        value: "Hello World",
-      },
-    ],
-  },
-  {
-    code: "3",
-    component: {
-      id: 1,
-      name: "Text",
-      tag: "Text",
-    },
-    block_id: 1,
-    type: {
-      id: 1,
-      name: "Page",
-    },
-    depth: 1,
-    order: 2,
-    belong_component_id: "2",
-    props: [
-      {
-        prop: {
-          id: 1,
-          key: "className",
-          type: "string",
-        },
-        value: "font-bold text-xl text-red-500",
-      },
-      {
-        prop: {
-          id: 2,
-          key: "text",
-          type: "string",
-        },
-        value: "Asfsdfdsfsdfdsf",
-      },
-    ],
-  },
-  {
-    code: "2",
-    component: {
-      id: 2,
-      name: "Vertical Stack",
-      tag: "VStack",
-    },
-    hasChildren: true,
-    block_id: 1,
-    type: {
-      id: 1,
-      name: "Page",
-    },
-    depth: 0,
-    order: 1,
-    belong_component_id: null,
-    props: [
-      {
-        prop: {
-          id: 1,
-          key: "className",
-          type: "string",
-        },
-        value: "",
-      },
-    ],
-  },
-];
-
-const SIDEBAR_COMPONENTS: Component[] = [
-  {
-    id: 1,
-    name: "Text",
-    tag: "Text",
-    icon: "LetterCaseCapitalize",
-    type: {
-      id: 1,
-      name: "Page",
-    },
-    props: [
-      {
-        id: 1,
-        key: "className",
-        type: "string",
-      },
-
-      {
-        id: 2,
-        key: "text",
-        type: "string",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Vertical Stack",
-    icon: "Height",
-    tag: "VStack",
-    hasChildren: true,
-    type: {
-      id: 1,
-      name: "Page",
-    },
-    props: [
-      {
-        id: 1,
-        key: "className",
-        type: "string",
-      },
-    ],
-  },
-];
-
 export const Icons = {
   LetterCaseCapitalize: LetterCaseCapitalizeIcon,
   Height: HeightIcon,
 };
 
-export default function BlockBuilder() {
+export default function BlockBuilder({
+  onSave,
+  sidebarComponents,
+}: {
+  onSave: () => void;
+  sidebarComponents: Component[];
+}) {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10, // 10px
@@ -193,12 +57,6 @@ export default function BlockBuilder() {
   });
 
   const sensors = useSensors(mouseSensor, touchSensor);
-  const { setElements, setSelectedElement } = useDesigner();
-  useEffect(() => {
-    const elements = COMPONENTS;
-    setElements(elements);
-    setSelectedElement(null);
-  }, [setElements, setSelectedElement]);
 
   return (
     <DndContext
@@ -206,18 +64,32 @@ export default function BlockBuilder() {
       collisionDetection={customCollisionDetectionAlgorithm}
     >
       <Designer />
-      <DesignerSidebar />
+      <DesignerSidebar sidebarComponents={sidebarComponents} onSave={onSave} />
       <DragOverlayWrapper />
     </DndContext>
   );
 }
 
-function DesignerSidebar() {
-  const { selectedElement, isPreview, updateElement, setIsPreview } =
+function DesignerSidebar({
+  sidebarComponents,
+  onSave,
+}: {
+  sidebarComponents: Component[];
+  onSave: () => void;
+}) {
+  const { elements, selectedElement, isPreview, updateElement, setIsPreview } =
     useDesigner();
+
+  const saveElements = () => {
+    console.log(elements);
+    onSave();
+  };
   return (
     <div className="bg-white px-4 py-10 h-full min-w-[300px]">
-      <div className="flex items-center justify-between  w-full space-x-2">
+      <div>
+        <Button onClick={saveElements}>Gönder</Button>
+      </div>
+      <div className="flex items-center mb-6 justify-between  w-full space-x-2">
         <Label htmlFor="preview-mode">Preview Mode</Label>
         <Switch
           id="preview-mode"
@@ -228,7 +100,6 @@ function DesignerSidebar() {
       {selectedElement && (
         <div className="flex flex-col w-full  gap-2">
           <h1 className="text-2xl font-bold">Properties</h1>
-          <JSONEditInput />
 
           {selectedElement.props.map((prop) => {
             return (
@@ -261,7 +132,7 @@ function DesignerSidebar() {
       )}
       <div className="grid grid-cols-2 gap-2">
         {!selectedElement &&
-          SIDEBAR_COMPONENTS.map((component) => {
+          sidebarComponents.map((component) => {
             return (
               <SidebarComponent component={component} key={component.id} />
             );
@@ -285,7 +156,8 @@ function SidebarComponent({
       isSidebarComponent: true,
     },
   });
-  const Icon = Icons[component.icon as keyof typeof Icons];
+  const Icon =
+    (component.icon && Icons[component.icon as keyof typeof Icons]) || null;
   return (
     <div
       ref={draggable.setNodeRef}
@@ -293,7 +165,7 @@ function SidebarComponent({
       {...draggable.attributes}
       className="p-4 border aspect-square flex flex-col justify-center items-center gap-4 bg-white rounded-md mb-4 cursor-pointer"
     >
-      <Icon />
+      {Icon && <Icon />}
       <h1 className="text-center">{component.name}</h1>
     </div>
   );
@@ -374,31 +246,44 @@ function Designer() {
       if (isSidebarComponentDroppingOverDesignerDropArea) {
         console.log("1");
         const sidebarComponent = draggedElement?.component as Component;
+        console.log(sidebarComponent);
         const newElement = {
           code: crypto.randomUUID(),
           component: {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
-            tag: sidebarComponent.tag,
+            tag: sidebarComponent.tag.name,
+            type_id: sidebarComponent.types.id,
+            icon: sidebarComponent.icon,
+            tag_id: sidebarComponent.tag.id,
           },
           block_id: 0,
           type: {
-            id: sidebarComponent.type.id,
-            name: sidebarComponent.type.name,
+            id: sidebarComponent.types.id,
+            name: sidebarComponent.types.name,
           },
           depth: 0,
-          hasChildren: sidebarComponent.hasChildren,
-          children: sidebarComponent.hasChildren ? [] : undefined,
-          order: elements.length,
-          belong_component_id: null,
-          props: sidebarComponent.props.map((prop) => ({
+          hasChildren: sidebarComponent.component_prop.find(
+            (p) => p.prop.key === "children"
+          )
+            ? true
+            : false,
+          children: sidebarComponent.component_prop.find(
+            (p) => p.prop.key === "children"
+          )
+            ? []
+            : undefined,
+          props: sidebarComponent.component_prop.map((prop) => ({
             prop: {
-              id: prop.id,
-              key: prop.key,
-              type: prop.type,
+              id: prop.prop.id,
+              key: prop.prop.key,
+              type: prop.prop.type,
+              type_id: prop.prop.type_id,
             },
             value: "",
           })),
+          order: elements.length,
+          belong_component_id: null,
         };
 
         addElement(elements.length, newElement);
@@ -422,23 +307,35 @@ function Designer() {
           component: {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
-            tag: sidebarComponent.tag,
+            tag: sidebarComponent.tag.name,
+            type_id: sidebarComponent.types.id,
+            icon: sidebarComponent.icon,
+            tag_id: sidebarComponent.tag.id,
           },
           block_id: 0,
           type: {
-            id: sidebarComponent.type.id,
-            name: sidebarComponent.type.name,
+            id: sidebarComponent.types.id,
+            name: sidebarComponent.types.name,
           },
           depth: droppedArea?.component.depth,
-          hasChildren: sidebarComponent.hasChildren,
-          children: sidebarComponent.hasChildren ? [] : undefined,
           order: indexForNewElement,
           belong_component_id: droppedArea?.component.belong_component_id,
-          props: sidebarComponent.props.map((prop) => ({
+          hasChildren: sidebarComponent.component_prop.find(
+            (p) => p.prop.key === "children"
+          )
+            ? true
+            : false,
+          children: sidebarComponent.component_prop.find(
+            (p) => p.prop.key === "children"
+          )
+            ? []
+            : undefined,
+          props: sidebarComponent.component_prop.map((prop) => ({
             prop: {
-              id: prop.id,
-              key: prop.key,
-              type: prop.type,
+              id: prop.prop.id,
+              key: prop.prop.key,
+              type: prop.prop.type,
+              type_id: prop.prop.type_id,
             },
             value: "",
           })),
@@ -455,23 +352,35 @@ function Designer() {
           component: {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
-            tag: sidebarComponent.tag,
+            tag: sidebarComponent.tag.name,
+            type_id: sidebarComponent.types.id,
+            icon: sidebarComponent.icon,
+            tag_id: sidebarComponent.tag.id,
           },
           block_id: 0,
           type: {
-            id: sidebarComponent.type.id,
-            name: sidebarComponent.type.name,
+            id: sidebarComponent.types.id,
+            name: sidebarComponent.types.name,
           },
-          hasChildren: sidebarComponent.hasChildren,
-          children: sidebarComponent.hasChildren ? [] : undefined,
+          hasChildren: sidebarComponent.component_prop.find(
+            (p) => p.prop.key === "children"
+          )
+            ? true
+            : false,
+          children: sidebarComponent.component_prop.find(
+            (p) => p.prop.key === "children"
+          )
+            ? []
+            : undefined,
           depth: droppedArea?.component.depth + 1,
           order: 0,
           belong_component_id: droppedArea?.component.code,
-          props: sidebarComponent.props.map((prop) => ({
+          props: sidebarComponent.component_prop.map((prop) => ({
             prop: {
-              id: prop.id,
-              key: prop.key,
-              type: prop.type,
+              id: prop.prop.id,
+              key: prop.prop.key,
+              type: prop.prop.type,
+              type_id: prop.prop.type_id,
             },
             value: "",
           })),

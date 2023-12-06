@@ -48,7 +48,7 @@ export default function Masraf({ params }: { params: { slug: string } }) {
   const searchablesData = searchables;
   if (error) return <div>error</div>;
   return (
-    <div className="container flex-1 py-10 mx-auto overflow-hidden ">
+    <>
       <div className="flex justify-between mb-4">
         <h3 className="text-lg font-medium">{translate(tableName)}</h3>
         {table?.can_create !== false && (
@@ -74,6 +74,6 @@ export default function Masraf({ params }: { params: { slug: string } }) {
           />
         )}
       </div>
-    </div>
+    </>
   );
 }

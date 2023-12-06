@@ -1,5 +1,6 @@
 "use client";
 import { useDatabase } from "@/hooks/use-database";
+import Link from "next/link";
 import React from "react";
 
 export default function Config() {
@@ -15,7 +16,7 @@ export default function Config() {
           <div key={table.id} className="flex justify-between">
             <h2>{table.name}</h2>
             {tablesHasConfigs?.includes(table.name) ? (
-              <button>edit</button>
+              <Link href={`/dashboard/config/${table.name}`}>edit</Link>
             ) : (
               <button onClick={() => handleCreateConfig()}>create</button>
             )}
