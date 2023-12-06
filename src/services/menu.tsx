@@ -69,8 +69,8 @@ export class MenuService {
   }
 
 
-  async getMenusByType(name: string) {  //name parametresi, type tablosundaki table_name alanıdır. (örn: "menu" ya da "submenu")
-    const menu = await prisma.menu.findMany({ where: { types: { table_name: name } } });
+  async getMenusByType(type_id: number) {
+    const menu = await prisma.menu.findMany({ where: { types: { id: type_id }, menu_belong_id: null } });
     if (!menu || menu.length === 0) {
       return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }));
     }
@@ -100,46 +100,44 @@ export class MenuService {
   }
 
   async createMenu(data: MenuDto) {
-    if (data.menu_belong_id) {
-      const checkMenuBelongExist = await prisma.menu.findMany({ where: { id: data.menu_belong_id } });
-      if (!checkMenuBelongExist || checkMenuBelongExist.length === 0) {
-        return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }));
-      }
+    if (data.type_id && !(await func.checkTypeExist(data.type_id))) {
+      return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }));
     }
 
-    !data.slug ? data.slug = await func.slugCreator(data.title)
-      : !data.route ? data.route = '/' + await func.slugCreator(data.title) : null;
+    if (data.menu_belong_id && !(await func.checkMenuBelongExist(data.menu_belong_id))) {
+      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }));
+    }
+
+    if (data.title) {
+      data.slug = data.slug ?? await func.slugCreator(data.title);
+      data.route = data.route ?? `/${data.slug}`;
+    }
 
     const menu = await prisma.menu.create({ data });
-    if (!menu) return new Response(JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }));
+
+    if (!menu) { return new Response(JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() })) }
+
     return new Response(JSON.stringify(menu));
   }
 
   async updateMenu(id: number, data: MenuDto) {
-    const checkMenuExist = await prisma.menu.findUnique({ where: { id } });
-    if (!checkMenuExist) {
-      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }));
-    }
-    if (data.type_id) {
-      const checkTypeExist = await prisma.types.findUnique({ where: { id: data.type_id } });
-      if (!checkTypeExist) {
-        return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }));
-      }
-    }
-    if (data.menu_belong_id) {
-      const checkMenuBelongExist = await prisma.menu.findMany({ where: { id: data.menu_belong_id } });
-      if (!checkMenuBelongExist || checkMenuBelongExist.length === 0) {
-        return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }));
-      }
-    }
+    let msg: any = "";
+    const menuExist = await func.checkMenuExist(id);
 
-    data.title ? !data.slug ? data.slug = await func.slugCreator(data.title)
-      : !data.route ? data.route = '/' + await func.slugCreator(data.title) : null : null;
+    !menuExist ? msg = ErrorMessages.MENU_NOT_FOUND_ERROR()
+      : data.type_id && !(await func.checkTypeExist(data.type_id)) ? msg = ErrorMessages.TYPE_NOT_FOUND_ERROR()
+        : data.menu_belong_id && !(await func.checkMenuBelongExist(data.menu_belong_id)) ? msg = ErrorMessages.MENU_NOT_FOUND_ERROR()
+          : data.title ? data.slug = data.slug ?? await func.slugCreator(data.title) : data.route = data.route ?? `/${data.slug}`;
 
-    Object.assign(checkMenuExist, data);
-    const menu = await prisma.menu.update({ where: { id }, data });
-    if (!menu) return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }));
-    return new Response(JSON.stringify(menu));
+    if (msg) { return new Response(JSON.stringify({ message: msg })) }
+
+    Object.assign(menuExist, data);
+
+    const updatedMenu = await prisma.menu.update({ where: { id }, data });
+
+    if (!updatedMenu) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })) }
+
+    return new Response(JSON.stringify(updatedMenu));
   }
 
   async deleteMenu(id: number) {

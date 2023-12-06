@@ -1,6 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { BlockComponentDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
+import { BlockComponentDto, CreateBlockComponentDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
 
 export class BlockComponentService {
     async getBlockComponent(id: number) {
@@ -55,67 +55,81 @@ export class BlockComponentService {
         }
     }
 
-    async createBlockComponent(data: BlockComponentDto) {
+    async createBlockComponent(data: CreateBlockComponentDto) {
         try {
-            const msg = await this.checkBlockComponents(data, 'create')
-            if (msg) { return new Response(JSON.stringify({ message: msg })); }
-            const component = await prisma.component.create({
-                data: {
-                    name: data.component.name,
-                    tag_id: data.component.tag_id,
-                    type_id: data.component.type_id,
-                    icon: data.component.icon
-                }
-            })
+            let results: any = [];
+            for (let i = 0; i < data.block_components.length; i++) {
+                const msg = await this.checkBlockComponents(data.block_components[i], 'create')
+                if (msg) { return new Response(JSON.stringify({ message: msg })); }
+                const component = await prisma.component.create({
+                    data: {
+                        name: data.block_components[i].component.name,
+                        tag_id: data.block_components[i].component.tag_id,
+                        type_id: data.block_components[i].component.type_id,
+                        icon: data.block_components[i].component.icon
+                    }
+                })
 
-            const block_component = await prisma.block_component.create({
-                data: {
-                    component_id: component.id,
-                    block_id: data.block_id,
-                    belong_component_id: data.belong_component_id,
-                    depth: data.depth,
-                    order: data.order,
-                    code: data.code,
-                    hasChildren: data.hasChildren
-                }
-            })
-
-            let props: any = [];
-            if (data.props) {
-                for (let i = 0; i < data.props.length; i++) {
-                    const prop = await prisma.prop.create({
+                let block = data.block_components[i].block;
+                if (data.block_components[i].block.id && !(await prisma.block.findUnique({ where: { id: data.block_components[i].block.id } })) || !data.block_components[i].block.id) {
+                    block = await prisma.block.create({
                         data: {
-                            key: data.props[i].prop.key,
-                            type_id: data.props[i].prop.type_id
-                        }
-                    })
-                    props.push(prop);
-                    await prisma.block_component_prop.create({
-                        data: {
-                            prop_id: prop.id,
-                            block_component_id: block_component.id,
-                            value: data.props[i].value
+                            title: data.block_components[i].block.title,
+                            type_id: data.block_components[i].block.type_id,
                         }
                     })
                 }
+
+                const block_component = await prisma.block_component.create({
+                    data: {
+                        component_id: component.id,
+                        block_id: block.id,
+                        belong_component_id: data.block_components[i].belong_component_id,
+                        depth: data.block_components[i].depth,
+                        order: data.block_components[i].order,
+                        code: data.block_components[i].code,
+                        hasChildren: data.block_components[i].hasChildren
+                    }
+                })
+
+                let props: any = [];
+                if (data.block_components[i]) {
+                    for (let j = 0; j < (data.block_components[i].props as any[]).length; j++) {
+                        const prop = await prisma.prop.create({
+                            data: {
+                                key: data.block_components[i].props[j].prop.key,
+                                type_id: data.block_components[i].props[j].prop.type_id
+                            }
+                        })
+                        props.push(prop);
+                        await prisma.block_component_prop.create({
+                            data: {
+                                prop_id: prop.id,
+                                block_component_id: block_component.id,
+                                value: data.block_components[i].props[j].value
+                            }
+                        })
+                    }
+                }
+
+                const result = {
+                    id: block_component.id,
+                    name: component.name,
+                    tag_id: component.tag_id,
+                    type_id: component.type_id,
+                    icon: component.icon,
+                    depth: block_component.depth,
+                    order: block_component.order,
+                    belong_component_id: block_component.belong_component_id,
+                    block_id: block_component.block_id,
+                    code: block_component.code,
+                    hasChildren: block_component.hasChildren,
+                    props
+                }
+                results.push(result)
             }
 
-            const result = {
-                id: block_component.id,
-                name: component.name,
-                tag_id: component.tag_id,
-                type_id: component.type_id,
-                icon: component.icon,
-                depth: block_component.depth,
-                order: block_component.order,
-                belong_component_id: block_component.belong_component_id,
-                block_id: block_component.block_id,
-                code: block_component.code,
-                hasChildren: block_component.hasChildren,
-                props
-            }
-
-            return new Response(JSON.stringify(result));
+            return new Response(JSON.stringify(results));
         }
 
         catch (error) {
@@ -172,13 +186,13 @@ export class BlockComponentService {
 
     async checkBlockComponents(data: BlockComponentDto, code?: string) {
         let msg = '';
-        let checkComponent: any = 'null', checkBlock: any = 'null', checkBelongComponent: any = 'null';
-        if (data.block_id != undefined) { checkBlock = await prisma.block.findUnique({ where: { id: data.block_id } }) }
+        let checkComponent: any = 'null', checkBelongComponent: any = 'null';
+
         if (code == undefined && data.component.id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component.id } }) }
         if (data.belong_component_id != undefined) { checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
-        !checkBlock ? msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en :
-            !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
-                !checkBelongComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
+
+        !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
+            !checkBelongComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
         if (msg) { return msg }
         return null
     }

@@ -1,4 +1,5 @@
 import { IMAGE_URL } from "@/config/general";
+
 import Image from "next/image";
 import React from "react";
 

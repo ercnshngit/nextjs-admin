@@ -138,7 +138,7 @@ export class TableService {
     try {
       let new_result: any[] = [];
       const query =
-        "SELECT table_name as 'table_name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" +
+        "SELECT table_name as 'name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" +
         process.env.DB_NAME +
         "' GROUP BY table_name";
       console.log(query);
@@ -166,6 +166,44 @@ export class TableService {
       return new Response(JSON.stringify(new_result));
     } catch (error) {
       console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }));
+    }
+  }
+
+  async getConfigs() {
+    try {
+      const result = await prisma.database_table.findMany({
+        include: {
+          columns: {
+            include: {
+              type: true,
+              input_type: true,
+              create_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+              read_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+              update_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!result) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
+        );
+      }
+      return new Response(JSON.stringify(result));
+    } catch (error) {
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
@@ -225,10 +263,10 @@ export class TableService {
     }
   }
 
-  async updateTableConfig(id: number, data: DatabaseTableDto[]) {
+  async updateTableConfig(table_name: string, data: DatabaseTableDto[]) {
     try {
       const tableData = await prisma.database_table.findUnique({
-        where: { id: +id },
+        where: { name: table_name },
         include: {
           columns: {
             select: {

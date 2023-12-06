@@ -1,4 +1,11 @@
+import { prisma } from "@/libs/prisma";
+
 export class MenuFunctions {
+
+    async removeSpecialChars(text: string) {
+        return text.replace(/[^\w\s-]/g, '');
+    }
+
     async convertTurkishWords(text: string) {
         const turkishChars = 'çğıöşüÇĞİÖŞÜ ';
         const englishChars = 'cgiosuCGIOSU-';
@@ -16,8 +23,9 @@ export class MenuFunctions {
             }
         }
 
-        return result.toLowerCase();
+        return await this.removeSpecialChars(result.toLowerCase());
     }
+
 
     async slugCreator(value: string) {
         const tr = await this.convertTurkishWords(value);
@@ -27,5 +35,20 @@ export class MenuFunctions {
             .trim();
 
         return slug;
+    }
+
+    async checkMenuExist(menuId: number): Promise<boolean> {
+        const checkMenuExist = await prisma.menu.findUnique({ where: { id: menuId } });
+        return !!checkMenuExist;
+    }
+
+    async checkTypeExist(typeId: number): Promise<boolean> {
+        const checkTypeExist = await prisma.types.findUnique({ where: { id: typeId } });
+        return !!checkTypeExist;
+    }
+
+    async checkMenuBelongExist(menuBelongId: number): Promise<boolean> {
+        const checkMenuBelongExist = await prisma.menu.findMany({ where: { id: menuBelongId } });
+        return checkMenuBelongExist && checkMenuBelongExist.length > 0;
     }
 }

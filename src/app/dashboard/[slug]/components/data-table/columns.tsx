@@ -1,28 +1,13 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/datatable/header/datatable-sortable-header";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { IMAGE_URL, getDatabaseTable } from "@/config/general";
 import { translate } from "@/langs";
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  ArrowDownCircleIcon,
-  ArrowRightCircleIcon,
-  MoreHorizontal,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import ColumnCellFactory from "./column-cell-factory";
 import { DataTableRowActions } from "./components/data-table-row-actions";
+import { useDatabase } from "@/hooks/use-database";
+import { Column } from "@/types/config";
 
 export type ColumnDefWithName<TData> =
   | ColumnDef<TData>
@@ -30,7 +15,10 @@ export type ColumnDefWithName<TData> =
       name: string;
     };
 
-export const columns: (slug: string) => ColumnDefWithName<any>[] = (slug) => {
+export const columns: (
+  slug: string,
+  columns: Column[]
+) => ColumnDefWithName<any>[] = (slug, columns) => {
   return [
     {
       id: "select",
@@ -53,15 +41,13 @@ export const columns: (slug: string) => ColumnDefWithName<any>[] = (slug) => {
       enableSorting: false,
       enableHiding: false,
     },
-    ...(getDatabaseTable(slug)?.columns.map((tableColumn) => ({
+    ...(columns.map((tableColumn) => ({
       id: tableColumn.name,
       accessorKey: tableColumn.name,
       header: ({ column }: { column: any }) => (
         <DataTableColumnHeader
           column={column}
-          title={translate(
-            getDatabaseTable(slug)?.name + "/" + tableColumn.name
-          )}
+          title={translate(tableColumn.name + "/" + tableColumn.name)}
         />
       ),
       cell: ({ row }: { row: any }) => {
@@ -72,7 +58,7 @@ export const columns: (slug: string) => ColumnDefWithName<any>[] = (slug) => {
           />
         );
       },
-      ...(tableColumn.filterable
+      ...(tableColumn.is_filterable
         ? {
             filterFn: (row: any, id: any, value: any) => {
               return value?.includes(row.getValue(id));

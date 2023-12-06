@@ -16,7 +16,6 @@ import { BsFillTrashFill } from "react-icons/bs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteTableItem } from "@/services/panel";
 import { DELETE_TABLE_ITEM, UPDATE_TABLE_ITEM } from "@/types/panel";
-import { getDatabaseTable } from "@/config/general";
 import { toast } from "react-toastify";
 import DeleteItem from "@/components/delete-dialog";
 
@@ -29,7 +28,6 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  const table = getDatabaseTable(slug);
   const queryClient = useQueryClient();
   const deleteMutation = useMutation(
     (deleteData: DELETE_TABLE_ITEM) => deleteTableItem(deleteData),

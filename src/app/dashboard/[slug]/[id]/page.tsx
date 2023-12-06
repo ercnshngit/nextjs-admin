@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { DATABASE_TABLES, getDatabaseTable } from "@/config/general";
 import { translate } from "@/langs";
 import { getTableItem } from "@/services/panel";
 import { ArrowLeftIcon, PlusCircledIcon } from "@radix-ui/react-icons";
@@ -9,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
 import ColumnCellFactory from "../components/data-table/column-cell-factory";
+import { useDatabase } from "@/hooks/use-database";
 
 export default function MasrafContent({
   params,
@@ -16,7 +16,7 @@ export default function MasrafContent({
   params: { id: string; slug: string };
 }) {
   const { id, slug } = params;
-  const table = getDatabaseTable(slug);
+  const { table } = useDatabase(slug);
   const tableName = table?.name || "";
   const { data, error } = useQuery([tableName + "/" + id], () =>
     getTableItem({ tableName: tableName, id: Number(id) })
@@ -38,7 +38,7 @@ export default function MasrafContent({
             </span>
           </h2>
         </div>
-        {table?.canUpdate !== false && (
+        {table?.can_update !== false && (
           <div>
             <Button asChild>
               <Link href={"/" + tableName + "/" + id + "/update"}>

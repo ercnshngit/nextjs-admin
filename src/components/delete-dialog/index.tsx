@@ -15,11 +15,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { translate } from "@/langs";
-import { getDatabaseTable } from "@/config/general";
 import { deleteTableItem } from "@/services/panel";
 import { DELETE_TABLE_ITEM } from "@/types/panel";
 export default function DeleteItem({ open, setOpen, tableName, id }: any) {
-  const table = getDatabaseTable(tableName);
   const router = useRouter();
   const queryClient = useQueryClient();
   const deleteMutation = useMutation(

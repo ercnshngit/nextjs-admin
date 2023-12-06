@@ -1,4 +1,3 @@
-import { DATABASE_TABLE, getDatabaseTable } from "@/config/general";
 import { useAuth, useUser } from "@/hooks/useAuth";
 import { translate } from "@/langs";
 import React from "react";
@@ -6,11 +5,12 @@ import { FieldErrors, RegisterOptions, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "./form-input-factory";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
+import { Database_Table } from "@/types/config";
 
 export default function BaseForm(props: {
   handleSubmit: any;
   onSubmit: any;
-  table: DATABASE_TABLE;
+  table: Database_Table;
   errors: FieldErrors;
   register: UseFormRegister<any>;
   formType: "create" | "update";
@@ -46,7 +46,9 @@ export default function BaseForm(props: {
           {table?.columns &&
             table.columns
               .filter((field) =>
-                field[formType]?.hidden || field.hidden ? false : true
+                field.create_crud_option?.is_hidden || field.is_hidden
+                  ? false
+                  : true
               )
               .map((field) => (
                 <FormInputFactory
@@ -61,7 +63,7 @@ export default function BaseForm(props: {
                   setValue={setValue}
                   customInput={customInput}
                   control={control}
-                  defaultValue={field.default || ""}
+                  defaultValue={""}
                 />
               ))}
 
@@ -101,7 +103,7 @@ export default function BaseForm(props: {
   }: {
     handleSubmit: any;
     onSubmit: any;
-    table: DATABASE_TABLE;
+    table: Database_Table;
     errors: FieldErrors;
     register: UseFormRegister<any>;
     formType: "create" | "update";
@@ -114,8 +116,6 @@ export default function BaseForm(props: {
     watch?: any;
     control: any;
   }) {
-    const tableOptions = getDatabaseTable(table.name);
-
     const { data, error } = useQuery([table.name + "/" + id], () =>
       getTableItem({ tableName: table.name, id: Number(id) })
     );
@@ -130,7 +130,9 @@ export default function BaseForm(props: {
           data &&
           table.columns
             .filter((field) =>
-              field[formType]?.hidden || field.hidden ? false : true
+              field.update_crud_option?.is_hidden || field.is_hidden
+                ? false
+                : true
             )
             .map((field) => (
               <FormInputFactory
