@@ -4,17 +4,17 @@ import {
   getTablesConfigs,
   getTablesStructure,
 } from "@/services/dashboard";
-import { Column, Database_Table } from "@/types/config";
 import { database_table, database_table_column } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React from "react";
 
 export function useDatabase(table_name?: string) {
   const {
     data: tables,
     isLoading,
     error,
-  } = useQuery<Database_Table[]>(["tables"], () => getTablesStructure());
+  } = useQuery<
+    { id: number; name: string; columns: { name: string; type: string }[] }[]
+  >(["tables"], () => getTablesStructure());
 
   const { data: configs } = useQuery<
     (database_table & { columns: database_table_column[] })[]

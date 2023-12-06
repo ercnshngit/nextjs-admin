@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function Text({
+export function Title({
   className,
   value,
 }: {
@@ -8,7 +8,7 @@ export function Text({
   value: string;
 }) {
   return (
-    <div className={cn("font-bold", className)}>
+    <div className={cn("font-bold text-xl", className)}>
       {value || "Üzerine tıklayarak düzenleyebilirsiniz"}
     </div>
   );

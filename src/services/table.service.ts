@@ -90,7 +90,7 @@ export class TableService {
         table_name,
         where
       );
-      const table = await prisma.$queryRaw`${query}`;
+      const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
         return new Response(
           JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
