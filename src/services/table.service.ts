@@ -21,44 +21,59 @@ export class TableService {
   }
 
   async getTableById(table_name: string, id: number) {
-    const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
-    const table = await prisma.$queryRaw`${query}`;
-    if (!table) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-      );
+    try {
+        console.log(id)
+        if (typeof id === "number") {
+            // do something
+            return new Response(
+                JSON.stringify({ message: "id değeri girilmedi." })
+              );
+        }
+        const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
+        const table = await prisma.$queryRawUnsafe(`${query}`);
+        if (!table) {
+          return new Response(
+            JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
+          );
+        }
+        return new Response(JSON.stringify(table));
+    } catch (error) {
+        return new Response(JSON.stringify({ status: "error", message: error }));
     }
-    return new Response(JSON.stringify(table));
+    
   }
 
   async createTable(table_name: string, data: any) {
     try {
-      let columns = " (";
-      let values = " (";
-      data.forEach((element: { key: string; value: string }) => {
-        columns += element.key + ", ";
-        values += "'" + element.value + "', ";
-      });
-      columns = columns.substring(0, columns.length - 2) + ") ";
-      values = values.substring(0, values.length - 2) + ") ";
+        let columns = " (";
+        let values = " (";
+        data.forEach((element: { key: string; value: string }) => {
+          columns += element.key + ", ";
+          values += "'" + element.value + "', ";
+        });
+        columns = columns.substring(0, columns.length - 2) + ") ";
+        values = values.substring(0, values.length - 2) + ") ";
 
-      const query =
-        SqlConstants.INSERT_INTO +
-        table_name +
-        columns +
-        SqlConstants.VALUES +
-        values;
-      const table = await prisma.$queryRawUnsafe(`${query}`);
-      if (!table) {
-        return new Response(
-          JSON.stringify({
-            message: ErrorMessages.TABLE_CANNOT_CREATED_ERROR(),
-          })
-        );
-      }
-      return new Response(JSON.stringify(table));
+        const query =
+          SqlConstants.INSERT_INTO +
+          table_name +
+          columns +
+          SqlConstants.VALUES +
+          values;
+        console.log(query);
+        const table = await prisma.$queryRawUnsafe(`${query}`);
+        console.log(table);
+        if (!table) {
+          return new Response(
+            JSON.stringify({
+              message: ErrorMessages.TABLE_CANNOT_CREATED_ERROR(),
+            })
+          );
+        }
+        return new Response(JSON.stringify(table));
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+        console.log(error)
+        return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
 
@@ -161,6 +176,20 @@ export class TableService {
         include: {
           columns: {
             include: {
+              column_relations : {
+                include : {
+                  referenced_table : {
+                    select : {
+                      name : true,
+                    }
+                  },
+                  pivot_table : {
+                    select : {
+                      name : true,
+                    }
+                  }
+                }
+              },
               type: true,
               input_type: true,
               create_crud_option: {
@@ -202,6 +231,20 @@ export class TableService {
         include: {
           columns: {
             include: {
+              column_relations : {
+                include : {
+                  referenced_table : {
+                    select : {
+                      name : true,
+                    }
+                  },
+                  pivot_table : {
+                    select : {
+                      name : true,
+                    }
+                  }
+                }
+              },
               type: true,
               input_type: true,
               create_crud_option: {
