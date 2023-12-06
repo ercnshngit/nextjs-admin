@@ -155,6 +155,44 @@ export class TableService {
     }
   }
 
+  async getConfigs() {
+    try {
+      const result = await prisma.database_table.findMany({
+        include: {
+          columns: {
+            include: {
+              type: true,
+              input_type: true,
+              create_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+              read_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+              update_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!result) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
+        );
+      }
+      return new Response(JSON.stringify(result));
+    } catch (error) {
+      return new Response(JSON.stringify({ status: "error", message: error }));
+    }
+  }
+
   async getTableConfig(table_name: string) {
     try {
       const result = await prisma.database_table.findMany({
@@ -196,10 +234,10 @@ export class TableService {
     }
   }
 
-  async updateTableConfig(id: number, data: DatabaseTableDto[]) {
+  async updateTableConfig(table_name: string, data: DatabaseTableDto[]) {
     try {
       const tableData = await prisma.database_table.findUnique({
-        where: { id: +id },
+        where: { name: table_name },
         include: {
           columns: {
             select: {
