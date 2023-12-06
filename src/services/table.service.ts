@@ -176,6 +176,20 @@ export class TableService {
         include: {
           columns: {
             include: {
+              column_relations : {
+                include : {
+                  referenced_table : {
+                    select : {
+                      name : true,
+                    }
+                  },
+                  pivot_table : {
+                    select : {
+                      name : true,
+                    }
+                  }
+                }
+              },
               type: true,
               input_type: true,
               create_crud_option: {
