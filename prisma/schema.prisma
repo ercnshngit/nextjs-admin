@@ -9,12 +9,12 @@ datasource db {
 }
 
 model database_table {
-  id         Int     @id @default(autoincrement())
-  name       String  @unique
-  icon       String
-  is_hidden  Boolean
-  can_create Boolean
-  can_update Boolean
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  icon       String?
+  is_hidden  Boolean? @default(false)
+  can_create Boolean? @default(false)
+  can_update Boolean? @default(false)
 
   column_relations            column_relation[]       @relation("fk_cr_table_id")
   columns                     database_table_column[] @relation("fk_dbtc_table_id")
@@ -25,18 +25,18 @@ model database_table {
 }
 
 model database_table_column {
-  id                    Int     @id @default(autoincrement())
+  id                    Int      @id @default(autoincrement())
   name                  String
   table_id              Int
-  type_id               Int
-  is_primary            Boolean
-  is_required           Boolean
-  is_unique             Boolean
-  is_hidden             Boolean
-  is_filterable         Boolean
-  is_searchable         Boolean
-  is_sortable           Boolean
-  input_type_id         Int
+  type_id               Int?
+  is_primary            Boolean? @default(false)
+  is_required           Boolean? @default(false)
+  is_unique             Boolean? @default(false)
+  is_hidden             Boolean? @default(false)
+  is_filterable         Boolean? @default(false)
+  is_searchable         Boolean? @default(false)
+  is_sortable           Boolean? @default(false)
+  input_type_id         Int?
   create_crud_option_id Int?
   update_crud_option_id Int?
   read_crud_option_id   Int?
@@ -72,10 +72,12 @@ model data_type {
   name             String
   type_category_id Int
 
-  crud_option       crud_option[]           @relation("fk_co_input_type_id")
-  column_relation   column_relation[]       @relation("fk_cr_relation_type_id")
-  column_type       database_table_column[] @relation("fk_dbtc_type_id")
-  column_input_type database_table_column[] @relation("fk_dbtc_input_type_id")
+  crud_option_input_type crud_option[]           @relation("fk_co_input_type_id")
+  column_relation        column_relation[]       @relation("fk_cr_relation_type_id")
+  column_type            database_table_column[] @relation("fk_dbtc_type_id")
+  column_input_type      database_table_column[] @relation("fk_dbtc_input_type_id")
+
+  @@unique([name, type_category_id], name: "ui_name_type_category_id")
 }
 
 model column_relation {

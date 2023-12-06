@@ -6,6 +6,8 @@ import {
 } from "../../constants/messages.constants";
 import { config } from "dotenv";
 import { DatabaseTableDto } from "./dto/database-table.dto";
+import { Input } from "@/components/ui/input";
+import { InputTypes, TypeCategories } from "../../constants/types.constants";
 
 config();
 export class TableService {
@@ -170,6 +172,62 @@ export class TableService {
     }
   }
 
+  async getTableWithDatas(table_name: string) { 
+    try {
+      let new_result: any[] = [];
+      const query =
+        "SELECT table_name as 'name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" +
+        process.env.DB_NAME +
+        "' AND table_name = '" +
+        table_name +
+        "' GROUP BY table_name";
+      const result = await prisma.$queryRawUnsafe(query);
+      Object.assign(new_result, result);
+      new_result.forEach((element) => {
+        element.columns = JSON.parse(element.columns);
+        element.columns.forEach(
+          (table_element: { [x: string]: string; type: string }) => {
+            const type = table_element.type;
+            // Veri Kontrolü ve dönüşüm alanı
+            if (["int", "bigint", "tinyint"].includes(type)) {
+              if(type == "tinyint"){
+                table_element["input_type_id"] = InputTypes.TINYINT.toString();
+              }else if(type == "int"){
+                table_element["input_type_id"] = InputTypes.INT.toString();
+              }else if(type == "bigint"){
+                table_element["input_type_id"] = InputTypes.BIGINT.toString();
+              }
+              table_element.type = "number";
+            } else if (["varchar", "datetime"].includes(type)) {
+              if(type == "varchar"){
+                table_element["input_type_id"] = InputTypes.VARCHAR.toString();
+              }else if(type == "datetime"){
+                table_element["input_type_id"] = InputTypes.INT.toString();
+              }
+              table_element.type = "string";
+            } else if (["text", "long"].includes(type)) {
+              table_element.type = "string";
+              table_element["inputType"] = "textarea";
+            } else if (["date"].includes(type)) {
+              table_element.type = "string";
+              table_element["input_type_id"] = InputTypes.DATE.toString();
+              table_element["inputType"] = "date";
+            }else if (["boolean"].includes(type)) {
+              table_element.type = "boolean";
+              table_element["input_type_id"] = InputTypes.BOOLEAN.toString();
+              table_element["inputType"] = "checkbox";
+            }
+            // ------------------------------
+          }
+        );
+      });
+      return new_result;
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }));
+    }
+  }
+
   async getConfigs() {
     try {
       const result = await prisma.database_table.findMany({
@@ -325,6 +383,7 @@ export class TableService {
 
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
+        
         data: {
           name: tableData.name,
           icon: tableData.icon,
@@ -381,6 +440,48 @@ export class TableService {
           message: ConfirmMessages.TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM(),
         })
       );
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }));
+    }
+  }
+
+  async createTableConfig(table_name : string){
+    try {
+      const tableData = await this.getTableWithDatas(table_name);
+      if(tableData instanceof Response){
+        return tableData;
+      }
+      const table = tableData[0];
+      console.log(table.columns)
+      const result = await prisma.database_table.create({
+        include: {
+          columns: {
+            include : {
+              type: true,
+              input_type: true,
+            }
+          }
+        },
+        data: {
+          name: table.name,
+          columns: {
+            create: table.columns.map((column :any) => ({
+              name: column.name,
+              input_type : {
+                connect:{
+                  ui_name_type_category_id :{
+                    name : InputTypes.INPUT_TYPES.filter((inputType) => inputType.id == column.input_type_id)[0].name,
+                    type_category_id : TypeCategories.INPUT_TYPE
+                  }
+                },
+              }
+            })),
+          },
+        },
+      });
+      console.log(table)
+      return new Response(JSON.stringify(tableData));
     } catch (error) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
