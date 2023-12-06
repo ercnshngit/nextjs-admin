@@ -9,7 +9,7 @@ import { useDatabase } from "@/hooks/use-database";
 
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
-  const { tables } = useDatabase();
+  const { configs } = useDatabase();
   return (
     <div className={cn("pb-12", className)}>
       <div className="py-4 space-y-4">
@@ -21,8 +21,8 @@ export function Sidebar({ className }: { className?: string }) {
             Tablolar
           </h2>
           <div className="flex flex-col space-y-1">
-            {tables
-              .filter((item) => !item.is_hidden)
+            {configs
+              ?.filter((item) => !item.is_hidden)
               .map((item) => (
                 <Button
                   asChild
