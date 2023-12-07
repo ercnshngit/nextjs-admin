@@ -1,6 +1,12 @@
 
 export class ErrorMessages {
 
+   static NOT_FOUND_ERROR() {
+      return {
+         TR: "Bulunamadı.",
+         EN: "Not found."
+      }
+   }
    static MENU_BELONG_DELETE_ERROR() {
       return {
          TR: "Bu menüye ait alt menüler bulunmaktadır. Lütfen önce alt menüleri siliniz.",

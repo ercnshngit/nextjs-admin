@@ -114,7 +114,7 @@ model types {
   id            Int     @id @default(autoincrement())
   name          String
   table_id      Int?
-  language_code String? @map("langueage_code")
+  language_code String?
 
   data_type data_type[]     @relation("fk_type_data_type_id") //one to many
   table     database_table? @relation("fk_type_table_id", fields: [table_id], references: [id], map: "fk_type_table_id") //many to one
