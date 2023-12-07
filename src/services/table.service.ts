@@ -208,6 +208,7 @@ export class TableService {
             } else if (["text", "long"].includes(type)) {
               table_element.type = "string";
               table_element["inputType"] = "textarea";
+              table_element["input_type_id"] = InputTypes.TEXT.toString();
             } else if (["date"].includes(type)) {
               table_element.type = "string";
               table_element["input_type_id"] = InputTypes.DATE.toString();
@@ -335,7 +336,7 @@ export class TableService {
     }
   }
 
-  async updateTableConfig(table_name: string, data: DatabaseTableDto[]) {
+  async updateTableConfig(table_name: string, data: DatabaseTableDto) {
     try {
       const tableData = await prisma.database_table.findUnique({
         where: { name: table_name },
@@ -370,20 +371,13 @@ export class TableService {
           JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
         );
       }
-      if (!data[0]) {
-        return new Response(JSON.stringify({ message: "ss" }));
+      if (!data) {
+        return new Response(JSON.stringify({ message: "Data boş geldi." }));
       }
-      if (!data[0].columns) {
-        return new Response(JSON.stringify({ message: "ss" }));
-      }
-      if (!tableData.columns) {
-        return new Response(JSON.stringify({ message: "ss" }));
-      }
-      Object.assign(tableData, data[0]);
+      Object.assign(tableData, data);
 
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
-        
         data: {
           name: tableData.name,
           icon: tableData.icon,
@@ -427,7 +421,27 @@ export class TableService {
           },
         },
         include: {
-          columns: true,
+          columns: {
+            include: {
+              type: true,
+              input_type: true,
+              create_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+              read_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+              update_crud_option: {
+                include: {
+                  InputType: true,
+                },
+              },
+            },
+          },
         },
       });
       if (!result) {
