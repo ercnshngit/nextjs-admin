@@ -177,7 +177,7 @@ model block_component {
   belong_component_id Int?
   depth               Int
   order               Int
-  code                String?
+  code                String  @unique
   hasChildren         Boolean @default(false)
 
   component        component? @relation("fk_bcom_component_id", fields: [component_id], references: [id], map: "fk_bcom_component_id") //many to one

@@ -1,6 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { BlockComponentDto, CreateBlockComponentDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
+import { BlockComponentDto, CreateBlockComponentDto, CreateBlockComponentsDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
 
 export class BlockComponentService {
     async getBlockComponent(id: number) {
@@ -55,34 +55,45 @@ export class BlockComponentService {
         }
     }
 
-    async createBlockComponent(data: CreateBlockComponentDto) {
+    async createBlockComponent(data: CreateBlockComponentsDto) {
         try {
             let results: any = [];
             for (let i = 0; i < data.block_components.length; i++) {
                 const msg = await this.checkBlockComponents(data.block_components[i], 'create')
                 if (msg) { return new Response(JSON.stringify({ message: msg })); }
-                const component = await prisma.component.create({
-                    data: {
-                        name: data.block_components[i].component.name,
-                        tag_id: data.block_components[i].component.tag_id,
-                        type_id: data.block_components[i].component.type_id,
-                        icon: data.block_components[i].component.icon
-                    }
-                })
 
                 let block = data.block_components[i].block;
                 if (data.block_components[i].block.id && !(await prisma.block.findUnique({ where: { id: data.block_components[i].block.id } })) || !data.block_components[i].block.id) {
                     block = await prisma.block.create({
                         data: {
+                            id: block.id,
                             title: data.block_components[i].block.title,
                             type_id: data.block_components[i].block.type_id,
                         }
                     })
                 }
 
-                const block_component = await prisma.block_component.create({
+                await prisma.block.update({
+                    where: { id: block.id },
                     data: {
-                        component_id: component.id,
+                        title: data.block_components[i].block.title,
+                        type_id: data.block_components[i].block.type_id,
+                    }
+                })
+
+                const block_component = await prisma.block_component.upsert({
+                    where: { code: data.block_components[i].code },
+                    update: {
+                        component_id: data.block_components[i].component_id,
+                        block_id: block.id,
+                        belong_component_id: data.block_components[i].belong_component_id,
+                        depth: data.block_components[i].depth,
+                        order: data.block_components[i].order,
+                        code: data.block_components[i].code,
+                        hasChildren: data.block_components[i].hasChildren
+                    },
+                    create: {
+                        component_id: data.block_components[i].component_id,
                         block_id: block.id,
                         belong_component_id: data.block_components[i].belong_component_id,
                         depth: data.block_components[i].depth,
@@ -112,12 +123,14 @@ export class BlockComponentService {
                     }
                 }
 
+                const component = await prisma.component.findUnique({ where: { id: block_component.component_id } });
+
                 const result = {
                     id: block_component.id,
-                    name: component.name,
-                    tag_id: component.tag_id,
-                    type_id: component.type_id,
-                    icon: component.icon,
+                    name: component?.name,
+                    tag_id: component?.tag_id,
+                    type_id: component?.type_id,
+                    icon: component?.icon,
                     depth: block_component.depth,
                     order: block_component.order,
                     belong_component_id: block_component.belong_component_id,
@@ -184,11 +197,11 @@ export class BlockComponentService {
         }
     }
 
-    async checkBlockComponents(data: BlockComponentDto, code?: string) {
+    async checkBlockComponents(data: CreateBlockComponentDto, code?: string) {
         let msg = '';
         let checkComponent: any = 'null', checkBelongComponent: any = 'null';
 
-        if (code == undefined && data.component.id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component.id } }) }
+        if (code == undefined && data.component_id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component_id } }) }
         if (data.belong_component_id != undefined) { checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
 
         !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :

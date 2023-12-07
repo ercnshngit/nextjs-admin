@@ -5,7 +5,7 @@ import {
   useDesigner,
 } from "@/contexts/designer-context";
 import { createComponentsInBlock, getComponents } from "@/services/dashboard";
-import { CreateBlockComponentDto } from "@/services/dto/block_component.dto";
+import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
 
@@ -23,14 +23,14 @@ export default function BuilderPage({
   const { elements } = useDesigner();
 
   const createBlocks = useMutation(
-    (data: CreateBlockComponentDto) => createComponentsInBlock({ data: data }),
+    (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
     {
-      onSuccess: async () => {},
+      onSuccess: async () => { },
     }
   );
 
   const handleSave = async () => {
-    const data: CreateBlockComponentDto = {
+    const data: CreateBlockComponentsDto = {
       block_components: elements.map((el) => ({
         component: {
           id: el.component.id,
