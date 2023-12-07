@@ -22,9 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
-import { getTableInputTypes } from "@/services/dashboard";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getTableInputTypes, updateTableConfig } from "@/services/dashboard";
 import { data_type } from "@prisma/client";
+import { toast } from "react-toastify";
 export default function TableConfig({
   params,
 }: {
@@ -92,8 +93,33 @@ export default function TableConfig({
     name: "columns",
   });
 
-  const onSubmit: SubmitHandler<typeof initialValues> = (data) =>
+  const queryClient = useQueryClient();
+  const updateConfig = useMutation(
+    (data: any) => {
+      return updateTableConfig({
+        data: data,
+        table_name: data.name,
+      });
+    },
+    {
+      onSuccess: () => {
+        toast.success("Tablo oluşturuldu");
+        queryClient.invalidateQueries(["configs"]);
+      },
+    }
+  );
+
+  const onSubmit: SubmitHandler<typeof initialValues> = (data) => {
     console.log(data);
+
+    const tempData = {
+      ...data,
+      create_crud_option_id: null,
+      read_crud_option_id: null,
+      update_crud_option_id: null,
+    };
+    updateConfig.mutate(tempData);
+  };
 
   return (
     <Form {...form}>

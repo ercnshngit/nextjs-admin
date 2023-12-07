@@ -10,11 +10,6 @@ export const getTablesConfigs = async () => {
   return data;
 };
 
-export const createTableConfig = async (data: any) => {
-  const res = await axiosClient.post("/config", data);
-  return res;
-};
-
 export const getTableInputTypes = async () => {
   const { data } = await axiosClient.get("/input-types");
   return data;
@@ -27,5 +22,21 @@ export const getComponents = async () => {
 
 export const createComponentsInBlock = async ({ data }: any) => {
   const res = await axiosClient.post("/block/component", data);
+  return res;
+};
+
+export const createTableConfig = async ({ table_name }: any) => {
+  const { data } = await axiosClient.get(`/table/${table_name}/config/create`);
+  return data;
+};
+
+export const updateTableConfig = async ({
+  table_name,
+  data,
+}: {
+  table_name: string;
+  data: any;
+}) => {
+  const res = await axiosClient.post(`/table/${table_name}/config`, data);
   return res;
 };
