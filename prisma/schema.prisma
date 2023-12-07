@@ -16,6 +16,7 @@ model database_table {
   can_create Boolean? @default(false)
   can_update Boolean? @default(false)
 
+  types                       types[]                 @relation("fk_type_table_id")
   column_relations            column_relation[]       @relation("fk_cr_table_id")
   columns                     database_table_column[] @relation("fk_dbtc_table_id")
   referenced_column_relations column_relation[]       @relation("fk_cr_referenced_table_id")
@@ -68,16 +69,17 @@ model crud_option {
 }
 
 model data_type {
-  id               Int    @id @default(autoincrement())
-  name             String
-  type_category_id Int
+  id      Int    @id @default(autoincrement())
+  name    String
+  type_id Int    @map("type_id")
 
+  types                  types?                  @relation("fk_type_data_type_id", fields: [type_id], references: [id], map: "fk_type_data_type_id")
   crud_option_input_type crud_option[]           @relation("fk_co_input_type_id")
   column_relation        column_relation[]       @relation("fk_cr_relation_type_id")
   column_type            database_table_column[] @relation("fk_dbtc_type_id")
   column_input_type      database_table_column[] @relation("fk_dbtc_input_type_id")
 
-  @@unique([name, type_category_id], name: "ui_name_type_category_id")
+  @@unique([name, type_id], name: "ui_name_type_id")
 }
 
 model column_relation {
@@ -111,14 +113,16 @@ model column_option {
 model types {
   id            Int     @id @default(autoincrement())
   name          String
-  table_name    String
+  table_id      Int?
   language_code String? @map("langueage_code")
 
-  menu      menu[]      @relation("fk_menu_type_id") //one to many
-  block     block[]     @relation("fk_bk_type_id") //one to many
-  component component[] @relation("fk_comp_type_id") //one to many
-  prop      prop[]      @relation("fk_prop_type_id") //one to many
-  language  language?   @relation("fk_type_language_code", fields: [language_code], references: [code], map: "fk_type_language_code")
+  data_type data_type[]     @relation("fk_type_data_type_id") //one to many
+  table     database_table? @relation("fk_type_table_id", fields: [table_id], references: [id], map: "fk_type_table_id") //many to one
+  menu      menu[]          @relation("fk_menu_type_id") //one to many
+  block     block[]         @relation("fk_bk_type_id") //one to many
+  component component[]     @relation("fk_comp_type_id") //one to many
+  prop      prop[]          @relation("fk_prop_type_id") //one to many
+  language  language?       @relation("fk_type_language_code", fields: [language_code], references: [code], map: "fk_type_language_code")
 }
 
 model tag {

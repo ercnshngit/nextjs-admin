@@ -24,58 +24,58 @@ export class TableService {
 
   async getTableById(table_name: string, id: number) {
     try {
-        console.log(id)
-        if (typeof id === "number") {
-            // do something
-            return new Response(
-                JSON.stringify({ message: "id değeri girilmedi." })
-              );
-        }
-        const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
-        const table = await prisma.$queryRawUnsafe(`${query}`);
-        if (!table) {
-          return new Response(
-            JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-          );
-        }
-        return new Response(JSON.stringify(table));
+      console.log(id)
+      if (typeof id === "number") {
+        // do something
+        return new Response(
+          JSON.stringify({ message: "id değeri girilmedi." })
+        );
+      }
+      const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
+      const table = await prisma.$queryRawUnsafe(`${query}`);
+      if (!table) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
+        );
+      }
+      return new Response(JSON.stringify(table));
     } catch (error) {
-        return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }));
     }
-    
+
   }
 
   async createTable(table_name: string, data: any) {
     try {
-        let columns = " (";
-        let values = " (";
-        data.forEach((element: { key: string; value: string }) => {
-          columns += element.key + ", ";
-          values += "'" + element.value + "', ";
-        });
-        columns = columns.substring(0, columns.length - 2) + ") ";
-        values = values.substring(0, values.length - 2) + ") ";
+      let columns = " (";
+      let values = " (";
+      data.forEach((element: { key: string; value: string }) => {
+        columns += element.key + ", ";
+        values += "'" + element.value + "', ";
+      });
+      columns = columns.substring(0, columns.length - 2) + ") ";
+      values = values.substring(0, values.length - 2) + ") ";
 
-        const query =
-          SqlConstants.INSERT_INTO +
-          table_name +
-          columns +
-          SqlConstants.VALUES +
-          values;
-        console.log(query);
-        const table = await prisma.$queryRawUnsafe(`${query}`);
-        console.log(table);
-        if (!table) {
-          return new Response(
-            JSON.stringify({
-              message: ErrorMessages.TABLE_CANNOT_CREATED_ERROR(),
-            })
-          );
-        }
-        return new Response(JSON.stringify(table));
+      const query =
+        SqlConstants.INSERT_INTO +
+        table_name +
+        columns +
+        SqlConstants.VALUES +
+        values;
+      console.log(query);
+      const table = await prisma.$queryRawUnsafe(`${query}`);
+      console.log(table);
+      if (!table) {
+        return new Response(
+          JSON.stringify({
+            message: ErrorMessages.TABLE_CANNOT_CREATED_ERROR(),
+          })
+        );
+      }
+      return new Response(JSON.stringify(table));
     } catch (error) {
-        console.log(error)
-        return new Response(JSON.stringify({ status: "error", message: error }));
+      console.log(error)
+      return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
 
@@ -172,7 +172,7 @@ export class TableService {
     }
   }
 
-  async getTableWithDatas(table_name: string) { 
+  async getTableWithDatas(table_name: string) {
     try {
       let new_result: any[] = [];
       const query =
@@ -190,18 +190,18 @@ export class TableService {
             const type = table_element.type;
             // Veri Kontrolü ve dönüşüm alanı
             if (["int", "bigint", "tinyint"].includes(type)) {
-              if(type == "tinyint"){
+              if (type == "tinyint") {
                 table_element["input_type_id"] = InputTypes.TINYINT.toString();
-              }else if(type == "int"){
+              } else if (type == "int") {
                 table_element["input_type_id"] = InputTypes.INT.toString();
-              }else if(type == "bigint"){
+              } else if (type == "bigint") {
                 table_element["input_type_id"] = InputTypes.BIGINT.toString();
               }
               table_element.type = "number";
             } else if (["varchar", "datetime"].includes(type)) {
-              if(type == "varchar"){
+              if (type == "varchar") {
                 table_element["input_type_id"] = InputTypes.VARCHAR.toString();
-              }else if(type == "datetime"){
+              } else if (type == "datetime") {
                 table_element["input_type_id"] = InputTypes.INT.toString();
               }
               table_element.type = "string";
@@ -212,7 +212,7 @@ export class TableService {
               table_element.type = "string";
               table_element["input_type_id"] = InputTypes.DATE.toString();
               table_element["inputType"] = "date";
-            }else if (["boolean"].includes(type)) {
+            } else if (["boolean"].includes(type)) {
               table_element.type = "boolean";
               table_element["input_type_id"] = InputTypes.BOOLEAN.toString();
               table_element["inputType"] = "checkbox";
@@ -234,16 +234,16 @@ export class TableService {
         include: {
           columns: {
             include: {
-              column_relations : {
-                include : {
-                  referenced_table : {
-                    select : {
-                      name : true,
+              column_relations: {
+                include: {
+                  referenced_table: {
+                    select: {
+                      name: true,
                     }
                   },
-                  pivot_table : {
-                    select : {
-                      name : true,
+                  pivot_table: {
+                    select: {
+                      name: true,
                     }
                   }
                 }
@@ -289,16 +289,16 @@ export class TableService {
         include: {
           columns: {
             include: {
-              column_relations : {
-                include : {
-                  referenced_table : {
-                    select : {
-                      name : true,
+              column_relations: {
+                include: {
+                  referenced_table: {
+                    select: {
+                      name: true,
                     }
                   },
-                  pivot_table : {
-                    select : {
-                      name : true,
+                  pivot_table: {
+                    select: {
+                      name: true,
                     }
                   }
                 }
@@ -383,7 +383,7 @@ export class TableService {
 
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
-        
+
         data: {
           name: tableData.name,
           icon: tableData.icon,
@@ -446,10 +446,10 @@ export class TableService {
     }
   }
 
-  async createTableConfig(table_name : string){
+  async createTableConfig(table_name: string) {
     try {
       const tableData = await this.getTableWithDatas(table_name);
-      if(tableData instanceof Response){
+      if (tableData instanceof Response) {
         return tableData;
       }
       const table = tableData[0];
@@ -457,7 +457,7 @@ export class TableService {
       const result = await prisma.database_table.create({
         include: {
           columns: {
-            include : {
+            include: {
               type: true,
               input_type: true,
             }
@@ -466,13 +466,13 @@ export class TableService {
         data: {
           name: table.name,
           columns: {
-            create: table.columns.map((column :any) => ({
+            create: table.columns.map((column: any) => ({
               name: column.name,
-              input_type : {
-                connect:{
-                  ui_name_type_category_id :{
-                    name : InputTypes.INPUT_TYPES.filter((inputType) => inputType.id == column.input_type_id)[0].name,
-                    type_category_id : TypeCategories.INPUT_TYPE
+              input_type: {
+                connect: {
+                  ui_name_type_id: {
+                    name: InputTypes.INPUT_TYPES.filter((inputType) => inputType.id == column.input_type_id)[0].name,
+                    type_id: TypeCategories.INPUT_TYPE
                   }
                 },
               }

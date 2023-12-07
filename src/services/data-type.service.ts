@@ -1,25 +1,25 @@
 import { prisma } from "@/libs/prisma";
 import { TypeJsons } from "../../constants/types.constants";
 
-export class DataTypeService{
+export class DataTypeService {
 
     // TypeJsonda kaydedılmıs input_type lerini varsa pas gecıyor yoksa insertliyor
-    async setInputDataTypes(){
+    async setInputDataTypes() {
         try {
             let input_types = [] as any
             TypeJsons.INPUT_TYPES.forEach(async element => {
                 const result = await prisma.data_type.upsert({
-                    where : { 
-                        ui_name_type_category_id : {
-                            name : element.name,
-                            type_category_id : element.type_category_id
+                    where: {
+                        ui_name_type_id: {
+                            name: element.name,
+                            type_id: element.type_id
                         }
                     },
-                    create : {
-                            name: element.name,
-                            type_category_id: element.type_category_id == undefined ? 1 : element.type_category_id
+                    create: {
+                        name: element.name,
+                        type_id: element.type_id == undefined ? 1 : element.type_id
                     },
-                    update : {}
+                    update: {}
                 })
                 input_types.push(result)
             });

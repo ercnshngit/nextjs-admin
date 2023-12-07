@@ -44,13 +44,13 @@ export interface Column {
 export interface Type {
   id: number;
   name: string;
-  type_category_id: number;
+  type_id: number;
 }
 
 export interface InputType {
   id: number;
   name: string;
-  type_category_id: number;
+  type_id: number;
 }
 
 export interface CrudOption {
@@ -64,5 +64,5 @@ export interface CrudOption {
 export interface DataTypeDto {
   id: number;
   name: string;
-  type_category_id: number;
+  type_id: number;
 }

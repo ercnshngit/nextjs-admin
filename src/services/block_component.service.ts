@@ -1,6 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { BlockComponentDto, CreateBlockComponentDto, CreateBlockComponentsDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
+import { CreateBlockComponentDto, CreateBlockComponentsDto, UpdateBlockComponentDto } from "./dto/block_component.dto";
 
 export class BlockComponentService {
     async getBlockComponent(id: number) {
@@ -167,6 +167,7 @@ export class BlockComponentService {
                 !check_block ? msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en :
                     !check_belong_component ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
 
+
             if (msg) { return new Response(JSON.stringify({ message: msg })); }
             const update = await prisma.block_component.update({ where: { id }, data })
             if (!update) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })); }
@@ -199,11 +200,16 @@ export class BlockComponentService {
 
     async checkBlockComponents(data: CreateBlockComponentDto, code?: string) {
         let msg = '';
-        let checkComponent: any = 'null', checkBelongComponent: any = 'null';
+        let checkComponent: any = 'null', checkBelongComponent: any = 'null', checkBlock: any = 'null';
 
         if (code == undefined && data.component_id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component_id } }) }
         if (data.belong_component_id != undefined) { checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
-
+        if (data.block) {
+            if (data.block.id != undefined) {
+                checkBlock = await prisma.block.findUnique({ where: { id: data.block.id } });
+                if (!checkBlock) { msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en }
+            }
+        }
         !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
             !checkBelongComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
         if (msg) { return msg }
