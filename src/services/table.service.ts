@@ -11,6 +11,17 @@ import { InputTypes, TypeCategories } from "../../constants/types.constants";
 
 config();
 export class TableService {
+
+  async getTableNames(){
+    try {
+      const tableNames = await prisma.$queryRawUnsafe(`SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.DB_NAME}'`);
+      return tableNames;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  }
+
   async getTable(table_name: string) {
     const query = `SELECT * FROM ${table_name}`;
     const table = await prisma.$queryRawUnsafe(`${query}`);
@@ -460,45 +471,62 @@ export class TableService {
     }
   }
 
-  async createTableConfig(table_name: string) {
+  async createTableConfig() {
+    let tableConifgs = [] as any[];
     try {
-      const tableData = await this.getTableWithDatas(table_name);
-      if (tableData instanceof Response) {
-        return tableData;
+      const tableNames = await this.getTableNames();
+      if(!tableNames){
+        return new Response(JSON.stringify({ message: "Tablo mevcut değil." }));
       }
-      const table = tableData[0];
-      console.log(table.columns);
-      const result = await prisma.database_table.create({
-        include: {
-          columns: {
+      const tableNamesArray = Object.values(tableNames);
+      tableNamesArray.forEach(async element => {
+        if(element.table_name == undefined || element.table_name == "_prisma_migrations"){ // prismanın migration tablosunu almasın dıye
+          return;
+        }
+        const tableData = await this.getTableWithDatas(element.table_name);
+        if (tableData instanceof Response) { // response donerse eger onu return et.
+          return tableData;
+        }
+        const table = tableData[0];
+        try {
+          const result = await prisma.database_table.create({
             include: {
-              type: true,
-              input_type: true,
-            },
-          },
-        },
-        data: {
-          name: table.name,
-          columns: {
-            create: table.columns.map((column: any) => ({
-              name: column.name,
-              input_type: {
-                connect: {
-                  ui_name_type_category_id: {
-                    name: InputTypes.INPUT_TYPES.filter(
-                      (inputType) => inputType.id == column.input_type_id
-                    )[0].name,
-                    type_category_id: TypeCategories.INPUT_TYPE,
-                  },
+              columns: {
+                include: {
+                  type: true,
+                  input_type: true,
                 },
               },
-            })),
-          },
-        },
+            },
+            data: {
+              name: table.name,
+              columns: {
+                create: table.columns.map((column: any) => ({
+                  name: column.name,
+                  input_type: {
+                    connect: {
+                      ui_name_type_id: {
+                        name: InputTypes.INPUT_TYPES.filter(
+                          (inputType) => inputType.id == column.input_type_id
+                        )[0].name,
+                        type_id: TypeCategories.INPUT_TYPE,
+                      },
+                    },
+                  },
+                })),
+              },
+            },
+          });
+          tableConifgs.push(result);
+        } catch (error: any) {
+          if(error.meta || error.meta.target || error.meta.target == "ui_name"){ // var olan bir sey eklenmeye clısıldıysa
+            return;
+          }
+          return new Response(JSON.stringify({ status: "error", message: error }));
+        }
       });
-      console.log(table);
-      return new Response(JSON.stringify(tableData));
-    } catch (error) {
+      return new Response(JSON.stringify(tableConifgs.length == 0 ? { message: "Tüm tablolar eklenmiştir." } : tableConifgs), { status: 200 });
+    } catch (error: any) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
