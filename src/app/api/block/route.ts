@@ -1,8 +1,6 @@
 import { BlockService } from "@/services/block.service"
 
-export async function GET(
-    req: Request
-) {
+export async function GET(req: Request) {
     try {
         const blockService = new BlockService()
         return await blockService.getBlocks()
@@ -12,9 +10,7 @@ export async function GET(
     }
 }
 
-export async function POST(
-    req: Request
-) {
+export async function POST(req: Request) {
     try {
         const blockService = new BlockService()
         const body = await req.json()

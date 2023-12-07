@@ -1,6 +1,6 @@
 export interface GeneralsDto {
     id: number;
-    title: String
+    title: string
     description?: string
     slug: string
     image?: string

@@ -1,26 +1,24 @@
-import { MenuService } from "@/services/menu"
+import { ComponentPropService } from "@/services/component_prop.service";
+import { ServerMessages } from "../../../../../constants/messages.constants";
 
-export async function GET(
-    req: Request
-) {
+
+export async function GET(req: Request) {
     try {
-        const menuService = new MenuService()
-        return await menuService.getMenus()
+        const componentPropService = new ComponentPropService();
+        return await componentPropService.getComponentProps();
     } catch (error) {
-        console.log(error)
-        throw new Error("Internal server error")
+        console.log(error);
+        throw new Error(ServerMessages[500]);
     }
 }
 
-export async function POST(
-    req: Request
-) {
+export async function POST(req: Request) {
     try {
-        const menuService = new MenuService()
-        const body = await req.json()
-        return await menuService.createMenu(body)
+        const componentPropService = new ComponentPropService();
+        const body = await req.json();
+        return await componentPropService.createComponentProp(body);
     } catch (error) {
-        console.log(error)
-        throw new Error("Internal server error")
+        console.log(error);
+        throw new Error(ServerMessages[500]);
     }
 }

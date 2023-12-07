@@ -1,14 +1,12 @@
-import { MenuService } from "@/services/menu"
+import { GeneralsService } from "@/services/generals.service";
+import { ServerMessages } from "../../../../../../constants/messages.constants";
 
-export async function GET(
-    req: Request,
-    { params }: { params: { id: number } }
-) {
+export async function GET(req: Request, { params }: { params: { id: number } }) {
     try {
-        const menuService = new MenuService()
-        return await menuService.deleteMenu(Number(params.id))
+        const generalsService = new GeneralsService();
+        return await generalsService.deleteGeneral(Number(params.id));
     } catch (error) {
-        console.log(error)
-        throw new Error("Internal server error")
+        console.log(error);
+        throw new Error(ServerMessages[500]);
     }
 }

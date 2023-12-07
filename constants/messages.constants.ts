@@ -1,4 +1,24 @@
 
+export class ServerMessages {
+
+   static 200 = "OK";
+   static 201 = "Created";
+   static 202 = "Accepted";
+   static 203 = "Non-Authoritative Information";
+   static 204 = "No Content";
+   static 205 = "Reset Content";
+
+   static 400 = "Bad Request";
+   static 401 = "Unauthorized";
+   static 402 = "Payment Required";
+   static 403 = "Forbidden";
+   static 404 = "Not Found";
+   static 405 = "Method Not Allowed";
+   static 406 = "Not Acceptable";
+
+   static 500 = "Internal Server Error";
+}
+
 export class ErrorMessages {
 
    static NOT_FOUND_ERROR() {

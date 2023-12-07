@@ -1,14 +1,12 @@
-import { MenuService } from "@/services/menu"
+import { ComponentPropService } from "@/services/component_prop.service";
+import { ServerMessages } from "../../../../../../../constants/messages.constants";
 
-export async function GET(
-    req: Request,
-    { params }: { params: { id: number } }
-) {
+export async function DELETE(req: Request, { params }: { params: { id: number } }) {
     try {
-        const menuService = new MenuService()
-        return await menuService.deleteMenu(Number(params.id))
+        const componentPropService = new ComponentPropService();
+        return await componentPropService.deleteComponentProp(Number(params.id));
     } catch (error) {
-        console.log(error)
-        throw new Error("Internal server error")
+        console.log(error);
+        throw new Error(ServerMessages[500]);
     }
 }
