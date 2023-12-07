@@ -6,6 +6,7 @@ import {
 } from "@/services/dashboard";
 import { database_table, database_table_column } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 export function useDatabase(table_name?: string) {
   const {
@@ -23,11 +24,12 @@ export function useDatabase(table_name?: string) {
   const queryClient = useQueryClient();
 
   const createConfig = useMutation(
-    (config: Partial<database_table>) => {
-      return createTableConfig(config);
+    (table_name: string) => {
+      return createTableConfig(table_name);
     },
     {
       onSuccess: () => {
+        toast.success("Tablo oluşturuldu");
         queryClient.invalidateQueries(["configs"]);
       },
     }
