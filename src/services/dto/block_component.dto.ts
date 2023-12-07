@@ -2,8 +2,8 @@ import { BlockDto } from "./block.dto";
 import { ComponentDto } from "./component.dto";
 import { PropDto } from "./prop.dto";
 
-export interface CreateBlockComponentDto {
-    block_components: BlockComponentDto[];
+export interface CreateBlockComponentsDto {
+    block_components: CreateBlockComponentDto[];
 }
 
 export interface BlockComponentDto {
@@ -12,7 +12,18 @@ export interface BlockComponentDto {
     belong_component_id?: number;
     depth: number;
     order: number;
-    code?: string;
+    code: string;
+    hasChildren?: boolean;
+    props: PropDto[] | [];
+}
+
+export interface CreateBlockComponentDto {
+    component_id: number;
+    block: BlockDto;
+    belong_component_id?: number;
+    depth: number;
+    order: number;
+    code: string;
     hasChildren?: boolean;
     props: PropDto[] | [];
 }
