@@ -1,13 +1,12 @@
-import { prisma } from "@/libs/prisma";
-import { SqlConstants } from "../../constants/sql";
+import { prisma } from "../libs/prisma";
+import { config } from "dotenv";
 import {
   ConfirmMessages,
   ErrorMessages,
 } from "../../constants/messages.constants";
-import { config } from "dotenv";
-import { DatabaseTableDto } from "./dto/database-table.dto";
-import { Input } from "@/components/ui/input";
+import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
+import { DatabaseTableDto } from "./dto/database-table.dto";
 
 config();
 export class TableService {
