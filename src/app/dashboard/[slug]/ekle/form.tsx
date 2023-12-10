@@ -20,7 +20,11 @@ export default function Form({ table }: { table: DATABASE_TABLE }) {
 
   const queryClient = useQueryClient();
   const createMutation = useMutation(
-    (data) => createTableItem({ tableName: table.name, data: data }),
+    (data) =>
+      createTableItem({
+        tableName: table.name,
+        data: Object.entries(data).map(([key, value]) => ({ key, value })),
+      }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries([table.name]);

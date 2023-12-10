@@ -114,9 +114,13 @@ export default function TableConfig({
 
     const tempData = {
       ...data,
-      create_crud_option_id: null,
-      read_crud_option_id: null,
-      update_crud_option_id: null,
+      columns: data.columns?.map((column) => ({
+        ...column,
+        create_crud_option_id: null,
+        read_crud_option_id: null,
+        update_crud_option_id: null,
+        type_id: null,
+      })),
     };
     updateConfig.mutate(tempData);
   };
@@ -218,9 +222,7 @@ export default function TableConfig({
         />
         {fields.map((column, index) => (
           <div key={column.id} className="bg-gray-100 p-4 rounded">
-            <h1 className="text-lg font-bold mb-6">
-              {column.name} {column.id}
-            </h1>
+            <h1 className="text-lg font-bold mb-6">{column.name}</h1>
             <hr />
             <div>
               <FormField

@@ -11,21 +11,29 @@ import { toast } from "react-toastify";
 export function useDatabase(table_name?: string) {
   const {
     data: tables,
-    isLoading,
-    error,
+    isLoading: isLoadingTables,
+    error: tableError,
   } = useQuery<
     { id: number; name: string; columns: { name: string; type: string }[] }[]
   >(["tables"], () => getTablesStructure());
 
-  const { data: configs } = useQuery<
-    (database_table & { columns: database_table_column[] })[]
-  >(["configs"], () => getTablesConfigs());
+  const {
+    data: configs,
+    error: configError,
+    isLoading: isLoadingConfigs,
+  } = useQuery<(database_table & { columns: database_table_column[] })[]>(
+    ["configs"],
+    () => getTablesConfigs()
+  );
+
+  const error = configError || tableError;
+  const isLoading = isLoadingTables || isLoadingConfigs;
 
   const queryClient = useQueryClient();
 
   const createConfig = useMutation(
     (table_name: string) => {
-      return createTableConfig(table_name);
+      return createTableConfig({ table_name });
     },
     {
       onSuccess: () => {

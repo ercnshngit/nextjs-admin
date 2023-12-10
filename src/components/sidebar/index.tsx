@@ -9,7 +9,7 @@ import { useDatabase } from "@/hooks/use-database";
 
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
-  const { configs } = useDatabase();
+  const { configs, error } = useDatabase();
   return (
     <div className={cn("pb-12", className)}>
       <div className="py-4 space-y-4">

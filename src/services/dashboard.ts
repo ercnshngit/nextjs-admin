@@ -25,7 +25,11 @@ export const createComponentsInBlock = async ({ data }: any) => {
   return res;
 };
 
-export const createTableConfig = async ({ table_name }: any) => {
+export const createTableConfig = async ({
+  table_name,
+}: {
+  table_name: string;
+}) => {
   const { data } = await axiosClient.get(`/table/${table_name}/config/create`);
   return data;
 };

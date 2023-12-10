@@ -374,7 +374,7 @@ export class TableService {
         return new Response(JSON.stringify({ message: "Data boş geldi." }));
       }
       Object.assign(tableData, data);
-
+      console.log("DATAAAAAAAAAAAAAAAAAA ::", data);
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
         data: {
