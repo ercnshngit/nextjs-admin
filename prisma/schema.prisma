@@ -10,7 +10,7 @@ datasource db {
 
 model database_table {
   id         Int      @id @default(autoincrement())
-  name       String   @unique
+  name       String
   icon       String?
   is_hidden  Boolean? @default(false)
   can_create Boolean? @default(false)
@@ -22,6 +22,7 @@ model database_table {
   referenced_column_relations column_relation[]       @relation("fk_cr_referenced_table_id")
   pivoted_column_relations    column_relation[]       @relation("fk_cr_pivot_table_id")
 
+  @@unique([name], name: "ui_name")
   @@map("database_table")
 }
 
@@ -114,7 +115,7 @@ model types {
   id            Int     @id @default(autoincrement())
   name          String
   table_id      Int?
-  language_code String? @map("langueage_code")
+  language_code String?
 
   data_type data_type[]     @relation("fk_type_data_type_id") //one to many
   table     database_table? @relation("fk_type_table_id", fields: [table_id], references: [id], map: "fk_type_table_id") //many to one
@@ -244,7 +245,7 @@ model translation {
 
   language language? @relation("fk_trs_language_code", fields: [language_code], references: [code], map: "fk_trs_language_code")
 
-  @@unique(name: "ui_key", fields: [key])
+  @@unique([key], name: "ui_key")
 }
 
 model language {
@@ -256,7 +257,7 @@ model language {
   translations translation[] @relation("fk_trs_language_code")
   types        types[]       @relation("fk_type_language_code")
 
-  @@unique(name: "ui_code", fields: [code])
+  @@unique([code], name: "ui_code")
 }
 
 model user {
@@ -271,7 +272,7 @@ model user {
 
   role role? @relation("fk_u_role_id", fields: [role_id], references: [id], map: "fk_u_role_id")
 
-  @@unique(name: "ui_email", fields: [email])
+  @@unique([email], name: "ui_email")
 }
 
 model role {

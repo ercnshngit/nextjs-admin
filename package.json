@@ -13,6 +13,7 @@
     "full-start": "npm run set-project && npm run portkillstart",
     "full-start-dev": "npm run set-project && npm run portkillstart-dev",
     "set-project": "npm install && npm run gen-prisma && npm run build",
+    "set-table-configs": "ts-node ./src/scripts/database-table.script.ts",
     "gen-prisma": "npx prisma generate",
     "gen-mig": "npx prisma migrate dev --create-only --name ",
     "run-mig": "npx prisma migrate deploy"
