@@ -8,6 +8,7 @@ import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
 import { DatabaseTableDto } from "./dto/database-table.dto";
 import { stat } from "fs";
+import { DataBaseTableColumnDto } from "./dto/database-table-column.dto";
 
 config();
 export class TableService {
@@ -377,7 +378,7 @@ export class TableService {
           can_create: tableData.can_create,
           can_update: tableData.can_update,
           columns: {
-            upsert: tableData.columns.map((column) => ({
+            upsert: data.columns?.map((column) => ({
               where: { id: column.id }, // Sütunun ID'sine göre kontrol et
               update: {
                 name: column.name,
@@ -388,8 +389,8 @@ export class TableService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
-                type_id: column.type_id,
-                input_type_id: column.input_type_id,
+                type_id: column.type?.id,
+                input_type_id: column.input_type?.id,
                 create_crud_option_id: column.create_crud_option_id,
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
@@ -403,13 +404,53 @@ export class TableService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
-                type_id: column.type_id,
-                input_type_id: column.input_type_id,
-                create_crud_option_id: column.create_crud_option_id,
-                read_crud_option_id: column.read_crud_option_id,
-                update_crud_option_id: column.update_crud_option_id,
+                type:{
+                  connect:{
+                    id: column.type?.id,
+                  }
+                },
+                input_type:{
+                  connect:{
+                    id: column.input_type?.id,
+                  }
+                },
+                create_crud_option:{
+                  connectOrCreate:{
+                    where:{id: column.create_crud_option?.id},
+                    create:{
+                      name: column.create_crud_option?.name,
+                      is_hidden: column.create_crud_option?.is_hidden,
+                      is_required: column.create_crud_option?.is_required,
+                      is_readonly: column.create_crud_option?.is_readonly,
+                      type_id: column.create_crud_option?.input_type?.id,
+                    }
+                  },
+                },
+                read_crud_option: {
+                  connectOrCreate:{
+                    where:{id: column.read_crud_option?.id},
+                    create:{
+                      name: column.read_crud_option?.name,
+                      is_hidden: column.read_crud_option?.is_hidden,
+                      is_required: column.read_crud_option?.is_required,
+                      is_readonly: column.read_crud_option?.is_readonly,
+                      type_id: column.read_crud_option?.input_type?.id,
+                    }
+                  },
+                },
+                update_crud_option:{
+                  connectOrCreate:{
+                    where:{id: column.update_crud_option?.id},
+                    create:{
+                      name: column.update_crud_option?.name,
+                      is_hidden: column.update_crud_option?.is_hidden,
+                      is_required: column.update_crud_option?.is_required,
+                      is_readonly: column.update_crud_option?.is_readonly,
+                      type_id: column.update_crud_option?.input_type?.id,
+                    }
+                  },
               },
-            })),
+            }})),
           },
         },
         include: {
@@ -417,7 +458,11 @@ export class TableService {
             include: {
               type: true,
               input_type: true,
-              create_crud_option: true,
+              create_crud_option: {
+                include: {
+                  InputType: true,
+                }
+              },
               read_crud_option: {
                 include: {
                   InputType: true,

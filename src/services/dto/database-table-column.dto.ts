@@ -13,7 +13,7 @@ export interface DataBaseTableColumnDto{
     create_crud_option_id?: number;
     update_crud_option_id?: number; 
     read_crud_option_id?: number;
-    create_crud_option?: CrudOptionDto;
-    update_crud_option?: CrudOptionDto;
-    read_crud_option?: CrudOptionDto;
+    create_crud_option: CrudOptionDto;
+    update_crud_option: CrudOptionDto;
+    read_crud_option: CrudOptionDto;
 }
