@@ -84,6 +84,9 @@ export class BlockComponentService {
                 })
 
                 const block_component = await prisma.block_component.upsert({
+                    include:{
+                        block: true
+                    },
                     where: { code: data.block_components[i].code },
                     update: {
                         component_id: data.block_components[i].component_id,
@@ -95,9 +98,31 @@ export class BlockComponentService {
                         hasChildren: data.block_components[i].hasChildren
                     },
                     create: {
-                        component_id: data.block_components[i].component_id,
-                        block_id: block.id,
-                        belong_component_id: data.block_components[i].belong_component_id,
+                        component:{
+                            connect:{
+                                id: data.block_components[i].component_id
+                            }
+                        },
+                        block: {
+                            connectOrCreate: {
+                                create : {
+                                    title: data.block_components[i].block.title,
+                                    types: {
+                                        connect: {
+                                            id: data.block_components[i].block.type_id
+                                    }
+                                    }
+                                },
+                                where :{
+                                    id : block.id
+                                }
+                            }
+                        },
+                        belong_component : {
+                            connect: {
+                                id: data.block_components[i].belong_component_id
+                            }
+                        },
                         depth: data.block_components[i].depth,
                         order: data.block_components[i].order,
                         code: data.block_components[i].code,
