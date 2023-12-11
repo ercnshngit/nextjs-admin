@@ -49,9 +49,9 @@ export class BlockComponentService {
                 await result.push(assign);
             }
 
-            return new Response(JSON.stringify(result));
+            return new Response(JSON.stringify(result), { status: 200 });
         } catch (error) {
-            return new Response(JSON.stringify({ status: "error", message: error }));
+            return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
 
@@ -60,7 +60,9 @@ export class BlockComponentService {
             let results: any = [];
             for (let i = 0; i < data.block_components.length; i++) {
                 const msg = await this.checkBlockComponents(data.block_components[i], 'create')
-                if (msg) { return new Response(JSON.stringify({ message: msg })); }
+                if (msg) { 
+                    return new Response(JSON.stringify({ message: msg }), { status: 400 }); 
+                }
 
                 let block = data.block_components[i].block;
                 if (data.block_components[i].block.id && !(await prisma.block.findUnique({ where: { id: data.block_components[i].block.id } })) || !data.block_components[i].block.id) {
@@ -142,12 +144,12 @@ export class BlockComponentService {
                 results.push(result)
             }
 
-            return new Response(JSON.stringify(results));
+            return new Response(JSON.stringify(results), { status: 200 });
         }
 
         catch (error) {
             console.log(error)
-            return new Response(JSON.stringify({ status: "error", error_message: error }));
+            return new Response(JSON.stringify({ status: "error", error_message: error }), { status: 500 });
         }
     }
 
@@ -156,45 +158,59 @@ export class BlockComponentService {
             let msg: any = '';
             let check_component: any = 'null', check_block: any = 'null', check_belong_component: any = 'null';
             const block_component = await prisma.block_component.findUnique({ where: { id } })
-            if (!block_component) { return new Response(JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() })); }
+            if (!block_component) { 
+                return new Response(JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR()}), {status: 404}); 
+            }
 
             Object.assign(block_component, data);
 
-            if (data.component_id != undefined) { check_component = await prisma.component.findUnique({ where: { id: data.component_id } }) }
-            if (data.block_id != undefined) { check_block = await prisma.block.findUnique({ where: { id: data.block_id } }) }
-            if (data.belong_component_id != undefined) { check_belong_component = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
+            if (data.component_id != undefined) { 
+                check_component = await prisma.component.findUnique({ where: { id: data.component_id } }) 
+            }
+            if (data.block_id != undefined) { 
+                check_block = await prisma.block.findUnique({ where: { id: data.block_id } }) 
+            }
+            if (data.belong_component_id != undefined) { 
+                check_belong_component = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) 
+            }
             !check_component ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
                 !check_block ? msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en :
                     !check_belong_component ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
 
-
-            if (msg) { return new Response(JSON.stringify({ message: msg })); }
+            if (msg) { 
+                return new Response(JSON.stringify({ message: msg }), {status: 400}); 
+            }
             const update = await prisma.block_component.update({ where: { id }, data })
-            if (!update) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })); }
-
-            return new Response(JSON.stringify({ message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM() }));
-
-
+            if (!update) { 
+                return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR()}), {status: 400}); 
+            }
+            return new Response(JSON.stringify({ message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM()}), {status: 200});
         }
         catch (error) {
             console.log(error)
-            return new Response(JSON.stringify({ status: "error", error_message: error }));
+            return new Response(JSON.stringify({ status: "error", error_message: error }), {status: 500});
         }
     }
 
     async deleteBlockComponent(id: number) {
         try {
             const block_component = await prisma.block_component.findUnique({ where: { id } })
-            if (!block_component) { return new Response(JSON.stringify({ message: ErrorMessages.BLOCK_NOT_FOUND_ERROR() })); }
+            if (!block_component) { 
+                return new Response(JSON.stringify({ message: ErrorMessages.BLOCK_NOT_FOUND_ERROR() }), {status: 404}); 
+            }
             const delete_block_component_props = await prisma.block_component_prop.deleteMany({ where: { block_component_id: id } })
-            if (!delete_block_component_props) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() })); }
+            if (!delete_block_component_props) { 
+                return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR()}), {status: 400}); 
+            }
             const delete_block_component = await prisma.block_component.delete({ where: { id } })
-            if (!delete_block_component) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() })); }
-            return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }));
+            if (!delete_block_component) { 
+                return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR()}), {status: 400}); 
+            }
+            return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM()}), {status: 200});
         }
         catch (error) {
             console.log(error)
-            return new Response(JSON.stringify({ status: "error", error_message: error }));
+            return new Response(JSON.stringify({ status: "error", error_message: error }), {status: 500});
         }
     }
 
@@ -202,17 +218,25 @@ export class BlockComponentService {
         let msg = '';
         let checkComponent: any = 'null', checkBelongComponent: any = 'null', checkBlock: any = 'null';
 
-        if (code == undefined && data.component_id != undefined) { checkComponent = await prisma.component.findUnique({ where: { id: data.component_id } }) }
-        if (data.belong_component_id != undefined) { checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) }
+        if (code == undefined && data.component_id != undefined) { 
+            checkComponent = await prisma.component.findUnique({ where: { id: data.component_id } }) 
+        }
+        if (data.belong_component_id != undefined) { 
+            checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } }) 
+        }
         if (data.block) {
             if (data.block.id != undefined) {
                 checkBlock = await prisma.block.findUnique({ where: { id: data.block.id } });
-                if (!checkBlock) { msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en }
+                if (!checkBlock) { 
+                    msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en 
+                }
             }
         }
         !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
             !checkBelongComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
-        if (msg) { return msg }
+        if (msg) { 
+            return msg 
+        }
         return null
     }
 }

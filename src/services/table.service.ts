@@ -7,6 +7,7 @@ import {
 import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
 import { DatabaseTableDto } from "./dto/database-table.dto";
+import { stat } from "fs";
 
 config();
 export class TableService {
@@ -25,11 +26,9 @@ export class TableService {
     const query = `SELECT * FROM ${table_name}`;
     const table = await prisma.$queryRawUnsafe(`${query}`);
     if (!table) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-      );
+      return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
     }
-    return new Response(JSON.stringify(table));
+    return new Response(JSON.stringify(table), { status: 200 });
   }
 
   async getTableById(table_name: string, id: number) {
@@ -44,13 +43,11 @@ export class TableService {
       const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-        );
+        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
       }
-      return new Response(JSON.stringify(table));
+      return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -81,10 +78,10 @@ export class TableService {
           })
         );
       }
-      return new Response(JSON.stringify(table));
+      return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -101,13 +98,11 @@ export class TableService {
       );
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-        );
+        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
       }
-      return new Response(JSON.stringify(table));
+      return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -121,13 +116,9 @@ export class TableService {
 
       const query = SqlConstants.UPDATE_QUERRY_WITH_ID(table_name, set, id);
       const result = await prisma.$queryRaw`${query}`;
-      return new Response(
-        JSON.stringify({
-          message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM(),
-        })
-      );
+      return new Response(JSON.stringify({ message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM()}),{ status: 200 });
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -135,13 +126,9 @@ export class TableService {
     try {
       const query = SqlConstants.DELETE_QUERY_WITH_ID(table_name, id);
       const result = await prisma.$queryRaw`${query}`;
-      return new Response(
-        JSON.stringify({
-          message: ConfirmMessages.TABLE_DELETE_SUCCESS_CONFIRM(),
-        })
-      );
+      return new Response(JSON.stringify({message: ConfirmMessages.TABLE_DELETE_SUCCESS_CONFIRM()}) ,{ status: 200 });
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -174,10 +161,10 @@ export class TableService {
           }
         );
       });
-      return new Response(JSON.stringify(new_result));
+      return new Response(JSON.stringify(new_result), { status: 200 });
     } catch (error) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -234,7 +221,7 @@ export class TableService {
       return new_result;
     } catch (error) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -280,13 +267,11 @@ export class TableService {
         },
       });
       if (!result) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-        );
+        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
       }
-      return new Response(JSON.stringify(result));
+      return new Response(JSON.stringify(result), { status: 200});
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -335,13 +320,11 @@ export class TableService {
         },
       });
       if (!result) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-        );
+        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
       }
-      return new Response(JSON.stringify(result));
+      return new Response(JSON.stringify(result), { status: 200});
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -378,13 +361,13 @@ export class TableService {
       if (!tableData) {
         return new Response(
           JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
+          , { status: 404 }
         );
       }
       if (!data) {
         return new Response(JSON.stringify({ message: "Data boş geldi." }));
       }
       Object.assign(tableData, data);
-      console.log("DATAAAAAAAAAAAAAAAAAA ::", data);
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
         data: {
@@ -434,11 +417,7 @@ export class TableService {
             include: {
               type: true,
               input_type: true,
-              create_crud_option: {
-                include: {
-                  InputType: true,
-                },
-              },
+              create_crud_option: true,
               read_crud_option: {
                 include: {
                   InputType: true,
@@ -453,16 +432,16 @@ export class TableService {
           },
         },
       });
-      console.log("ERCANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN ::", result);
       if (!result) {
         return new Response(
           JSON.stringify({ message: ErrorMessages.TABLE_UPDATE_FAILED_ERROR() })
+          , { status: 500 }
         );
       }
       return new Response(
         JSON.stringify({
           message: ConfirmMessages.TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM(),
-        })
+        }), {status: 200}
       );
     } catch (error) {
       console.log(error);
@@ -529,5 +508,8 @@ export class TableService {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
+  }
+
+  async setTableColumnCrudOptions(table_name: string, data: any) {
   }
 }

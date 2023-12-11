@@ -10,7 +10,10 @@ export interface DataBaseTableColumnDto{
     is_searchable: boolean | false;
     is_sortable: boolean | false;
     input_type?: DataTypeDto;
-    create_crud_option_id?: CrudOptionDto;
-    update_crud_option_id?: CrudOptionDto;
-    read_crud_option_id?: CrudOptionDto;
+    create_crud_option_id?: number;
+    update_crud_option_id?: number; 
+    read_crud_option_id?: number;
+    create_crud_option?: CrudOptionDto;
+    update_crud_option?: CrudOptionDto;
+    read_crud_option?: CrudOptionDto;
 }
