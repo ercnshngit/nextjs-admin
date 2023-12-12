@@ -217,13 +217,13 @@ export class BlockComponentService {
     let component = componentData.id
       ? await prisma.component.findUnique({ where: { id: componentData.id } })
       : await prisma.component.create({
-          data: {
-            name: componentData.name,
-            tag_id: tag.id,
-            type_id: type.id,
-            icon: componentData.icon,
-          },
-        });
+        data: {
+          name: componentData.name,
+          tag_id: tag.id,
+          type_id: type.id,
+          icon: componentData.icon,
+        },
+      });
     if (!component) {
       return new Response(
         JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
@@ -282,10 +282,10 @@ export class BlockComponentService {
       !check_component
         ? (msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN)
         : !check_block
-        ? (msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en)
-        : !check_belong_component
-        ? (msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN)
-        : null;
+          ? (msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en)
+          : !check_belong_component
+            ? (msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN)
+            : null;
 
       if (msg) {
         return new Response(JSON.stringify({ message: msg }), { status: 400 });
