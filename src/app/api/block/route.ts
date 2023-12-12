@@ -1,4 +1,5 @@
 import { BlockService } from "@/services/block.service"
+import { ServerMessages } from "../../../../constants/messages.constants";
 
 export async function GET(req: Request) {
     try {
@@ -6,7 +7,7 @@ export async function GET(req: Request) {
         return await blockService.getBlocks()
     } catch (error) {
         console.log(error)
-        throw new Error("Internal server error")
+        throw new Error(ServerMessages[500]);
     }
 }
 
@@ -17,6 +18,6 @@ export async function POST(req: Request) {
         return await blockService.createBlock(body)
     } catch (error) {
         console.log(error)
-        throw new Error("Internal server error")
+        throw new Error(ServerMessages[500]);
     }
 }

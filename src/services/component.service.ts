@@ -4,13 +4,13 @@ import { CreateComponentDto } from "./dto/component.dto";
 
 export class ComponentService {
     async getComponent(id: number) {
-        const component = await prisma.component.findUnique({ where: { id } })
+        const component = await prisma.component.findUnique({ where: { id }, include: { type: true, tag: true, component_prop: { include: { prop: true } } } })
         if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(component));
     }
 
     async getComponents() {
-        const components = await prisma.component.findMany()
+        const components = await prisma.component.findMany({ include: { type: true, tag: true, component_prop: { include: { prop: true } } } });
         if (components.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(components));
     }

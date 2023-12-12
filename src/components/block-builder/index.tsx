@@ -31,6 +31,8 @@ import { createTree } from "./utils/tree-operations";
 import JSONEditInput from "./components/json-edit-input";
 import { ComponentDto } from "@/services/dto/component.dto";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { FormControl, FormItem, FormLabel } from "../ui/form";
 
 export const Icons = {
   LetterCaseCapitalize: LetterCaseCapitalizeIcon,
@@ -79,7 +81,7 @@ function DesignerSidebar({
   sidebarComponents: ComponentDto[];
   onSave: () => void;
 }) {
-  const { elements, selectedElement, isPreview, updateElement, setIsPreview } =
+  const { elements, selectedElement, mode, setMode, updateElement } =
     useDesigner();
 
   const saveElements = () => {
@@ -92,18 +94,25 @@ function DesignerSidebar({
         <Button onClick={saveElements}>Gönder</Button>
       </div>
       <div className="flex items-center mb-6 justify-between  w-full space-x-2">
-        <Label htmlFor="preview-mode">Preview Mode</Label>
-        <Switch
-          id="preview-mode"
-          onCheckedChange={() => setIsPreview((prev) => !prev)}
-          checked={isPreview}
-        />
+        <div
+          className="py-1 px-2 my-2 w-full text-center select-none cursor-pointer bg-gray-100 rounded "
+          onClick={() => {
+            setMode((prev) =>
+              prev === "ui" ? "html" : prev === "html" ? "preview" : "ui"
+            );
+          }}
+        >
+          {mode}
+        </div>
       </div>
       {selectedElement && (
         <div className="flex flex-col w-full  gap-2">
           <h1 className="text-2xl font-bold">Properties</h1>
 
           {selectedElement.props.map((prop) => {
+            if (prop.prop.key === "children") {
+              return <div key={prop.prop.key}>.</div>;
+            }
             return (
               <div key={prop.prop.key} className="flex w-full  flex-col gap-2">
                 <label htmlFor={prop.prop.key}>{prop.prop.key}</label>
@@ -180,7 +189,7 @@ function Designer() {
     selectedElement,
     setSelectedElement,
     removeElement,
-    isPreview,
+    mode,
   } = useDesigner();
 
   const [tree, setTree] = useState<BlockComponentDto[]>([]);
@@ -499,45 +508,51 @@ function Designer() {
           if (selectedElement) setSelectedElement(null);
         }}
       >
-        <div
-          ref={droppable.setNodeRef}
-          className={cn(
-            "bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
-            droppable.isOver && "ring-4 ring-primary ring-inset"
-          )}
-        >
-          {!droppable.isOver && elements.length === 0 && (
-            <p className="text-3xl text-muted-foreground flex flex-grow items-center font-bold">
-              Buraya bırakın
-            </p>
-          )}
+        {mode === "html" ? (
+          <div className="flex flex-col  w-full gap-2 p-4">
+            <textarea></textarea>
+          </div>
+        ) : (
+          <div
+            ref={droppable.setNodeRef}
+            className={cn(
+              "bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
+              droppable.isOver && "ring-4 ring-primary ring-inset"
+            )}
+          >
+            {!droppable.isOver && elements.length === 0 && (
+              <p className="text-3xl text-muted-foreground flex flex-grow items-center font-bold">
+                Buraya bırakın
+              </p>
+            )}
 
-          {droppable.isOver && elements.length === 0 && (
-            <div className="p-4 w-full">
-              <div className="h-[120px] rounded-md bg-primary/20"></div>
-            </div>
-          )}
-          {elements.length > 0 &&
-            (isPreview ? (
-              <div className="flex flex-col  w-full gap-2 p-4">
-                {tree.map((component) => {
-                  if (component.component.tag.name in componentTags) {
-                    return renderPreview(component);
-                  }
-                  return null;
-                })}
+            {droppable.isOver && elements.length === 0 && (
+              <div className="p-4 w-full">
+                <div className="h-[120px] rounded-md bg-primary/20"></div>
               </div>
-            ) : (
-              <div className="flex flex-col  w-full gap-2 p-4">
-                {tree.map((component) => {
-                  if (component.component.tag.name in componentTags) {
-                    return renderDesignWrapper(component);
-                  }
-                  return null;
-                })}
-              </div>
-            ))}
-        </div>
+            )}
+            {elements.length > 0 &&
+              (mode === "preview" ? (
+                <div className="flex flex-col  w-full gap-2 p-4">
+                  {tree.map((component) => {
+                    if (component.component.tag.name in componentTags) {
+                      return renderPreview(component);
+                    }
+                    return null;
+                  })}
+                </div>
+              ) : mode === "ui" ? (
+                <div className="flex flex-col  w-full gap-2 p-4">
+                  {tree.map((component) => {
+                    if (component.component.tag.name in componentTags) {
+                      return renderDesignWrapper(component);
+                    }
+                    return null;
+                  })}
+                </div>
+              ) : null)}
+          </div>
+        )}
       </div>
     </div>
   );

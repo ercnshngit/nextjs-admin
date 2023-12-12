@@ -1,5 +1,6 @@
 import { BlockService } from "@/services/block.service"
 import { NextRequest } from "next/server"
+import { ServerMessages } from "../../../../../../constants/messages.constants"
 
 export async function GET(
     req: Request,
@@ -10,7 +11,7 @@ export async function GET(
         return await blockService.getBlock(Number(params.id))
     } catch (error) {
         console.log(error)
-        throw new Error("Internal server error")
+        throw new Error(ServerMessages[500]);
     }
 }
 
@@ -24,6 +25,6 @@ export async function POST(
         return await blockService.updateBlock(Number(params.id), body)
     } catch (error) {
         console.log(error)
-        throw new Error("Internal server error")
+        throw new Error(ServerMessages[500]);
     }
 }
