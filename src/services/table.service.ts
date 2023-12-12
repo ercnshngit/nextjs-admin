@@ -217,33 +217,20 @@ export class TableService {
             const type = table_element.type;
             // Veri Kontrolü ve dönüşüm alanı
             if (["int", "bigint", "tinyint"].includes(type)) {
-              if (type == "tinyint") {
-                table_element["input_type_id"] = InputTypes.TINYINT.toString();
-              } else if (type == "int") {
-                table_element["input_type_id"] = InputTypes.INT.toString();
-              } else if (type == "bigint") {
-                table_element["input_type_id"] = InputTypes.BIGINT.toString();
-              }
               table_element.type = "number";
+              table_element["input_type_id"] = InputTypes.NUMBER.toString();
             } else if (["varchar", "datetime"].includes(type)) {
-              if (type == "varchar") {
-                table_element["input_type_id"] = InputTypes.VARCHAR.toString();
-              } else if (type == "datetime") {
-                table_element["input_type_id"] = InputTypes.INT.toString();
-              }
-              table_element.type = "string";
-            } else if (["text", "long"].includes(type)) {
-              table_element.type = "string";
-              table_element["inputType"] = "textarea";
+              table_element.type = "text";
               table_element["input_type_id"] = InputTypes.TEXT.toString();
+            } else if (["text", "long"].includes(type)) {
+              table_element.type = "textarea";
+              table_element["input_type_id"] = InputTypes.TEXTAREA.toString();
             } else if (["date"].includes(type)) {
-              table_element.type = "string";
+              table_element.type = "date";
               table_element["input_type_id"] = InputTypes.DATE.toString();
-              table_element["inputType"] = "date";
             } else if (["boolean"].includes(type)) {
-              table_element.type = "boolean";
-              table_element["input_type_id"] = InputTypes.BOOLEAN.toString();
-              table_element["inputType"] = "checkbox";
+              table_element.type = "checkbox";
+              table_element["input_type_id"] = InputTypes.CHECKBOX.toString();
             }
             // ------------------------------
           }
@@ -618,6 +605,28 @@ export class TableService {
         return new Response(JSON.stringify({ message: "Tablo mevcut değil." }));
       }
       const tableNamesArray = Object.values(tableNames);
+      const input_type_ids = await prisma.type.findMany({
+        select:{
+          id: true,
+          name: true,
+          table:{
+            select:{
+              id: true,
+              name: true,
+            }
+          }
+        },
+        where: { 
+          table:{
+            name: TypeCategories.INPUT_TYPE
+          },
+        },
+      });
+      if(!input_type_ids){
+        return new Response(JSON.stringify({ message: "Input type mevcut değil." }), { status: 404 });
+      }
+      const inputTypesArray = Object.values(input_type_ids);
+      console.log("sssddd :" , inputTypesArray.filter((input_type) => input_type.name == "number")[0].id) ;
       tableNamesArray.forEach(async (element) => {
         if (
           element.table_name == undefined ||
@@ -627,11 +636,13 @@ export class TableService {
           return;
         }
         const tableData = await this.getTableWithDatas(element.table_name);
+        
         if (tableData instanceof Response) {
           // response donerse eger onu return et.
           return tableData;
         }
         const table = tableData[0];
+        console.log(table);
         try {
           const result = await prisma.database_table.create({
             include: {
@@ -646,17 +657,12 @@ export class TableService {
               columns: {
                 create: table.columns.map((column: any) => ({
                   name: column.name,
-                  input_type: {
-                    connect: {
-                      name: InputTypes.INPUT_TYPES.filter(
-                        (inputType) => inputType.id == column.input_type_id
-                      )[0].name,
-                      table:{
-                        name: InputTypes.INPUT_TYPES.filter(
-                          (inputType) => inputType.id == column.input_type_id
-                        )[0].table_name,
-                      },
-                    },
+                  input_type:{
+                    connect:{
+                      id: inputTypesArray.filter(
+                        (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
+                      )[0].id,
+                    }
                   },
                 })),
               },
@@ -664,6 +670,7 @@ export class TableService {
           });
           tableConifgs.push(result);
         } catch (error: any) {
+          console.log("error ::" , error);
           if (
             error.meta != undefined &&
             error.meta.target != undefined &&
@@ -678,7 +685,6 @@ export class TableService {
           );
         }
       });
-      console.log(tableConifgs);
       return new Response(
         JSON.stringify(
           tableConifgs.length == 0
@@ -692,6 +698,4 @@ export class TableService {
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
-
-  async setTableColumnCrudOptions(table_name: string, data: any) {}
 }

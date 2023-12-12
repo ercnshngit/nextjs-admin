@@ -1,7 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { TypeJsons } from "../../constants/types.constants";
 
-export class DataTypeService {
+export class TypeService {
 
     // TypeJsonda kaydedılmıs input_type lerini varsa pas gecıyor yoksa insertliyor
     async setInputDataTypes() {

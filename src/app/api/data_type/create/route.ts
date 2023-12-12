@@ -1,10 +1,10 @@
-import { DataTypeService } from "@/services/data-type.service"
+import { TypeService } from "@/services/type.service"
 import { ServerMessages } from "../../../../../constants/messages.constants";
 
 export async function GET(
     req: Request,
 ) {
-    const service = new DataTypeService();
+    const service = new TypeService();
     try {
         return await service.setInputDataTypes()
     } catch (error) {
