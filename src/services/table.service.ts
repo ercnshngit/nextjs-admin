@@ -1,4 +1,3 @@
-import { prisma } from "../libs/prisma";
 import { config } from "dotenv";
 import {
   ConfirmMessages,
@@ -6,15 +5,16 @@ import {
 } from "../../constants/messages.constants";
 import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
+import { prisma } from "../libs/prisma";
 import { DatabaseTableDto } from "./dto/database-table.dto";
-import { stat } from "fs";
 
 config();
 export class TableService {
-
-  async getTableNames(){
+  async getTableNames() {
     try {
-      const tableNames = await prisma.$queryRawUnsafe(`SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.DB_NAME}'`);
+      const tableNames = await prisma.$queryRawUnsafe(
+        `SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.DB_NAME}'`
+      );
       return tableNames;
     } catch (error) {
       console.log(error);
@@ -26,7 +26,10 @@ export class TableService {
     const query = `SELECT * FROM ${table_name}`;
     const table = await prisma.$queryRawUnsafe(`${query}`);
     if (!table) {
-      return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
+      return new Response(
+        JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+        { status: 404 }
+      );
     }
     return new Response(JSON.stringify(table), { status: 200 });
   }
@@ -43,11 +46,16 @@ export class TableService {
       const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
-        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -81,7 +89,9 @@ export class TableService {
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -98,11 +108,16 @@ export class TableService {
       );
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
-        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -116,9 +131,16 @@ export class TableService {
 
       const query = SqlConstants.UPDATE_QUERRY_WITH_ID(table_name, set, id);
       const result = await prisma.$queryRaw`${query}`;
-      return new Response(JSON.stringify({ message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM()}),{ status: 200 });
+      return new Response(
+        JSON.stringify({
+          message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM(),
+        }),
+        { status: 200 }
+      );
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -126,9 +148,16 @@ export class TableService {
     try {
       const query = SqlConstants.DELETE_QUERY_WITH_ID(table_name, id);
       const result = await prisma.$queryRaw`${query}`;
-      return new Response(JSON.stringify({message: ConfirmMessages.TABLE_DELETE_SUCCESS_CONFIRM()}) ,{ status: 200 });
+      return new Response(
+        JSON.stringify({
+          message: ConfirmMessages.TABLE_DELETE_SUCCESS_CONFIRM(),
+        }),
+        { status: 200 }
+      );
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -164,7 +193,9 @@ export class TableService {
       return new Response(JSON.stringify(new_result), { status: 200 });
     } catch (error) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -221,7 +252,9 @@ export class TableService {
       return new_result;
     } catch (error) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -245,21 +278,20 @@ export class TableService {
                   },
                 },
               },
-              type: true,
               input_type: true,
               create_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               read_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               update_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
             },
@@ -267,17 +299,63 @@ export class TableService {
         },
       });
       if (!result) {
-        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
       }
-      return new Response(JSON.stringify(result), { status: 200});
+      return new Response(
+        JSON.stringify(
+          result.map((table) => ({
+            ...table,
+            columns: table.columns.map((column) => {
+              const relation = column.column_relations.find(
+                (relation) => relation.column_id == column.id
+              );
+              return {
+                ...column,
+                read: {
+                  inputType: column.read_crud_option?.input_type?.name,
+                },
+                create: {
+                  inputType: column.create_crud_option?.input_type?.name,
+                },
+                update: {
+                  inputType: column.update_crud_option?.input_type?.name,
+                },
+                inputType: column.input_type?.name,
+
+                relation: {
+                  ...relation,
+                  table: relation?.referenced_table?.name,
+                  keyColumn: relation?.referenced_column_id,
+                  displayColumn: "name",
+                  type: "one",
+                  referenced_table: {
+                    ...relation?.referenced_table,
+                    name: relation?.referenced_table?.name,
+                  },
+                  pivot_table: {
+                    ...relation?.pivot_table,
+                    name: relation?.pivot_table?.name,
+                  },
+                },
+              };
+            }),
+          }))
+        ),
+        { status: 200 }
+      );
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
   async getTableConfig(table_name: string) {
     try {
-      const result = await prisma.database_table.findMany({
+      const result = await prisma.database_table.findFirst({
         where: {
           name: table_name,
         },
@@ -298,21 +376,20 @@ export class TableService {
                   },
                 },
               },
-              type: true,
               input_type: true,
               create_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               read_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               update_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
             },
@@ -320,24 +397,62 @@ export class TableService {
         },
       });
       if (!result) {
-        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR()}), { status: 404 });
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
       }
-      return new Response(JSON.stringify(result), { status: 200});
+      return new Response(
+        JSON.stringify({
+          ...result,
+          columns: result.columns.map((column) => {
+            const relation = column.column_relations.find(
+              (relation) => relation.column_id == column.id
+            );
+            return {
+              ...column,
+              read: {
+                inputType: column.read_crud_option?.input_type,
+              },
+              create: { inputType: column.read_crud_option?.input_type?.name },
+              update: { inputType: column.read_crud_option?.input_type?.name },
+              inputType: column.input_type?.name,
+              relation: {
+                ...relation,
+                table: relation?.referenced_table?.name,
+                keyColumn: "id",
+                displayColumn: "name",
+                type: "one",
+                referenced_table: {
+                  ...relation?.referenced_table,
+                  name: relation?.referenced_table?.name,
+                },
+                pivot_table: {
+                  ...relation?.pivot_table,
+                  name: relation?.pivot_table?.name,
+                },
+              },
+            };
+          }),
+        }),
+        { status: 200 }
+      );
     } catch (error) {
-      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
   async updateTableConfig(table_name: string, data: DatabaseTableDto) {
     try {
-      const tableData = await prisma.database_table.findUnique({
+      const tableData = await prisma.database_table.findFirst({
         where: { name: table_name },
         include: {
           columns: {
             select: {
               id: true,
               name: true,
-              type_id: true,
               input_type_id: true,
               is_primary: true,
               is_required: true,
@@ -349,7 +464,6 @@ export class TableService {
               create_crud_option_id: true,
               read_crud_option_id: true,
               update_crud_option_id: true,
-              type: true,
               input_type: true,
               create_crud_option: true,
               read_crud_option: true,
@@ -360,8 +474,8 @@ export class TableService {
       });
       if (!tableData) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
-          , { status: 404 }
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
         );
       }
       if (!data) {
@@ -377,7 +491,7 @@ export class TableService {
           can_create: tableData.can_create,
           can_update: tableData.can_update,
           columns: {
-            upsert: tableData.columns.map((column) => ({
+            upsert: data.columns?.map((column) => ({
               where: { id: column.id }, // Sütunun ID'sine göre kontrol et
               update: {
                 name: column.name,
@@ -388,8 +502,8 @@ export class TableService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
-                type_id: column.type_id,
-                input_type_id: column.input_type_id,
+                type_id: column.type?.id,
+                input_type_id: column.input_type?.id,
                 create_crud_option_id: column.create_crud_option_id,
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
@@ -403,11 +517,52 @@ export class TableService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
-                type_id: column.type_id,
-                input_type_id: column.input_type_id,
-                create_crud_option_id: column.create_crud_option_id,
-                read_crud_option_id: column.read_crud_option_id,
-                update_crud_option_id: column.update_crud_option_id,
+                type: {
+                  connect: {
+                    id: column.type?.id,
+                  },
+                },
+                input_type: {
+                  connect: {
+                    id: column.input_type?.id,
+                  },
+                },
+                create_crud_option: {
+                  connectOrCreate: {
+                    where: { id: column.create_crud_option?.id },
+                    create: {
+                      name: column.create_crud_option?.name,
+                      is_hidden: column.create_crud_option?.is_hidden,
+                      is_required: column.create_crud_option?.is_required,
+                      is_readonly: column.create_crud_option?.is_readonly,
+                      type_id: column.create_crud_option?.input_type?.id,
+                    },
+                  },
+                },
+                read_crud_option: {
+                  connectOrCreate: {
+                    where: { id: column.read_crud_option?.id },
+                    create: {
+                      name: column.read_crud_option?.name,
+                      is_hidden: column.read_crud_option?.is_hidden,
+                      is_required: column.read_crud_option?.is_required,
+                      is_readonly: column.read_crud_option?.is_readonly,
+                      type_id: column.read_crud_option?.input_type?.id,
+                    },
+                  },
+                },
+                update_crud_option: {
+                  connectOrCreate: {
+                    where: { id: column.update_crud_option?.id },
+                    create: {
+                      name: column.update_crud_option?.name,
+                      is_hidden: column.update_crud_option?.is_hidden,
+                      is_required: column.update_crud_option?.is_required,
+                      is_readonly: column.update_crud_option?.is_readonly,
+                      type_id: column.update_crud_option?.input_type?.id,
+                    },
+                  },
+                },
               },
             })),
           },
@@ -415,17 +570,20 @@ export class TableService {
         include: {
           columns: {
             include: {
-              type: true,
               input_type: true,
-              create_crud_option: true,
+              create_crud_option: {
+                include: {
+                  input_type: true,
+                }
+              },
               read_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               update_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
             },
@@ -434,14 +592,17 @@ export class TableService {
       });
       if (!result) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.TABLE_UPDATE_FAILED_ERROR() })
-          , { status: 500 }
+          JSON.stringify({
+            message: ErrorMessages.TABLE_UPDATE_FAILED_ERROR(),
+          }),
+          { status: 500 }
         );
       }
       return new Response(
         JSON.stringify({
           message: ConfirmMessages.TABLE_CONFIG_DATA_UPDATE_SUCCESS_CONFIRM(),
-        }), {status: 200}
+        }),
+        { status: 200 }
       );
     } catch (error) {
       console.log(error);
@@ -453,16 +614,21 @@ export class TableService {
     let tableConifgs = [] as any[];
     try {
       const tableNames = await this.getTableNames();
-      if(!tableNames){
+      if (!tableNames) {
         return new Response(JSON.stringify({ message: "Tablo mevcut değil." }));
       }
       const tableNamesArray = Object.values(tableNames);
-      tableNamesArray.forEach(async element => {
-        if(element.table_name == undefined || element.table_name == "_prisma_migrations"){ // prismanın migration tablosunu almasın dıye
+      tableNamesArray.forEach(async (element) => {
+        if (
+          element.table_name == undefined ||
+          element.table_name == "_prisma_migrations"
+        ) {
+          // prismanın migration tablosunu almasın dıye
           return;
         }
         const tableData = await this.getTableWithDatas(element.table_name);
-        if (tableData instanceof Response) { // response donerse eger onu return et.
+        if (tableData instanceof Response) {
+          // response donerse eger onu return et.
           return tableData;
         }
         const table = tableData[0];
@@ -471,7 +637,6 @@ export class TableService {
             include: {
               columns: {
                 include: {
-                  type: true,
                   input_type: true,
                 },
               },
@@ -497,19 +662,32 @@ export class TableService {
           });
           tableConifgs.push(result);
         } catch (error: any) {
-          if(error.meta || error.meta.target || error.meta.target == "ui_name"){ // var olan bir sey eklenmeye clısıldıysa
+          if (
+            error.meta ||
+            error.meta.target ||
+            error.meta.target == "ui_name"
+          ) {
+            // var olan bir sey eklenmeye clısıldıysa
             return;
           }
-          return new Response(JSON.stringify({ status: "error", message: error }));
+          return new Response(
+            JSON.stringify({ status: "error", message: error })
+          );
         }
       });
-      return new Response(JSON.stringify(tableConifgs.length == 0 ? { message: "Tüm tablolar eklenmiştir." } : tableConifgs), { status: 200 });
+      return new Response(
+        JSON.stringify(
+          tableConifgs.length == 0
+            ? { message: "Tüm tablolar eklenmiştir." }
+            : tableConifgs
+        ),
+        { status: 200 }
+      );
     } catch (error: any) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
 
-  async setTableColumnCrudOptions(table_name: string, data: any) {
-  }
+  async setTableColumnCrudOptions(table_name: string, data: any) {}
 }

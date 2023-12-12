@@ -114,8 +114,11 @@ export default function TableConfig({
 
     const tempData = {
       ...data,
+      id: table?.id,
       columns: data.columns?.map((column) => ({
         ...column,
+        id: Number(column.id),
+        input_type_id: Number(column.input_type_id),
         create_crud_option_id: null,
         read_crud_option_id: null,
         update_crud_option_id: null,

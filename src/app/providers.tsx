@@ -13,6 +13,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       >
         {children} <ReactQueryDevtools initialIsOpen={true} />
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </ReactQueryWrapper>
   );
 }
