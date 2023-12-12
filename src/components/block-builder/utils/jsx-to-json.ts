@@ -19,49 +19,93 @@ export function transformInput({
 
   const transformedOutput: BlockComponentDto = {
     component: {
-      id: 0,
       name: componentName,
-      type: {
-        id: 3,
-        name: "PageElement",
-      },
       tag: {
         id: 0,
         name: componentName,
       },
-      props:
-        Object.entries(props).length > 0
-          ? Object.entries(props).map(([key, value]) => ({
-              id: 32,
-              key,
-              type: {
-                id: 5,
-                name: "string",
-              },
-            }))
-          : [],
+      id: 0,
+      type: {
+        id: 3,
+        name: "Page Component",
+      },
+      props: [
+        ...Object.entries(props).map(([key, value]) => {
+          return {
+            id: 0,
+            key: key,
+            type: {
+              id: 5,
+              name: "string",
+            },
+          };
+        }),
+        ...children
+          .map((child) => {
+            if (child === " " || child === "" || child === "\n") return null;
+            if (!Array.isArray(child)) {
+              return {
+                id: 37,
+                key: "value",
+                type: {
+                  id: 5,
+                  name: "string",
+                },
+              };
+            } else {
+              return null;
+            }
+          })
+          .filter((e) => e),
+      ],
     },
     block: {
-      id: 5,
-      title: "Deneme sdfdsfdsfSayfa",
-      type_id: 10,
+      id: 0,
+      title: "Page",
+      type_id: 1,
     },
+    belong_block_component_code: code || null,
     depth: newdepth,
     order: neworder,
     code: newCode,
-    belong_block_component_code: !code ? null : code,
-    hasChildren: children.length > 0,
+    hasChildren: Array.isArray(children) && children.length > 0,
     props: [
-      {
-        prop: {
-          id: 37,
-          key: "value",
-          type_id: 5,
-        },
-        value: children.map((child) => !Array.isArray(child) && child).join(""),
-      },
+      ...Object.entries(props).map(([key, value]) => {
+        return {
+          id: 0,
+          prop: {
+            id: 0,
+            key: key,
+            type: {
+              id: 5,
+              name: "string",
+            },
+          },
+          value: value,
+        };
+      }),
+      ...children
+        .map((child) => {
+          if (child === " " || child === "" || child === "\n") return null;
+          if (!Array.isArray(child)) {
+            return {
+              id: 0,
+              prop: {
+                id: 37,
+                key: "value",
+                type: {
+                  id: 5,
+                  name: "string",
+                },
+              },
+              value: child,
+            };
+          } else {
+            return null;
+          }
+        })
+        .filter((e) => e),
     ],
-    children: [],
   };
   temp.push(transformedOutput);
   Array.isArray(children) &&

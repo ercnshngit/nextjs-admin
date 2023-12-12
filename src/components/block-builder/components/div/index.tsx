@@ -7,9 +7,5 @@ export function Div({
   className: string;
   children: React.ReactNode;
 }) {
-  return (
-    <div className={cn("bg-gray-100 rounded-md p-4", className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn(className)}>{children}</div>;
 }

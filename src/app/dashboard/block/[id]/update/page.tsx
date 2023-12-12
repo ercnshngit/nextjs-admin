@@ -4,7 +4,11 @@ import {
   DesignerContextProvider,
   useDesigner,
 } from "@/contexts/designer-context";
-import { createComponentsInBlock, getComponents } from "@/services/dashboard";
+import {
+  createComponentsInBlock,
+  getBlock,
+  getComponents,
+} from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -25,27 +29,26 @@ export default function BuilderPage({
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
     {
-      onSuccess: async () => { },
+      onSuccess: async () => {},
     }
   );
 
+  const { data: block } = useQuery(["block", params.id], () =>
+    getBlock({
+      id: Number(params.id),
+    })
+  );
+
   const handleSave = async () => {
+    if (!block) return;
     const data: CreateBlockComponentsDto = {
       block_components: elements.map((el) => ({
         ...el,
-        component: {
-          ...el.component,
-          type_id: el.component.type,
-          tag_id: el.component.tag.id,
-        },
         block: {
           id: Number(params.id),
-          title: "Deneme sdfdsfdsfSayfa",
-          type_id: 10,
+          title: block.title,
+          type_id: block.type_id,
         },
-        belong_block_component_code: el.belong_block_component_code
-          ? el.belong_block_component_code
-          : null,
       })),
     };
 
@@ -53,6 +56,9 @@ export default function BuilderPage({
   };
 
   return (
-    <BlockBuilder sidebarComponents={sidebarComponents} onSave={handleSave} />
+    <div className="h-full w-full flex">
+      <h1>{JSON.stringify(block)}</h1>
+      <BlockBuilder sidebarComponents={sidebarComponents} onSave={handleSave} />
+    </div>
   );
 }

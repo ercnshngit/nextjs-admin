@@ -1,4 +1,5 @@
 import axiosClient from "@/libs/axios";
+import { BlockDto } from "./dto/block.dto";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -57,4 +58,9 @@ export const getTableWhere = async ({
     where
   );
   return data;
+};
+
+export const getBlock = async ({ id }: { id: number }) => {
+  const { data } = await axiosClient.get(`/block/${id}`);
+  return data as BlockDto;
 };

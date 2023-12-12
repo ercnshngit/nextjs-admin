@@ -6,6 +6,8 @@ import { ComponentTagsType } from "../types";
 import { CardGrid } from "../components/card-grid";
 import { Div } from "../components/div";
 import { HTMLText } from "../components/html-text";
+import Image from "../components/image";
+import Button from "../components/button";
 
 export const componentTags: ComponentTagsType = {
   Text: Text,
@@ -16,17 +18,11 @@ export const componentTags: ComponentTagsType = {
   CardGrid: CardGrid,
   Div: Div,
   div: Div,
-  p: HTMLText,
+  p: Text,
   h1: Title,
-  h2: Title,
-  h3: Title,
-  h4: Title,
-  h5: Title,
-  h6: Title,
-  span: Text,
-  img: Text,
-  ul: Text,
-  li: Text,
-  a: Text,
-  button: Text,
+  button: Button,
+};
+
+export const getComponentTag = (tag: string) => {
+  return componentTags[tag] || HTMLText;
 };
