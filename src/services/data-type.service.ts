@@ -8,16 +8,31 @@ export class DataTypeService {
         try {
             let input_types = [] as any
             TypeJsons.INPUT_TYPES.forEach(async element => {
-                const result = await prisma.data_type.upsert({
+                const result = await prisma.type.upsert({
+                    include:{
+                        table : {
+                            where:{
+                                name: element.table_name
+                            }
+                        }
+                    },
                     where: {
-                        ui_name_type_id: {
-                            name: element.name,
-                            type_id: element.type_id
+                        ui_name_table_id:{
+                            
                         }
                     },
                     create: {
                         name: element.name,
-                        type_id: element.type_id == undefined ? 1 : element.type_id
+                        table:{
+                            connectOrCreate:{
+                                where:{
+                                    name: element.table_name
+                                },
+                                create:{
+                                    name: element.table_name
+                                }
+                            }
+                        }
                     },
                     update: {}
                 })

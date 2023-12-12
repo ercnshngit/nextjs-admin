@@ -663,8 +663,8 @@ export class TableService {
           tableConifgs.push(result);
         } catch (error: any) {
           if (
-            error.meta ||
-            error.meta.target ||
+            error.meta != undefined &&
+            error.meta.target != undefined &&
             error.meta.target == "ui_name"
           ) {
             // var olan bir sey eklenmeye clısıldıysa
