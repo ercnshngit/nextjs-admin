@@ -21,6 +21,13 @@ export class ServerMessages {
 
 export class ErrorMessages {
 
+   static DUPLICATE_CODE_ERROR() {
+      return {
+         TR: "Bu kod daha önce kullanılmış.",
+         EN: "This code has been used before."
+      }
+   }
+
    static NOT_FOUND_ERROR() {
       return {
          TR: "Bulunamadı.",

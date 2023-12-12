@@ -3,7 +3,7 @@ import { ComponentDto } from "./component.dto";
 import { ComponentPropDto } from "./prop.dto";
 
 export interface CreateBlockComponentsDto {
-    block_components: CreateBlockComponentDto[];
+    block_components: BlockComponentDto[];
 }
 
 export interface BlockComponentDto {

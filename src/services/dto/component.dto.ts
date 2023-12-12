@@ -1,7 +1,10 @@
+import { TagDto } from "./tag.dto";
+import { TypesDto } from "./types.dto";
+
 export interface ComponentDto {
     id: number;
     name: string;
-    tag_id: number;
-    type_id: number;
+    tag: TagDto;
+    type: TypesDto;
     icon?: string;
 }
