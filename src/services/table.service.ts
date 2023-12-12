@@ -278,8 +278,6 @@ export class TableService {
                   },
                 },
               },
-
-              type: true,
               input_type: true,
               create_crud_option: {
                 include: {
