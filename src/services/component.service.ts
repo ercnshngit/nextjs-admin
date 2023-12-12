@@ -17,6 +17,7 @@ export class ComponentService {
 
     async createComponent(data: ComponentDto) {
         try {
+            if (data.tag == null) { return new Response(JSON.stringify({ message: 'hata' })); }
             const component = await prisma.component.create({ data })
             if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
             return new Response(JSON.stringify(component));

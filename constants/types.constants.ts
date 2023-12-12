@@ -86,8 +86,8 @@ export class InputTypes {
 export class TypeCategories {
     static RELATION_TYPE = 0;
     static INPUT_TYPE = 1;
-    static COLUMN_TYPE = 2;
 }
+
 export class TypeJsons {
     static INPUT_TYPES = [
         { name: InputTypes[1], type_id: TypeCategories.INPUT_TYPE },
