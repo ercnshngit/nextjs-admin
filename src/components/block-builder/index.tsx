@@ -260,11 +260,7 @@ function Designer() {
         const newElement = {
           ...sidebarComponent,
           code: crypto.randomUUID(),
-          component: {
-            ...sidebarComponent,
-            type_id: sidebarComponent.type.id,
-            tag_id: sidebarComponent.tag.id,
-          },
+          component: sidebarComponent,
           block: {
             id: 0,
             title: "deneme block",
@@ -272,17 +268,21 @@ function Designer() {
           },
           depth: 0,
           hasChildren: sidebarComponent.props.find(
-            (prop) => prop.prop.key === "children"
+            (prop) => prop.key === "children"
           )
             ? true
             : false,
           children: sidebarComponent.props.find(
-            (prop) => prop.prop.key === "children"
+            (prop) => prop.key === "children"
           )
             ? []
             : undefined,
           props: sidebarComponent.props.map((prop) => ({
-            prop: prop.prop,
+            prop: {
+              id: prop.id,
+              key: prop.key,
+              type_id: prop.type.id,
+            },
             value: "",
           })),
           order: elements.length,
@@ -321,18 +321,22 @@ function Designer() {
             title: "deneme block",
             type_id: 1,
           },
-          hasChildren: sidebarComponent.component_prop.find(
-            (prop) => prop.prop.key === "children"
+          hasChildren: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? true
             : false,
           children: sidebarComponent.props.find(
-            (prop) => prop.prop.key === "children"
+            (prop) => prop.key === "children"
           )
             ? []
             : undefined,
           props: sidebarComponent.props.map((prop) => ({
-            prop: prop.prop,
+            prop: {
+              id: prop.id,
+              key: prop.key,
+              type_id: prop.type.id,
+            },
             value: "",
           })),
           depth: droppedArea?.component.depth, // BURASI ÜSTTEKİNDEN FARKLI
@@ -360,18 +364,22 @@ function Designer() {
             title: "deneme block",
             type_id: 1,
           },
-          hasChildren: sidebarComponent.component_prop.find(
-            (prop) => prop.prop.key === "children"
+          hasChildren: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? true
             : false,
           children: sidebarComponent.props.find(
-            (prop) => prop.prop.key === "children"
+            (prop) => prop.key === "children"
           )
             ? []
             : undefined,
           props: sidebarComponent.props.map((prop) => ({
-            prop: prop.prop,
+            prop: {
+              id: prop.id,
+              key: prop.key,
+              type_id: prop.type.id,
+            },
             value: "",
           })),
           depth: droppedArea?.component.depth + 1,
