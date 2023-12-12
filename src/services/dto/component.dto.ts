@@ -6,6 +6,15 @@ export interface ComponentDto {
   id: number;
   name: string;
   tag: TagDto;
+  type: TypeDto;
+  icon?: string;
+  props: ComponentPropDto[];
+}
+
+export interface CreateComponentDto {
+  id: number;
+  name: string;
+  tag: TagDto;
   type_id: number;
   icon?: string;
   props: ComponentPropDto[];

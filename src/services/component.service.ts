@@ -1,6 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { ComponentDto } from "./dto/component.dto";
+import { CreateComponentDto } from "./dto/component.dto";
 
 export class ComponentService {
     async getComponent(id: number) {
@@ -15,7 +15,7 @@ export class ComponentService {
         return new Response(JSON.stringify(components));
     }
 
-    async createComponent(data: ComponentDto) {
+    async createComponent(data: CreateComponentDto) {
         try {
             const tag = await prisma.tag.create({ data: data.tag })
             const typeCheck = await prisma.type.findUnique({ where: { id: data.type_id } })
@@ -45,7 +45,7 @@ export class ComponentService {
                 })
             );
 
-            const result = { props, ...component };
+            const result = { ...component, props };
 
             return new Response(JSON.stringify(result));
         }
@@ -55,7 +55,7 @@ export class ComponentService {
         }
     }
 
-    async updateComponent(id: number, data: ComponentDto) {
+    async updateComponent(id: number, data: CreateComponentDto) {
         try {
             const component = await prisma.component.findUnique({ where: { id } })
             if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
