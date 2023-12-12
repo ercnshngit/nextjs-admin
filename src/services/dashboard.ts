@@ -11,7 +11,7 @@ export const getTablesConfigs = async () => {
 };
 
 export const getTableInputTypes = async () => {
-  const { data } = await axiosClient.get("/input-type");
+  const { data } = await axiosClient.get("/type/input-type");
   return data;
 };
 
