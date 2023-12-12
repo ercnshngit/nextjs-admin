@@ -5,20 +5,20 @@ import { BlockComponentPropDto } from "./dto/block_component_prop.dto";
 export class BlockComponentPropService {
     async getBlockComponentProp(id: number) {
         const blockComponentProp = await prisma.block_component_prop.findUnique({ where: { id } })
-        if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+        if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(blockComponentProp));
     }
 
     async getBlockComponentProps() {
         const blockComponentProps = await prisma.block_component_prop.findMany()
-        if (blockComponentProps.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+        if (blockComponentProps.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(blockComponentProps));
     }
 
     async createBlockComponentProp(data: BlockComponentPropDto) {
         try {
             const blockComponentProp = await prisma.block_component_prop.create({ data })
-            if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+            if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             return new Response(JSON.stringify(blockComponentProp));
         }
         catch (error) {
@@ -30,10 +30,10 @@ export class BlockComponentPropService {
     async updateBlockComponentProp(id: number, data: BlockComponentPropDto) {
         try {
             const blockComponentProp = await prisma.block_component_prop.findUnique({ where: { id } })
-            if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+            if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             Object.assign(blockComponentProp, data)
             const new_blockComponentProp = await prisma.block_component_prop.update({ where: { id }, data })
-            if (!new_blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })); }
+            if (!new_blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }), { status: 400 }); }
             return new Response(JSON.stringify(new_blockComponentProp));
         }
         catch (error) {
@@ -45,9 +45,9 @@ export class BlockComponentPropService {
     async deleteBlockComponentProp(id: number) {
         try {
             const blockComponentProp = await prisma.block_component_prop.findUnique({ where: { id } })
-            if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+            if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             const delete_blockComponentProp = await prisma.block_component_prop.delete({ where: { id } })
-            if (!delete_blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() })); }
+            if (!delete_blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }), { status: 400 }); }
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }));
         }
         catch (error) {

@@ -14,7 +14,7 @@ export interface BlockComponentDto {
     order: number;
     code: string;
     hasChildren?: boolean;
-    props: ComponentPropDto[] | [];
+    props: ComponentPropDto[];
 }
 
 export interface CreateBlockComponentDto {

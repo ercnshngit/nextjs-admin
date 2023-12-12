@@ -5,22 +5,22 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 export class ComponentPropService {
     async getComponentProp(id: number) {
         const component_prop = await prisma.component_prop.findUnique({ where: { id } })
-        if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+        if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(component_prop));
     }
 
     async getComponentProps() {
         const component_props = await prisma.component_prop.findMany()
-        if (component_props.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+        if (component_props.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(component_props));
     }
 
     async createComponentProp(data: BlockDto) {
         try {
             const checkType = await prisma.component_prop.findUnique({ where: { id: data.type_id } })
-            if (!checkType) { return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() })); }
+            if (!checkType) { return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 }); }
             const component_prop = await prisma.block.create({ data })
-            if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+            if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             return new Response(JSON.stringify(component_prop));
         }
         catch (error) {
@@ -33,13 +33,13 @@ export class ComponentPropService {
         try {
             if (data.type_id) {
                 const checkType = await prisma.component_prop.findUnique({ where: { id: data.type_id } })
-                if (!checkType) { return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() })); }
+                if (!checkType) { return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 }); }
             }
             const component_prop = await prisma.block.findUnique({ where: { id } })
-            if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+            if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             Object.assign(component_prop, data)
             const new_component_prop = await prisma.block.update({ where: { id }, data })
-            if (!new_component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() })); }
+            if (!new_component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }), { status: 400 }); }
             return new Response(JSON.stringify(new_component_prop));
         }
         catch (error) {
@@ -51,10 +51,10 @@ export class ComponentPropService {
     async deleteComponentProp(id: number) {
         try {
             const component_prop = await prisma.block.findUnique({ where: { id } })
-            if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() })); }
+            if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             const delete_component_prop = await prisma.block.delete({ where: { id } })
-            if (!delete_component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() })); }
-            return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }));
+            if (!delete_component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }), { status: 400 }); }
+            return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
         }
         catch (error) {
             console.log(error)
