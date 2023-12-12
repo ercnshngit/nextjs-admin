@@ -25,7 +25,7 @@ export default function BuilderPage({
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
     {
-      onSuccess: async () => {},
+      onSuccess: async () => { },
     }
   );
 
@@ -46,7 +46,7 @@ export default function BuilderPage({
             id: el.component.types.id,
             name: el.component.types.name,
           },
-          component_prop: el.component.component_prop,
+          component_prop: el.component.props,
         },
         block: {
           id: Number(params.id),

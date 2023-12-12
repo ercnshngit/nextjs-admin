@@ -257,7 +257,7 @@ function Designer() {
             types: sidebarComponent.types,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
-            component_prop: sidebarComponent.component_prop,
+            component_prop: sidebarComponent.props,
           },
           block: {
             id: 0,
@@ -269,17 +269,17 @@ function Designer() {
             name: sidebarComponent.types.name,
           },
           depth: 0,
-          hasChildren: sidebarComponent.component_prop.find(
+          hasChildren: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
+          children: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: prop.prop,
             value: "",
           })),
@@ -316,7 +316,7 @@ function Designer() {
             types: sidebarComponent.types,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
-            component_prop: sidebarComponent.component_prop,
+            component_prop: sidebarComponent.props,
           },
           block: {
             id: 0,
@@ -328,17 +328,17 @@ function Designer() {
             name: sidebarComponent.types.name,
           },
           depth: droppedArea?.component.depth, // BURASI ÜSTTEKİNDEN FARKLI
-          hasChildren: sidebarComponent.component_prop.find(
+          hasChildren: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
+          children: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: prop.prop,
             value: "",
           })),
@@ -363,7 +363,7 @@ function Designer() {
             types: sidebarComponent.types,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
-            component_prop: sidebarComponent.component_prop,
+            component_prop: sidebarComponent.props,
           },
           block: {
             id: 0,
@@ -377,17 +377,17 @@ function Designer() {
           depth: droppedArea?.component.depth + 1,
           order: 0,
           belong_block_component_code: droppedArea?.component.code,
-          hasChildren: sidebarComponent.component_prop.find(
+          hasChildren: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
+          children: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: prop.prop,
             value: "",
           })),

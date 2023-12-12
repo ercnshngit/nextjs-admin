@@ -14,3 +14,8 @@ export interface PropDto {
   key: string;
   type: TypeDto;
 }
+
+export interface CreateComponentPropDto {
+  component_id: number;
+  prop_id: number;
+}
