@@ -37,20 +37,18 @@ export default function FormInputFactory({
   ...props
 }: FormInputFactoryProps) {
   const inputType =
-    props.field?.[
-      formType === "create" ? "create_crud_option" : "update_crud_option"
-    ]?.input_type || props.field?.input_type;
+    props.field?.[formType]?.inputType || props.field?.inputType;
 
   if (customInput) {
     const CustomInputItem = customInput.find(
-      (item) => item.for === inputType.name
+      (item) => item.for === inputType
     )?.component;
     if (CustomInputItem) {
       return <CustomInputItem {...props} />;
     }
   }
 
-  switch (inputType.name) {
+  switch (inputType) {
     case "checkbox":
       return <Checkbox {...props} />;
     case "date":

@@ -14,10 +14,10 @@ export type INPUT_TYPE =
 export type Database_Table = {
   id: number;
   name: string;
-  icon: string;
-  is_hidden: boolean;
-  can_create: boolean;
-  can_update: boolean;
+  icon: string | null;
+  is_hidden: boolean | null;
+  can_create: boolean | null;
+  can_update: boolean | null;
   columns: Column[];
 };
 
@@ -39,7 +39,14 @@ export interface Column {
   create_crud_option: CrudOption;
   read_crud_option: CrudOption;
   update_crud_option: CrudOption;
+  relation: any;
+  options?: Option[];
 }
+
+export type Option = {
+  label: string;
+  value: string;
+};
 
 export interface Type {
   id: number;

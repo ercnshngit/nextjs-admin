@@ -10,10 +10,11 @@ import { DatabaseTableDto } from "./dto/database-table.dto";
 
 config();
 export class TableService {
-
-  async getTableNames(){
+  async getTableNames() {
     try {
-      const tableNames = await prisma.$queryRawUnsafe(`SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.DB_NAME}'`);
+      const tableNames = await prisma.$queryRawUnsafe(
+        `SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.DB_NAME}'`
+      );
       return tableNames;
     } catch (error) {
       console.log(error);
@@ -258,6 +259,7 @@ export class TableService {
                   },
                 },
               },
+
               type: true,
               input_type: true,
               create_crud_option: {
@@ -284,7 +286,47 @@ export class TableService {
           JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
         );
       }
-      return new Response(JSON.stringify(result));
+      return new Response(
+        JSON.stringify(
+          result.map((table) => ({
+            ...table,
+            columns: table.columns.map((column) => {
+              const relation = column.column_relations.find(
+                (relation) => relation.column_id == column.id
+              );
+              return {
+                ...column,
+                read: {
+                  inputType: column.read_crud_option?.InputType?.name,
+                },
+                create: {
+                  inputType: column.create_crud_option?.InputType?.name,
+                },
+                update: {
+                  inputType: column.update_crud_option?.InputType?.name,
+                },
+                inputType: column.input_type?.name,
+
+                relation: {
+                  ...relation,
+                  table: relation?.referenced_table?.name,
+                  keyColumn: relation?.referenced_column_id,
+                  displayColumn: "name",
+                  type: "one",
+                  referenced_table: {
+                    ...relation?.referenced_table,
+                    name: relation?.referenced_table?.name,
+                  },
+                  pivot_table: {
+                    ...relation?.pivot_table,
+                    name: relation?.pivot_table?.name,
+                  },
+                },
+              };
+            }),
+          }))
+        )
+      );
     } catch (error) {
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -292,7 +334,7 @@ export class TableService {
 
   async getTableConfig(table_name: string) {
     try {
-      const result = await prisma.database_table.findMany({
+      const result = await prisma.database_table.findFirst({
         where: {
           name: table_name,
         },
@@ -339,7 +381,40 @@ export class TableService {
           JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() })
         );
       }
-      return new Response(JSON.stringify(result));
+      return new Response(
+        JSON.stringify({
+          ...result,
+          columns: result.columns.map((column) => {
+            const relation = column.column_relations.find(
+              (relation) => relation.column_id == column.id
+            );
+            return {
+              ...column,
+              read: {
+                inputType: column.read_crud_option?.InputType,
+              },
+              create: { inputType: column.read_crud_option?.InputType?.name },
+              update: { inputType: column.read_crud_option?.InputType?.name },
+              inputType: column.input_type?.name,
+              relation: {
+                ...relation,
+                table: relation?.referenced_table?.name,
+                keyColumn: "id",
+                displayColumn: "name",
+                type: "one",
+                referenced_table: {
+                  ...relation?.referenced_table,
+                  name: relation?.referenced_table?.name,
+                },
+                pivot_table: {
+                  ...relation?.pivot_table,
+                  name: relation?.pivot_table?.name,
+                },
+              },
+            };
+          }),
+        })
+      );
     } catch (error) {
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -347,7 +422,7 @@ export class TableService {
 
   async updateTableConfig(table_name: string, data: DatabaseTableDto) {
     try {
-      const tableData = await prisma.database_table.findUnique({
+      const tableData = await prisma.database_table.findFirst({
         where: { name: table_name },
         include: {
           columns: {
@@ -474,16 +549,21 @@ export class TableService {
     let tableConifgs = [] as any[];
     try {
       const tableNames = await this.getTableNames();
-      if(!tableNames){
+      if (!tableNames) {
         return new Response(JSON.stringify({ message: "Tablo mevcut değil." }));
       }
       const tableNamesArray = Object.values(tableNames);
-      tableNamesArray.forEach(async element => {
-        if(element.table_name == undefined || element.table_name == "_prisma_migrations"){ // prismanın migration tablosunu almasın dıye
+      tableNamesArray.forEach(async (element) => {
+        if (
+          element.table_name == undefined ||
+          element.table_name == "_prisma_migrations"
+        ) {
+          // prismanın migration tablosunu almasın dıye
           return;
         }
         const tableData = await this.getTableWithDatas(element.table_name);
-        if (tableData instanceof Response) { // response donerse eger onu return et.
+        if (tableData instanceof Response) {
+          // response donerse eger onu return et.
           return tableData;
         }
         const table = tableData[0];
@@ -518,13 +598,27 @@ export class TableService {
           });
           tableConifgs.push(result);
         } catch (error: any) {
-          if(error.meta || error.meta.target || error.meta.target == "ui_name"){ // var olan bir sey eklenmeye clısıldıysa
+          if (
+            error.meta ||
+            error.meta.target ||
+            error.meta.target == "ui_name"
+          ) {
+            // var olan bir sey eklenmeye clısıldıysa
             return;
           }
-          return new Response(JSON.stringify({ status: "error", message: error }));
+          return new Response(
+            JSON.stringify({ status: "error", message: error })
+          );
         }
       });
-      return new Response(JSON.stringify(tableConifgs.length == 0 ? { message: "Tüm tablolar eklenmiştir." } : tableConifgs), { status: 200 });
+      return new Response(
+        JSON.stringify(
+          tableConifgs.length == 0
+            ? { message: "Tüm tablolar eklenmiştir." }
+            : tableConifgs
+        ),
+        { status: 200 }
+      );
     } catch (error: any) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));

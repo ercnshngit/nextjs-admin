@@ -1,5 +1,4 @@
 "use client";
-import { DATABASE_TABLE } from "@/config/general";
 import { translate } from "@/langs";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -7,8 +6,9 @@ import BaseForm from "@/components/base-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTableItem } from "@/services/panel";
 import { toast } from "react-toastify";
+import { Database_Table } from "@/types/config";
 
-export default function Form({ table }: { table: DATABASE_TABLE }) {
+export default function Form({ table }: { table: Database_Table }) {
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ export default function Form({ table }: { table: DATABASE_TABLE }) {
 
   const queryClient = useQueryClient();
   const createMutation = useMutation(
-    (data) =>
+    (data: {}) =>
       createTableItem({
         tableName: table.name,
         data: Object.entries(data).map(([key, value]) => ({ key, value })),
@@ -41,15 +41,17 @@ export default function Form({ table }: { table: DATABASE_TABLE }) {
   };
 
   return (
-    <BaseForm
-      control={control}
-      setValue={setValue}
-      handleSubmit={handleSubmit}
-      onSubmit={onSubmit}
-      table={table}
-      errors={errors}
-      register={register}
-      formType="create"
-    />
+    <>
+      <BaseForm
+        control={control}
+        setValue={setValue}
+        handleSubmit={handleSubmit}
+        onSubmit={onSubmit}
+        table={table}
+        errors={errors}
+        register={register}
+        formType="create"
+      />
+    </>
   );
 }

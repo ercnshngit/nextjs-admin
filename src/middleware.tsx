@@ -5,7 +5,6 @@ const isAuthPages = (url: string) =>
   url === "/" || url.startsWith("/?") || url.startsWith("/register");
 
 export async function middleware(request: any) {
-  return;
   const { url, nextUrl, cookies } = request;
   const { value: accessToken } = cookies.get("accessToken") ?? { value: null };
   const hasVerifiedToken = accessToken && (await verifyJwtToken(accessToken));

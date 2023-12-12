@@ -22,7 +22,7 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 import React, { useCallback, useEffect, useState } from "react";
-import DragOverlayWrapper from "../drag-overlay-wrapper";
+import DragOverlayWrapper from "./components/drag-overlay-wrapper";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
@@ -507,9 +507,9 @@ function Designer() {
   };
 
   return (
-    <div className="flex w-full h-full">
+    <div className="flex w-full h-full ">
       <div
-        className="p-4 w-full"
+        className="p-4 w-full h-full "
         onClick={() => {
           if (selectedElement) setSelectedElement(null);
         }}
@@ -523,7 +523,7 @@ function Designer() {
         >
           {!droppable.isOver && elements.length === 0 && (
             <p className="text-3xl text-muted-foreground flex flex-grow items-center font-bold">
-              Drop here
+              Buraya bırakın
             </p>
           )}
 

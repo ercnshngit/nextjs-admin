@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/sidebar";
 import Providers from "./providers";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,14 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
-          <div className="flex min-h-screen bg-gray-100">
-            <div className="w-1/5 min-h-full shadow">
-              <Sidebar className="flex-shrink hidden sm:block" />
-            </div>
-            <div className="flex flex-col flex-1 w-4/5 min-h-screen bg-gray-200 ">
-              {children}
-            </div>
-          </div>
+          <div className="flex min-h-screen bg-gray-100">{children}</div>
           <ToastContainer />
         </Providers>
       </body>

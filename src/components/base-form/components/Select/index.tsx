@@ -1,10 +1,9 @@
-import { translate } from "@/langs";
-import React from "react";
+"use client";
+
+import { Column, Database_Table, Option } from "@/types/config";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Label from "../Label";
-import { useQuery } from "@tanstack/react-query";
-import { getTable } from "@/services/panel";
-import { Column, Database_Table } from "@/types/config";
+import RelationOptions from "./components/RelationOptions";
 
 export default function Select({
   field,
@@ -33,51 +32,19 @@ export default function Select({
         })}
         defaultValue={defaultValue}
       >
-        {/* {field ? (
+        {!field.options ? (
           <RelationOptions field={field} />
         ) : (
-          field.?.map((option) => {
+          field.options?.map((option) => {
             return (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             );
           })
-        )} */}
+        )}
       </select>
       {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>
   );
 }
-
-// function RelationOptions({ field }: { field: Column }) {
-//   const joinedTable = getDatabaseTable(field.relation!.table)!;
-
-//   const { data, error } = useQuery([joinedTable.name], () =>
-//     getTable({ tableName: joinedTable.name })
-//   );
-
-//   console.log(data);
-
-//   const options: OPTION[] =
-//     data !== ""
-//       ? data?.map((item: any) => {
-//           return {
-//             label: item[field.relation!.displayColumn!],
-//             value: item[field.relation!.keyColumn!],
-//           };
-//         })
-//       : [];
-
-//   return (
-//     <>
-//       {options?.map((option) => {
-//         return (
-//           <option key={option.value} value={option.value}>
-//             {option.label}
-//           </option>
-//         );
-//       })}
-//     </>
-//   );
-// }
