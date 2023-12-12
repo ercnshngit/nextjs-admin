@@ -11,7 +11,7 @@ export const getTablesConfigs = async () => {
 };
 
 export const getTableInputTypes = async () => {
-  const { data } = await axiosClient.get("/input-types");
+  const { data } = await axiosClient.get("/input-type");
   return data;
 };
 
@@ -43,4 +43,18 @@ export const updateTableConfig = async ({
 }) => {
   const res = await axiosClient.post(`/table/${table_name}/config`, data);
   return res;
+};
+
+export const getTableWhere = async ({
+  tableName,
+  where,
+}: {
+  tableName: string;
+  where: { key: string; value: string | number }[];
+}) => {
+  const { data } = await axiosClient.post(
+    "/table/" + tableName + "/where",
+    where
+  );
+  return data;
 };

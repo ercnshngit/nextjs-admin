@@ -2,9 +2,9 @@ import { Active, DragOverlay, useDndMonitor } from "@dnd-kit/core";
 import { useState } from "react";
 import { useDesigner } from "@/contexts/designer-context";
 import { PageComponent } from "@/types/page-component";
-import { componentTags } from "../block-builder/utils/component-tags";
-import { createChildrenTree } from "../block-builder/utils/tree-operations";
-import { Icons } from "../block-builder";
+import { componentTags } from "../../utils/component-tags";
+import { createChildrenTree } from "../../utils/tree-operations";
+import { Icons } from "../..";
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);
