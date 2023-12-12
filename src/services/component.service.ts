@@ -1,18 +1,38 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { CreateComponentDto } from "./dto/component.dto";
+import { ComponentDto, CreateComponentDto } from "./dto/component.dto";
 
 export class ComponentService {
     async getComponent(id: number) {
         const component = await prisma.component.findUnique({ where: { id }, include: { type: true, tag: true, component_prop: { include: { prop: true } } } })
         if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
-        return new Response(JSON.stringify(component));
+        const result = {
+            ...component, props: component.component_prop.map((component_prop) => {
+                return component_prop.prop;
+            }),
+            component_prop: undefined,
+            type_id: undefined,
+            tag_id: undefined
+        };
+        return new Response(JSON.stringify(result));
     }
 
     async getComponents() {
         const components = await prisma.component.findMany({ include: { type: true, tag: true, component_prop: { include: { prop: true } } } });
         if (components.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
-        return new Response(JSON.stringify(components));
+        const result: ComponentDto[] | {} =
+            components.map((component) => {
+                return {
+                    ...component, props: component.component_prop.map((component_prop) => {
+                        return component_prop.prop;
+                    }),
+                    component_prop: undefined,
+                    type_id: undefined,
+                    tag_id: undefined
+                };
+            })
+
+        return new Response(JSON.stringify(result));
     }
 
     async createComponent(data: CreateComponentDto) {
