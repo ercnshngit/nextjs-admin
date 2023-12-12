@@ -13,7 +13,7 @@ export interface PageComponent {
   type: Type;
   depth: number;
   order: number;
-  belong_component_id: string | null;
+  belong_block_component_code: string | null;
   props: ComponentProp[];
   children?: PageComponent[];
 }

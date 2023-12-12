@@ -1,4 +1,5 @@
 "use client";
+import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { PageComponent } from "@/types/page-component";
 import {
   Dispatch,
@@ -10,28 +11,27 @@ import {
 import { useContext } from "react";
 
 type DesignerContextType = {
-  elements: PageComponent[];
-  setElements: Dispatch<SetStateAction<PageComponent[]>>;
-  addElement: (index: number, element: PageComponent) => void;
+  elements: BlockComponentDto[];
+  setElements: Dispatch<SetStateAction<BlockComponentDto[]>>;
+  addElement: (index: number, element: BlockComponentDto) => void;
   removeElement: (code: string) => void;
   isPreview: boolean;
   setIsPreview: Dispatch<SetStateAction<boolean>>;
-  selectedElement: PageComponent | null;
-  setSelectedElement: Dispatch<SetStateAction<PageComponent | null>>;
+  selectedElement: BlockComponentDto | null;
+  setSelectedElement: Dispatch<SetStateAction<BlockComponentDto | null>>;
 
-  updateElement: (code: string, element: PageComponent) => void;
+  updateElement: (code: string, element: BlockComponentDto) => void;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
 
 export function DesignerContextProvider({ children }: { children: ReactNode }) {
-  const [elements, setElements] = useState<PageComponent[]>([]);
-  const [selectedElement, setSelectedElement] = useState<PageComponent | null>(
-    null
-  );
+  const [elements, setElements] = useState<BlockComponentDto[]>([]);
+  const [selectedElement, setSelectedElement] =
+    useState<BlockComponentDto | null>(null);
   const [isPreview, setIsPreview] = useState(false);
 
-  const addElement = (index: number, element: PageComponent) => {
+  const addElement = (index: number, element: BlockComponentDto) => {
     setElements((prev) => {
       const newElements = [...prev];
       newElements.splice(index, 0, element);
@@ -43,7 +43,7 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
     setElements((prev) => prev.filter((element) => element.code !== code));
   };
 
-  const updateElement = (code: string, element: PageComponent) => {
+  const updateElement = (code: string, element: BlockComponentDto) => {
     setElements((prev) => {
       const newElements = [...prev];
       const index = newElements.findIndex((el) => el.code === code);
