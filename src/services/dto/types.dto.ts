@@ -1,4 +1,4 @@
-export interface TypesDto {
+export interface TypeDto {
     id: number;
     name: string;
     table_id?: number;

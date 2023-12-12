@@ -6,7 +6,7 @@ export async function GET(
 ) {
   try {
     const table_name = params.table_name;
-    const data = await prisma.types.findMany({
+    const data = await prisma.type.findMany({
       where: {
         table: {
           name: table_name,

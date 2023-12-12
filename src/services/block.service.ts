@@ -70,7 +70,7 @@ export class BlockService {
     }
 
     async checkTypeExist(id: number) {
-        const type = await prisma.types.findUnique({ where: { id } })
+        const type = await prisma.type.findUnique({ where: { id } })
         if (!type) { return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 }); }
         return type;
     }

@@ -21,7 +21,7 @@ export interface BlockComponentDto {
 export interface CreateBlockComponentDto {
   component_id: number;
   block: BlockDto;
-  belong_block_component_code?: number;
+  belong_block_component_code?: string;
   depth: number;
   order: number;
   code: string;
@@ -32,7 +32,7 @@ export interface CreateBlockComponentDto {
 export interface UpdateBlockComponentDto {
   component_id?: number;
   block_id?: number;
-  belong_block_component_code?: number;
+  belong_block_component_code?: string;
   depth?: number;
   order?: number;
   code?: string;

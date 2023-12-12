@@ -203,8 +203,8 @@ export class BlockComponentService {
       ? await prisma.tag.findUnique({ where: { id: tagData.id } })
       : await prisma.tag.create({ data: { name: tagData.name } });
     let type = typeData.id
-      ? await prisma.types.findUnique({ where: { id: typeData.id } })
-      : await prisma.types.create({ data: typeData });
+      ? await prisma.type.findUnique({ where: { id: typeData.id } })
+      : await prisma.type.create({ data: typeData });
     let block = blockData.id
       ? await prisma.block.findUnique({ where: { id: blockData.id } })
       : await prisma.block.create({ data: blockData });
@@ -275,8 +275,8 @@ export class BlockComponentService {
         });
       }
       if (data.belong_block_component_code != undefined) {
-        check_belong_component = await prisma.component.findUnique({
-          where: { id: data.belong_block_component_code },
+        check_belong_component = await prisma.block_component.findUnique({
+          where: { code: data.belong_block_component_code },
         });
       }
       !check_component

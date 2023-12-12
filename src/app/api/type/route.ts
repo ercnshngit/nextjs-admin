@@ -1,9 +1,9 @@
-import { TypesService } from "@/services/types.service"
+import { TypeService } from "@/services/types.service"
 import { ServerMessages } from "../../../../constants/messages.constants"
 
 export async function GET(req: Request) {
     try {
-        const typesService = new TypesService()
+        const typesService = new TypeService()
         return await typesService.getTypes()
     } catch (error) {
         console.log(error)
@@ -13,7 +13,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
     try {
-        const typesService = new TypesService()
+        const typesService = new TypeService()
         const body = await req.json()
         return await typesService.createType(body)
     } catch (error) {

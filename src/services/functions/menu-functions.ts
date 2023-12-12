@@ -43,7 +43,7 @@ export class MenuFunctions {
     }
 
     async checkTypeExist(typeId: number): Promise<boolean> {
-        const checkTypeExist = await prisma.types.findUnique({ where: { id: typeId } });
+        const checkTypeExist = await prisma.type.findUnique({ where: { id: typeId } });
         return !!checkTypeExist;
     }
 
