@@ -8,7 +8,7 @@ export interface ComponentDto {
   tag: TagDto;
   type: TypeDto;
   icon?: string;
-  props: ComponentPropDto[];
+  props: PropDto[];
 }
 
 export interface CreateComponentDto {
