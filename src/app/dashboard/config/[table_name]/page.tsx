@@ -24,8 +24,8 @@ import {
 } from "@/components/ui/select";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTableInputTypes, updateTableConfig } from "@/services/dashboard";
-import { data_type } from "@prisma/client";
 import { toast } from "react-toastify";
+import { type } from "@prisma/client";
 export default function TableConfig({
   params,
 }: {
@@ -34,7 +34,7 @@ export default function TableConfig({
   const table_name = params.table_name;
   const { table, tables } = useDatabase(table_name);
 
-  const { data: input_types } = useQuery<data_type[]>(["input_types"], () =>
+  const { data: input_types } = useQuery<type[]>(["input_types"], () =>
     getTableInputTypes()
   );
 
@@ -60,8 +60,7 @@ export default function TableConfig({
       is_searchable: column.is_searchable || false,
       is_sortable: column.is_sortable || false,
       is_primary: column.is_primary || false,
-      type_id: column.type_id || 0,
-      input_type_id: column.input_type_id || 0,
+      input_type_id: column.input_type?.id || 0,
       create_crud_option_id: {
         name: "",
         is_hidden: false,
@@ -345,22 +344,6 @@ export default function TableConfig({
                         onCheckedChange={field.onChange}
                       />
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.type_id`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tip</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      This is your public display name.
-                    </FormDescription>
-                    <FormMessage />
                   </FormItem>
                 )}
               />

@@ -626,7 +626,6 @@ export class TableService {
         return new Response(JSON.stringify({ message: "Input type mevcut değil." }), { status: 404 });
       }
       const inputTypesArray = Object.values(input_type_ids);
-      console.log("sssddd :" , inputTypesArray.filter((input_type) => input_type.name == "number")[0].id) ;
       tableNamesArray.forEach(async (element) => {
         if (
           element.table_name == undefined ||
@@ -644,6 +643,64 @@ export class TableService {
         const table = tableData[0];
         console.log(table);
         try {
+          const result = await prisma.database_table.upsert({
+            include: {
+              columns: {
+                include: {
+                  input_type: true,
+                },
+              },
+            },
+            where: {
+              name: table.name,
+            },
+            create: {
+              name: table.name,
+              columns: {
+                create: table.columns.map((column: any) => ({
+                  name: column.name,
+                  input_type:{
+                    connect:{
+                      id: inputTypesArray.filter(
+                        (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
+                      )[0].id,
+                    }
+                  },
+                })),
+              },
+            },
+            update: {
+              name: table.name,
+              columns: {
+                upsert: table.columns.map((column: any) => ({
+                  where: { name: column.name },
+                  update: {
+                    name: column.name,
+                    input_type:{
+                      connect:{
+                        id: inputTypesArray.filter(
+                          (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
+                        )[0].id,
+                      }
+                    },
+                  },
+                  create: {
+                    name: column.name,
+                    input_type:{
+                      connect:{
+                        id: inputTypesArray.filter(
+                          (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
+                        )[0].id,
+                      }
+                    },
+                  },
+                })),
+              },
+            },
+            
+          });
+
+          /*
           const result = await prisma.database_table.create({
             include: {
               columns: {
@@ -668,6 +725,7 @@ export class TableService {
               },
             },
           });
+          */
           tableConifgs.push(result);
         } catch (error: any) {
           console.log("error ::" , error);

@@ -38,4 +38,20 @@ export class TypeService {
             return new Response(JSON.stringify({ status: "error", message: error }))
         }
     }
+
+    async getInputDataTypes() {
+        try {
+            const result = await prisma.type.findMany({
+                where: {
+                    table: {
+                        name: "database_table_column"
+                    }
+                }
+            })
+            return new Response(JSON.stringify( result ), { status: 200 })
+        } catch (error) {
+            console.log(error)
+            return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
+        }
+    }
 }
