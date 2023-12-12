@@ -4,7 +4,7 @@ export async function GET(request: Request) {
   try {
     const data = await prisma.component.findMany({
       include: {
-        types: true,
+        type: true,
         tag: true,
         component_prop: {
           include: {
@@ -19,4 +19,10 @@ export async function GET(request: Request) {
       status: 400,
     });
   }
+
+  // post olacak
+  //tag ve prop da oluşturulabilecek
+
+  //yeni oluşturulan prop component prop'a da eklenecek
+  
 }

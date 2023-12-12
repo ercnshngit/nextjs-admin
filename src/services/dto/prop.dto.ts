@@ -1,4 +1,4 @@
-import { TypeDto } from "./types.dto";
+import { TypeDto } from "./type.dto";
 
 export interface ComponentPropDto {
   prop: {

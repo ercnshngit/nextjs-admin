@@ -355,30 +355,4 @@ export class BlockComponentService {
       );
     }
   }
-
-  /*async checkBlockComponents(data: BlockComponentDto, code?: string) {
-        let msg = '';
-        let checkComponent: any = 'null', checkBelongComponent: any = 'null', checkBlock: any = 'null';
-
-        if (code == undefined && data.component.id != undefined) {
-            checkComponent = await prisma.component.findUnique({ where: { id: data.component.id } })
-        }
-        if (data.belong_block_component_code != undefined) {
-            checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_block_component_code } })
-        }
-        if (data.block) {
-            if (data.block.id != undefined) {
-                checkBlock = await prisma.block.findUnique({ where: { id: data.block.id } });
-                if (!checkBlock) {
-                    msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en
-                }
-            }
-        }
-        !checkComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN :
-            !checkBelongComponent ? msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN : null
-        if (msg) {
-            return msg
-        }
-        return null
-    }*/
 }

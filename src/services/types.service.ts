@@ -1,6 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { TypeDto } from "./dto/types.dto";
+import { TypeDto } from "./dto/type.dto";
 
 export class TypeService {
     async getType(id: number) {
