@@ -65,6 +65,7 @@ export default function BlockBuilder({
       collisionDetection={customCollisionDetectionAlgorithm}
     >
       <Designer />
+
       <DesignerSidebar sidebarComponents={sidebarComponents} onSave={onSave} />
       <DragOverlayWrapper />
     </DndContext>
@@ -248,25 +249,17 @@ function Designer() {
         console.log("1");
         const sidebarComponent = draggedElement?.component as ComponentDto;
         const newElement = {
+          ...sidebarComponent,
           code: crypto.randomUUID(),
           component: {
-            id: sidebarComponent.id,
-            name: sidebarComponent.name,
-            tag: sidebarComponent.tag,
-            type_id: sidebarComponent.types.id,
-            types: sidebarComponent.types,
-            icon: sidebarComponent.icon,
+            ...sidebarComponent,
+            type_id: sidebarComponent.type.id,
             tag_id: sidebarComponent.tag.id,
-            component_prop: sidebarComponent.props,
           },
           block: {
             id: 0,
             title: "deneme block",
             type_id: 1,
-          },
-          types: {
-            id: sidebarComponent.types.id,
-            name: sidebarComponent.types.name,
           },
           depth: 0,
           hasChildren: sidebarComponent.props.find(
@@ -307,28 +300,19 @@ function Designer() {
         // ORDER
         //BELONG_BLOCK_COMPONENT_CODE
         const newElement = {
+          ...sidebarComponent,
           code: crypto.randomUUID(),
           component: {
-            id: sidebarComponent.id,
-            name: sidebarComponent.name,
-            tag: sidebarComponent.tag,
-            type_id: sidebarComponent.types.id,
-            types: sidebarComponent.types,
-            icon: sidebarComponent.icon,
+            ...sidebarComponent,
+            type_id: sidebarComponent.type.id,
             tag_id: sidebarComponent.tag.id,
-            component_prop: sidebarComponent.props,
           },
           block: {
             id: 0,
             title: "deneme block",
             type_id: 1,
           },
-          types: {
-            id: sidebarComponent.types.id,
-            name: sidebarComponent.types.name,
-          },
-          depth: droppedArea?.component.depth, // BURASI ÜSTTEKİNDEN FARKLI
-          hasChildren: sidebarComponent.props.find(
+          hasChildren: sidebarComponent.component_prop.find(
             (prop) => prop.prop.key === "children"
           )
             ? true
@@ -342,6 +326,7 @@ function Designer() {
             prop: prop.prop,
             value: "",
           })),
+          depth: droppedArea?.component.depth, // BURASI ÜSTTEKİNDEN FARKLI
           order: indexForNewElement,
           belong_block_component_code:
             droppedArea?.component.belong_block_component_code,
@@ -354,30 +339,19 @@ function Designer() {
         const sidebarComponent = draggedElement?.component as ComponentDto;
 
         const newElement = {
+          ...sidebarComponent,
           code: crypto.randomUUID(),
           component: {
-            id: sidebarComponent.id,
-            name: sidebarComponent.name,
-            tag: sidebarComponent.tag,
-            type_id: sidebarComponent.types.id,
-            types: sidebarComponent.types,
-            icon: sidebarComponent.icon,
+            ...sidebarComponent,
+            type_id: sidebarComponent.type.id,
             tag_id: sidebarComponent.tag.id,
-            component_prop: sidebarComponent.props,
           },
           block: {
             id: 0,
             title: "deneme block",
             type_id: 1,
           },
-          types: {
-            id: sidebarComponent.types.id,
-            name: sidebarComponent.types.name,
-          },
-          depth: droppedArea?.component.depth + 1,
-          order: 0,
-          belong_block_component_code: droppedArea?.component.code,
-          hasChildren: sidebarComponent.props.find(
+          hasChildren: sidebarComponent.component_prop.find(
             (prop) => prop.prop.key === "children"
           )
             ? true
@@ -391,6 +365,9 @@ function Designer() {
             prop: prop.prop,
             value: "",
           })),
+          depth: droppedArea?.component.depth + 1,
+          order: 0,
+          belong_block_component_code: droppedArea?.component.code,
         };
 
         addElement(0, newElement);

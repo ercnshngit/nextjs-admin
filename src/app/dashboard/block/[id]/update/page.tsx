@@ -32,21 +32,11 @@ export default function BuilderPage({
   const handleSave = async () => {
     const data: CreateBlockComponentsDto = {
       block_components: elements.map((el) => ({
+        ...el,
         component: {
-          id: el.component.id,
-          name: el.component.name,
-          type_id: el.component.types.id,
-          icon: el.component.icon,
+          ...el.component,
+          type_id: el.component.type,
           tag_id: el.component.tag.id,
-          tag: {
-            id: el.component.tag.id,
-            name: el.component.tag.name,
-          },
-          types: {
-            id: el.component.types.id,
-            name: el.component.types.name,
-          },
-          component_prop: el.component.props,
         },
         block: {
           id: Number(params.id),
@@ -56,18 +46,6 @@ export default function BuilderPage({
         belong_block_component_code: el.belong_block_component_code
           ? el.belong_block_component_code
           : null,
-        depth: el.depth,
-        order: el.order,
-        code: el.code,
-        hasChildren: el.hasChildren,
-        props: el.props.map((prop) => ({
-          prop: {
-            id: prop.prop.id,
-            key: prop.prop.key,
-            type_id: prop.prop.type_id,
-          },
-          value: prop.value,
-        })),
       })),
     };
 
