@@ -27,12 +27,17 @@ import { Label } from "../ui/label";
 import { Switch } from "../ui/switch";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
 import { componentTags } from "./utils/component-tags";
-import { createTree } from "./utils/tree-operations";
+import {
+  createStringFromElements,
+  createStringFromTree,
+  createTree,
+} from "./utils/tree-operations";
 import JSONEditInput from "./components/json-edit-input";
 import { ComponentDto } from "@/services/dto/component.dto";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { FormControl, FormItem, FormLabel } from "../ui/form";
+import { transformToDesiredFormat } from "./utils/jsx-to-json";
 
 export const Icons = {
   LetterCaseCapitalize: LetterCaseCapitalizeIcon,
@@ -94,16 +99,24 @@ function DesignerSidebar({
         <Button onClick={saveElements}>Gönder</Button>
       </div>
       <div className="flex items-center mb-6 justify-between  w-full space-x-2">
-        <div
-          className="py-1 px-2 my-2 w-full text-center select-none cursor-pointer bg-gray-100 rounded "
-          onClick={() => {
-            setMode((prev) =>
-              prev === "ui" ? "html" : prev === "html" ? "preview" : "ui"
-            );
-          }}
+        <Button
+          onClick={() => setMode("ui")}
+          variant={mode === "ui" ? "default" : "secondary"}
         >
-          {mode}
-        </div>
+          Tasarım
+        </Button>
+        <Button
+          onClick={() => setMode("preview")}
+          variant={mode === "preview" ? "default" : "secondary"}
+        >
+          Önizleme
+        </Button>
+        <Button
+          onClick={() => setMode("html")}
+          variant={mode === "html" ? "default" : "secondary"}
+        >
+          HTML
+        </Button>
       </div>
       {selectedElement && (
         <div className="flex flex-col w-full  gap-2">
@@ -189,15 +202,40 @@ function Designer() {
     selectedElement,
     setSelectedElement,
     removeElement,
+    setElements,
     mode,
   } = useDesigner();
 
   const [tree, setTree] = useState<BlockComponentDto[]>([]);
+  const [hoveredElement, setHoveredElement] = useState<string[]>([]);
+  const [jsx, setJsx] = useState<string>("");
+  const [htmlError, setHtmlError] = useState<string | null>(null);
+
   useEffect(() => {
-    setTree(createTree(elements));
+    if (mode !== "html") return;
+    if (jsx === "") return;
+    (async () => {
+      const jsxElements = await transformToDesiredFormat(
+        jsx.replaceAll("\n", "")
+      );
+      if (jsxElements.error) {
+        console.log("hata", jsxElements.error);
+        setHtmlError(jsxElements.error.message);
+        return;
+      } else {
+        setHtmlError(null);
+      }
+      setElements([...jsxElements]);
+    })();
+  }, [jsx]);
+
+  useEffect(() => {
+    const elementTree = createTree(elements);
+    if (!elementTree) return;
+    setTree(elementTree);
+    // setJsx(createStringFromTree(elementTree));
   }, [elements]);
 
-  const [hoveredElement, setHoveredElement] = useState<string[]>([]);
   const droppable = useDroppable({
     id: "designer-drop-area",
     data: {
@@ -295,6 +333,7 @@ function Designer() {
         console.log("2");
         const sidebarComponent = draggedElement?.component as ComponentDto;
         const overId = droppedArea?.component.code;
+        console.log(droppedArea?.component.component.tag.name);
         const overElementIndex = elements.findIndex((el) => el.code === overId);
         if (overElementIndex === -1) {
           throw new Error("element not found");
@@ -304,7 +343,6 @@ function Designer() {
         if (droppedArea?.isBottomHalf) {
           indexForNewElement = overElementIndex + 1;
         }
-        console.log("bırakılan yer", droppedArea);
         //DEPTH
         // ORDER
         //BELONG_BLOCK_COMPONENT_CODE
@@ -518,7 +556,18 @@ function Designer() {
       >
         {mode === "html" ? (
           <div className="flex flex-col  w-full gap-2 p-4">
-            <textarea></textarea>
+            {htmlError && (
+              <div className="bg-red-500 p-4 rounded-md text-white">
+                {JSON.stringify(htmlError, null, 2)}
+              </div>
+            )}
+            <textarea
+              value={jsx}
+              onChange={(e) => {
+                setJsx(e.target.value);
+              }}
+              className="rounded-md border w-full border-gray-300 p-2 h-[500px]"
+            />
           </div>
         ) : (
           <div

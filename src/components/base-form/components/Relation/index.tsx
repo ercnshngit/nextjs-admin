@@ -225,8 +225,6 @@ function RelationWithPivot({
                   {
                     field.relation!.pivotTableExtraColumns?.map(
                       (extraColumn) => {
-                        console.log("hey hey", extraColumn);
-
                         const extraColumnField = {
                           ...extraColumn,
                           // TODO: bu sayfada page özelinde yazılmış kodlar var mesela aşağıdaki inputType bunlar elden geçirilecek

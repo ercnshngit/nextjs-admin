@@ -2,9 +2,9 @@ import { prisma } from "@/libs/prisma";
 
 export async function GET(request: Request) {
   try {
-    const data = await prisma.data_type.findMany({
+    const data = await prisma.type.findMany({
       where: {
-        type_id: 27,
+        table_id: 1,
       },
     });
     return new Response(JSON.stringify(data), { status: 200 });
