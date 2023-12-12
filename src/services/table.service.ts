@@ -1,4 +1,3 @@
-import { prisma } from "../libs/prisma";
 import { config } from "dotenv";
 import {
   ConfirmMessages,
@@ -6,9 +5,8 @@ import {
 } from "../../constants/messages.constants";
 import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
+import { prisma } from "../libs/prisma";
 import { DatabaseTableDto } from "./dto/database-table.dto";
-import { stat } from "fs";
-import { DataBaseTableColumnDto } from "./dto/database-table-column.dto";
 
 config();
 export class TableService {
@@ -246,21 +244,20 @@ export class TableService {
                   },
                 },
               },
-              type: true,
               input_type: true,
               create_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               read_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               update_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
             },
@@ -299,21 +296,20 @@ export class TableService {
                   },
                 },
               },
-              type: true,
               input_type: true,
               create_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               read_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               update_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
             },
@@ -338,7 +334,6 @@ export class TableService {
             select: {
               id: true,
               name: true,
-              type_id: true,
               input_type_id: true,
               is_primary: true,
               is_required: true,
@@ -350,7 +345,6 @@ export class TableService {
               create_crud_option_id: true,
               read_crud_option_id: true,
               update_crud_option_id: true,
-              type: true,
               input_type: true,
               create_crud_option: true,
               read_crud_option: true,
@@ -456,21 +450,20 @@ export class TableService {
         include: {
           columns: {
             include: {
-              type: true,
               input_type: true,
               create_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 }
               },
               read_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
               update_crud_option: {
                 include: {
-                  InputType: true,
+                  input_type: true,
                 },
               },
             },
@@ -516,7 +509,6 @@ export class TableService {
             include: {
               columns: {
                 include: {
-                  type: true,
                   input_type: true,
                 },
               },
