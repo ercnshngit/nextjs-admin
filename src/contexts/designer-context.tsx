@@ -15,8 +15,8 @@ type DesignerContextType = {
   setElements: Dispatch<SetStateAction<BlockComponentDto[]>>;
   addElement: (index: number, element: BlockComponentDto) => void;
   removeElement: (code: string) => void;
-  isPreview: boolean;
-  setIsPreview: Dispatch<SetStateAction<boolean>>;
+  mode: "ui" | "html" | "preview";
+  setMode: Dispatch<SetStateAction<"ui" | "html" | "preview">>;
   selectedElement: BlockComponentDto | null;
   setSelectedElement: Dispatch<SetStateAction<BlockComponentDto | null>>;
 
@@ -29,7 +29,7 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [elements, setElements] = useState<BlockComponentDto[]>([]);
   const [selectedElement, setSelectedElement] =
     useState<BlockComponentDto | null>(null);
-  const [isPreview, setIsPreview] = useState(false);
+  const [mode, setMode] = useState<"html" | "preview" | "ui">("ui");
 
   const addElement = (index: number, element: BlockComponentDto) => {
     setElements((prev) => {
@@ -61,8 +61,8 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
         setElements,
         addElement,
         removeElement,
-        isPreview,
-        setIsPreview,
+        mode,
+        setMode,
         selectedElement,
         setSelectedElement,
 
