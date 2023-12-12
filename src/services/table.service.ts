@@ -648,11 +648,13 @@ export class TableService {
                   name: column.name,
                   input_type: {
                     connect: {
-                      ui_name_type_id: {
+                      name: InputTypes.INPUT_TYPES.filter(
+                        (inputType) => inputType.id == column.input_type_id
+                      )[0].name,
+                      table:{
                         name: InputTypes.INPUT_TYPES.filter(
                           (inputType) => inputType.id == column.input_type_id
-                        )[0].name,
-                        type_id: TypeCategories.INPUT_TYPE,
+                        )[0].table_name,
                       },
                     },
                   },
@@ -666,7 +668,8 @@ export class TableService {
             error.meta != undefined &&
             error.meta.target != undefined &&
             error.meta.target == "ui_name"
-          ) {
+            ) {
+            console.log(error);
             // var olan bir sey eklenmeye clısıldıysa
             return;
           }
@@ -675,6 +678,7 @@ export class TableService {
           );
         }
       });
+      console.log(tableConifgs);
       return new Response(
         JSON.stringify(
           tableConifgs.length == 0
