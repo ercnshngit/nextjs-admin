@@ -1,4 +1,4 @@
-import { PropDto } from "./prop.dto";
+import { ComponentPropDto, PropDto } from "./prop.dto";
 import { TagDto } from "./tag.dto";
 import { TypesDto } from "./types.dto";
 
@@ -6,7 +6,7 @@ export interface ComponentDto {
   id: number;
   name: string;
   tag: TagDto;
-  type: TypesDto;
+  types: TypesDto;
   icon?: string;
-  props: PropDto[];
+  component_prop: ComponentPropDto[];
 }

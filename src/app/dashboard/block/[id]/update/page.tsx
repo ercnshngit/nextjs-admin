@@ -35,18 +35,18 @@ export default function BuilderPage({
         component: {
           id: el.component.id,
           name: el.component.name,
-          type_id: el.component.type.id,
+          type_id: el.component.types.id,
           icon: el.component.icon,
           tag_id: el.component.tag.id,
           tag: {
             id: el.component.tag.id,
             name: el.component.tag.name,
           },
-          type: {
-            id: el.component.type.id,
-            name: el.component.type.name,
+          types: {
+            id: el.component.types.id,
+            name: el.component.types.name,
           },
-          props: el.component.props,
+          component_prop: el.component.component_prop,
         },
         block: {
           id: Number(params.id),

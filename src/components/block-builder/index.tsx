@@ -253,39 +253,34 @@ function Designer() {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
             tag: sidebarComponent.tag,
-            type_id: sidebarComponent.type.id,
-            type: sidebarComponent.type,
+            type_id: sidebarComponent.types.id,
+            types: sidebarComponent.types,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
-            props: sidebarComponent.props,
+            component_prop: sidebarComponent.component_prop,
           },
           block: {
             id: 0,
             title: "deneme block",
             type_id: 1,
           },
-          type: {
-            id: sidebarComponent.type.id,
-            name: sidebarComponent.type.name,
+          types: {
+            id: sidebarComponent.types.id,
+            name: sidebarComponent.types.name,
           },
           depth: 0,
-          hasChildren: sidebarComponent.props.find(
-            (prop) => prop.key === "children"
+          hasChildren: sidebarComponent.component_prop.find(
+            (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.props.find(
-            (prop) => prop.key === "children"
+          children: sidebarComponent.component_prop.find(
+            (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.props.map((prop) => ({
-            prop: {
-              id: prop.id,
-              key: prop.key,
-              type: prop.type,
-              type_id: prop.type_id,
-            },
+          props: sidebarComponent.component_prop.map((prop) => ({
+            prop: prop.prop,
             value: "",
           })),
           order: elements.length,
@@ -317,39 +312,34 @@ function Designer() {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
             tag: sidebarComponent.tag,
-            type_id: sidebarComponent.type.id,
-            type: sidebarComponent.type,
+            type_id: sidebarComponent.types.id,
+            types: sidebarComponent.types,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
-            props: sidebarComponent.props,
+            component_prop: sidebarComponent.component_prop,
           },
           block: {
             id: 0,
             title: "deneme block",
             type_id: 1,
           },
-          type: {
-            id: sidebarComponent.type.id,
-            name: sidebarComponent.type.name,
+          types: {
+            id: sidebarComponent.types.id,
+            name: sidebarComponent.types.name,
           },
           depth: droppedArea?.component.depth, // BURASI ÜSTTEKİNDEN FARKLI
-          hasChildren: sidebarComponent.props.find(
-            (prop) => prop.key === "children"
+          hasChildren: sidebarComponent.component_prop.find(
+            (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.props.find(
-            (prop) => prop.key === "children"
+          children: sidebarComponent.component_prop.find(
+            (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.props.map((prop) => ({
-            prop: {
-              id: prop.id,
-              key: prop.key,
-              type: prop.type,
-              type_id: prop.type_id,
-            },
+          props: sidebarComponent.component_prop.map((prop) => ({
+            prop: prop.prop,
             value: "",
           })),
           order: indexForNewElement,
@@ -369,41 +359,36 @@ function Designer() {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
             tag: sidebarComponent.tag,
-            type_id: sidebarComponent.type.id,
-            type: sidebarComponent.type,
+            type_id: sidebarComponent.types.id,
+            types: sidebarComponent.types,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
-            props: sidebarComponent.props,
+            component_prop: sidebarComponent.component_prop,
           },
           block: {
             id: 0,
             title: "deneme block",
             type_id: 1,
           },
-          type: {
-            id: sidebarComponent.type.id,
-            name: sidebarComponent.type.name,
+          types: {
+            id: sidebarComponent.types.id,
+            name: sidebarComponent.types.name,
           },
           depth: droppedArea?.component.depth + 1,
           order: 0,
           belong_block_component_code: droppedArea?.component.code,
-          hasChildren: sidebarComponent.props.find(
-            (prop) => prop.key === "children"
+          hasChildren: sidebarComponent.component_prop.find(
+            (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.props.find(
-            (prop) => prop.key === "children"
+          children: sidebarComponent.component_prop.find(
+            (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.props.map((prop) => ({
-            prop: {
-              id: prop.id,
-              key: prop.key,
-              type: prop.type,
-              type_id: prop.type_id,
-            },
+          props: sidebarComponent.component_prop.map((prop) => ({
+            prop: prop.prop,
             value: "",
           })),
         };
