@@ -22,7 +22,7 @@ model database_table {
   referenced_column_relations column_relation[]       @relation("fk_cr_referenced_table_id")
   pivoted_column_relations    column_relation[]       @relation("fk_cr_pivot_table_id")
 
-  @@unique([name], name: "ui_name")
+  @@unique([name], map: "ui_name")
   @@map("database_table")
 }
 
@@ -238,7 +238,7 @@ model language {
   name String
   code String
 
-  general     general[]    @relation("fk_general_language_code")
+  general      general[]     @relation("fk_general_language_code")
   translations translation[] @relation("fk_trs_language_code")
   type         type[]        @relation("fk_type_language_code")
 

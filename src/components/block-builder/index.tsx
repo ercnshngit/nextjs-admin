@@ -271,17 +271,17 @@ function Designer() {
             type_id: 1,
           },
           depth: 0,
-          hasChildren: sidebarComponent.component_prop.find(
+          hasChildren: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
+          children: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: prop.prop,
             value: "",
           })),
@@ -326,12 +326,12 @@ function Designer() {
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
+          children: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: prop.prop,
             value: "",
           })),
@@ -365,12 +365,12 @@ function Designer() {
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
+          children: sidebarComponent.props.find(
             (prop) => prop.prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: prop.prop,
             value: "",
           })),

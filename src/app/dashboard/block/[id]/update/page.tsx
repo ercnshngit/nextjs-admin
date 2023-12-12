@@ -25,7 +25,7 @@ export default function BuilderPage({
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
     {
-      onSuccess: async () => {},
+      onSuccess: async () => { },
     }
   );
 

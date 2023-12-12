@@ -1,28 +1,23 @@
-import { prisma } from "@/libs/prisma";
+import { ComponentService } from "@/services/component.service";
+import { ServerMessages } from "../../../../constants/messages.constants";
 
-export async function GET(request: Request) {
+export async function GET(req: Request) {
   try {
-    const data = await prisma.component.findMany({
-      include: {
-        type: true,
-        tag: true,
-        component_prop: {
-          include: {
-            prop: true,
-          },
-        },
-      },
-    });
-    return new Response(JSON.stringify(data), { status: 200 });
+    const componentService = new ComponentService();
+    return await componentService.getComponents();
   } catch (error) {
-    return new Response(JSON.stringify({ status: "error", message: error }), {
-      status: 400,
-    });
+    console.log(error);
+    throw new Error(ServerMessages[500]);
   }
+}
 
-  // post olacak
-  //tag ve prop da oluşturulabilecek
-
-  //yeni oluşturulan prop component prop'a da eklenecek
-  
+export async function POST(req: Request) {
+  try {
+    const componentService = new ComponentService()
+    const body = await req.json()
+    return await componentService.createComponent(body)
+  } catch (error) {
+    console.log(error)
+    throw new Error(ServerMessages[500])
+  }
 }
