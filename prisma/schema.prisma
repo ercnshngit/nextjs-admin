@@ -111,7 +111,7 @@ model type {
   prop                   prop[]                  @relation("fk_prop_type_id") //one to many
   language               language?               @relation("fk_type_language_code", fields: [language_code], references: [code], map: "fk_type_language_code")
 
-  @@unique([name, table_id], map: "ui_name_table_id")
+  @@unique([table_id, name], map: "ui_name_table_id")
 }
 
 model tag {
