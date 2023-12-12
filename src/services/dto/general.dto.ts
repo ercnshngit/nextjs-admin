@@ -1,4 +1,4 @@
-export interface GeneralsDto {
+export interface GeneralDto {
     id: number;
     title: string
     description?: string

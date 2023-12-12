@@ -1,24 +1,24 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
-import { GeneralsDto } from "./dto/generals.dto";
+import { GeneralDto } from "./dto/general.dto";
 
-export class GeneralsService {
+export class GeneralService {
     async getGeneral(id: number) {
         const general = await prisma.generals.findUnique({ where: { id } })
-        if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),{status:404}); }
+        if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(general));
     }
 
     async getGenerals() {
         const generals = await prisma.generals.findMany()
-        if (generals.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),{status:404}); }
+        if (generals.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(generals));
     }
 
-    async createGeneral(data: GeneralsDto) {
+    async createGeneral(data: GeneralDto) {
         try {
             const general = await prisma.generals.create({ data })
-            if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),{status:404}); }
+            if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             return new Response(JSON.stringify(general));
         }
         catch (error) {
@@ -27,13 +27,13 @@ export class GeneralsService {
         }
     }
 
-    async updateGeneral(id: number, data: GeneralsDto) {
+    async updateGeneral(id: number, data: GeneralDto) {
         try {
             const general = await prisma.generals.findUnique({ where: { id } })
-            if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),{status:404}); }
+            if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             Object.assign(general, data)
             const new_general = await prisma.generals.update({ where: { id }, data })
-            if (!new_general) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }),{status:400}); }
+            if (!new_general) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }), { status: 400 }); }
             return new Response(JSON.stringify(new_general));
         }
         catch (error) {
@@ -45,10 +45,10 @@ export class GeneralsService {
     async deleteGeneral(id: number) {
         try {
             const general = await prisma.generals.findUnique({ where: { id } })
-            if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),{status:404}); }
+            if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             const delete_general = await prisma.generals.delete({ where: { id } })
-            if (!delete_general) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }),{status:400}); }
-            return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }),{status:200});
+            if (!delete_general) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }), { status: 400 }); }
+            return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
         }
         catch (error) {
             console.log(error)

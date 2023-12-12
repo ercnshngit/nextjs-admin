@@ -137,7 +137,7 @@ model menu {
   type        type?  @relation("fk_menu_type_id", fields: [type_id], references: [id], map: "fk_menu_type_id") //many to one
 }
 
-model generals {
+model general {
   id            Int      @id @default(autoincrement())
   title         String
   description   String?  @db.Text
@@ -238,7 +238,7 @@ model language {
   name String
   code String
 
-  generals     generals[]    @relation("fk_general_language_code")
+  general     general[]    @relation("fk_general_language_code")
   translations translation[] @relation("fk_trs_language_code")
   type         type[]        @relation("fk_type_language_code")
 

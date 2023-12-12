@@ -1,10 +1,10 @@
-import { GeneralsService } from "@/services/generals.service";
+import { GeneralService } from "@/services/generals.service";
 import { ServerMessages } from "../../../../../../constants/messages.constants";
 
 export async function GET(req: Request, { params }: { params: { id: number } }) {
     try {
-        const generalsService = new GeneralsService();
-        return await generalsService.getGeneral(Number(params.id));
+        const generalService = new GeneralService();
+        return await generalService.getGeneral(Number(params.id));
     } catch (error) {
         console.log(error);
         throw new Error(ServerMessages[500]);
@@ -13,9 +13,9 @@ export async function GET(req: Request, { params }: { params: { id: number } }) 
 
 export async function POST(req: Request, { params }: { params: { id: number } }) {
     try {
-        const generalsService = new GeneralsService();
+        const generalService = new GeneralService();
         const body = await req.json();
-        return await generalsService.updateGeneral(Number(params.id), body);
+        return await generalService.updateGeneral(Number(params.id), body);
     } catch (error) {
         console.log(error);
         throw new Error(ServerMessages[500]);
