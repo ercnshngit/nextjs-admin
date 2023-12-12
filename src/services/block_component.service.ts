@@ -44,7 +44,7 @@ export class BlockComponentService {
             component_id: true,
             depth: true,
             order: true,
-            belong_component_id: true,
+            belong_block_component_code: true,
             block_id: true,
             code: true,
             hasChildren: true,
@@ -95,7 +95,7 @@ export class BlockComponentService {
             component_id: true,
             depth: true,
             order: true,
-            belong_component_id: true,
+            belong_block_component_code: true,
             block_id: true,
             code: true,
             hasChildren: true,
@@ -134,7 +134,7 @@ export class BlockComponentService {
           data: {
             component_id: data.component.id,
             block_id: data.block.id,
-            belong_component_id: item.belong_component_id,
+            belong_block_component_code: item.belong_block_component_code,
             depth: item.depth,
             order: item.order,
             code: item.code,
@@ -173,7 +173,7 @@ export class BlockComponentService {
           type_id: data.type.id,
           icon: data.component.icon,
           block_id: data.block.id,
-          belong_component_id: item.belong_component_id,
+          belong_block_component_code: item.belong_block_component_code,
           depth: item.depth,
           order: item.order,
           code: item.code,
@@ -274,9 +274,9 @@ export class BlockComponentService {
           where: { id: data.block_id },
         });
       }
-      if (data.belong_component_id != undefined) {
+      if (data.belong_block_component_code != undefined) {
         check_belong_component = await prisma.component.findUnique({
-          where: { id: data.belong_component_id },
+          where: { id: data.belong_block_component_code },
         });
       }
       !check_component
@@ -363,8 +363,8 @@ export class BlockComponentService {
         if (code == undefined && data.component.id != undefined) {
             checkComponent = await prisma.component.findUnique({ where: { id: data.component.id } })
         }
-        if (data.belong_component_id != undefined) {
-            checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_component_id } })
+        if (data.belong_block_component_code != undefined) {
+            checkBelongComponent = await prisma.component.findUnique({ where: { id: data.belong_block_component_code } })
         }
         if (data.block) {
             if (data.block.id != undefined) {

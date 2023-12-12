@@ -1,7 +1,6 @@
 "use client";
 import { useDesigner } from "@/contexts/designer-context";
 import { cn } from "@/libs/utils";
-import { Component, PageComponent } from "@/types/page-component";
 import {
   DndContext,
   DragEndEvent,
@@ -30,6 +29,8 @@ import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
 import { componentTags } from "./utils/component-tags";
 import { createTree } from "./utils/tree-operations";
 import JSONEditInput from "./components/json-edit-input";
+import { ComponentDto } from "@/services/dto/component.dto";
+import { BlockComponentDto } from "@/services/dto/block_component.dto";
 
 export const Icons = {
   LetterCaseCapitalize: LetterCaseCapitalizeIcon,
@@ -41,7 +42,7 @@ export default function BlockBuilder({
   sidebarComponents,
 }: {
   onSave: () => void;
-  sidebarComponents: Component[];
+  sidebarComponents: ComponentDto[];
 }) {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -74,7 +75,7 @@ function DesignerSidebar({
   sidebarComponents,
   onSave,
 }: {
-  sidebarComponents: Component[];
+  sidebarComponents: ComponentDto[];
   onSave: () => void;
 }) {
   const { elements, selectedElement, isPreview, updateElement, setIsPreview } =
@@ -146,7 +147,7 @@ function SidebarComponent({
   component,
   ...props
 }: {
-  component: Component;
+  component: ComponentDto;
   [key: string]: any;
 }) {
   const draggable = useDraggable({
@@ -181,7 +182,7 @@ function Designer() {
     isPreview,
   } = useDesigner();
 
-  const [tree, setTree] = useState<PageComponent[]>([]);
+  const [tree, setTree] = useState<BlockComponentDto[]>([]);
   useEffect(() => {
     setTree(createTree(elements));
   }, [elements]);
@@ -192,7 +193,7 @@ function Designer() {
     data: {
       isDesignerDropArea: true,
       depth: 0,
-      belong_component_id: null,
+      belong_block_component_code: null,
     },
   });
 
@@ -202,13 +203,13 @@ function Designer() {
       if (!active || !over) return;
 
       type DraggedElement = {
-        component: PageComponent | Component;
+        component: BlockComponentDto | ComponentDto;
         isComponent?: boolean;
         isSidebarComponent?: boolean;
       };
 
       type DroppedArea = {
-        component: PageComponent;
+        component: BlockComponentDto;
         hasChildren?: boolean;
         isTopHalf?: boolean;
         isBottomHalf?: boolean;
@@ -245,52 +246,57 @@ function Designer() {
 
       if (isSidebarComponentDroppingOverDesignerDropArea) {
         console.log("1");
-        const sidebarComponent = draggedElement?.component as Component;
-        console.log(sidebarComponent);
+        const sidebarComponent = draggedElement?.component as ComponentDto;
         const newElement = {
           code: crypto.randomUUID(),
           component: {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
-            tag: sidebarComponent.tag.name,
-            type_id: sidebarComponent.types.id,
+            tag: sidebarComponent.tag,
+            type_id: sidebarComponent.type.id,
+            type: sidebarComponent.type,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
+            props: sidebarComponent.props,
           },
-          block_id: 0,
+          block: {
+            id: 0,
+            title: "deneme block",
+            type_id: 1,
+          },
           type: {
-            id: sidebarComponent.types.id,
-            name: sidebarComponent.types.name,
+            id: sidebarComponent.type.id,
+            name: sidebarComponent.type.name,
           },
           depth: 0,
-          hasChildren: sidebarComponent.component_prop.find(
-            (p) => p.prop.key === "children"
+          hasChildren: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
-            (p) => p.prop.key === "children"
+          children: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: {
-              id: prop.prop.id,
-              key: prop.prop.key,
-              type: prop.prop.type,
-              type_id: prop.prop.type_id,
+              id: prop.id,
+              key: prop.key,
+              type: prop.type,
+              type_id: prop.type_id,
             },
             value: "",
           })),
           order: elements.length,
-          belong_component_id: null,
+          belong_block_component_code: null,
         };
 
         addElement(elements.length, newElement);
         return;
       } else if (isSidebarComponentDroppingOverComponent) {
         console.log("2");
-        const sidebarComponent = draggedElement?.component as Component;
+        const sidebarComponent = draggedElement?.component as ComponentDto;
         const overId = droppedArea?.component.code;
         const overElementIndex = elements.findIndex((el) => el.code === overId);
         if (overElementIndex === -1) {
@@ -302,85 +308,101 @@ function Designer() {
           indexForNewElement = overElementIndex + 1;
         }
         console.log("bırakılan yer", droppedArea);
+        //DEPTH
+        // ORDER
+        //BELONG_BLOCK_COMPONENT_CODE
         const newElement = {
           code: crypto.randomUUID(),
           component: {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
-            tag: sidebarComponent.tag.name,
-            type_id: sidebarComponent.types.id,
+            tag: sidebarComponent.tag,
+            type_id: sidebarComponent.type.id,
+            type: sidebarComponent.type,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
+            props: sidebarComponent.props,
           },
-          block_id: 0,
+          block: {
+            id: 0,
+            title: "deneme block",
+            type_id: 1,
+          },
           type: {
-            id: sidebarComponent.types.id,
-            name: sidebarComponent.types.name,
+            id: sidebarComponent.type.id,
+            name: sidebarComponent.type.name,
           },
-          depth: droppedArea?.component.depth,
-          order: indexForNewElement,
-          belong_component_id: droppedArea?.component.belong_component_id,
-          hasChildren: sidebarComponent.component_prop.find(
-            (p) => p.prop.key === "children"
+          depth: droppedArea?.component.depth, // BURASI ÜSTTEKİNDEN FARKLI
+          hasChildren: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
-            (p) => p.prop.key === "children"
+          children: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? []
             : undefined,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: {
-              id: prop.prop.id,
-              key: prop.prop.key,
-              type: prop.prop.type,
-              type_id: prop.prop.type_id,
+              id: prop.id,
+              key: prop.key,
+              type: prop.type,
+              type_id: prop.type_id,
             },
             value: "",
           })),
+          order: indexForNewElement,
+          belong_block_component_code:
+            droppedArea?.component.belong_block_component_code,
         };
 
         addElement(indexForNewElement, newElement);
         return;
       } else if (isSidebarComponentInComponent) {
         console.log("3");
-        const sidebarComponent = draggedElement?.component as Component;
+        const sidebarComponent = draggedElement?.component as ComponentDto;
 
         const newElement = {
           code: crypto.randomUUID(),
           component: {
             id: sidebarComponent.id,
             name: sidebarComponent.name,
-            tag: sidebarComponent.tag.name,
-            type_id: sidebarComponent.types.id,
+            tag: sidebarComponent.tag,
+            type_id: sidebarComponent.type.id,
+            type: sidebarComponent.type,
             icon: sidebarComponent.icon,
             tag_id: sidebarComponent.tag.id,
+            props: sidebarComponent.props,
           },
-          block_id: 0,
+          block: {
+            id: 0,
+            title: "deneme block",
+            type_id: 1,
+          },
           type: {
-            id: sidebarComponent.types.id,
-            name: sidebarComponent.types.name,
+            id: sidebarComponent.type.id,
+            name: sidebarComponent.type.name,
           },
-          hasChildren: sidebarComponent.component_prop.find(
-            (p) => p.prop.key === "children"
+          depth: droppedArea?.component.depth + 1,
+          order: 0,
+          belong_block_component_code: droppedArea?.component.code,
+          hasChildren: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? true
             : false,
-          children: sidebarComponent.component_prop.find(
-            (p) => p.prop.key === "children"
+          children: sidebarComponent.props.find(
+            (prop) => prop.key === "children"
           )
             ? []
             : undefined,
-          depth: droppedArea?.component.depth + 1,
-          order: 0,
-          belong_component_id: droppedArea?.component.code,
-          props: sidebarComponent.component_prop.map((prop) => ({
+          props: sidebarComponent.props.map((prop) => ({
             prop: {
-              id: prop.prop.id,
-              key: prop.prop.key,
-              type: prop.prop.type,
-              type_id: prop.prop.type_id,
+              id: prop.id,
+              key: prop.key,
+              type: prop.type,
+              type_id: prop.type_id,
             },
             value: "",
           })),
@@ -415,7 +437,7 @@ function Designer() {
             ...elements[activeElementIndex],
             children: draggedElement.component.hasChildren ? [] : undefined,
             hasChildren: draggedElement.component.hasChildren,
-            belong_component_id: droppedArea.component.code,
+            belong_block_component_code: droppedArea.component.code,
             depth: droppedArea.component.depth + 1,
           };
           addElement(indexForNewElement, newElement);
@@ -426,7 +448,8 @@ function Designer() {
           ...elements[activeElementIndex],
           children: draggedElement.component.hasChildren ? [] : undefined,
           hasChildren: draggedElement.component.hasChildren,
-          belong_component_id: droppedArea.component.belong_component_id,
+          belong_block_component_code:
+            droppedArea.component.belong_block_component_code,
           depth: droppedArea.component.depth,
         };
         addElement(indexForNewElement, newElement);
@@ -447,7 +470,7 @@ function Designer() {
           children: draggedElement.component.hasChildren ? [] : undefined,
           hasChildren: draggedElement.component.hasChildren,
           depth: 0,
-          belong_component_id: null,
+          belong_block_component_code: null,
         };
         removeElement(activeCode);
         addElement(elements.length, activeElement);
@@ -455,7 +478,7 @@ function Designer() {
     },
   });
 
-  const renderDesignWrapper = (component: PageComponent) => {
+  const renderDesignWrapper = (component: BlockComponentDto) => {
     return (
       <DesignWrapper
         hoveredElement={hoveredElement}
@@ -469,7 +492,7 @@ function Designer() {
         {component.hasChildren &&
           component.children &&
           component.children.map((child) => {
-            if (child.component.tag in componentTags) {
+            if (child.component.tag.name in componentTags) {
               return renderDesignWrapper(child);
             }
             return null;
@@ -478,8 +501,8 @@ function Designer() {
     );
   };
 
-  const renderPreview = (component: PageComponent) => {
-    const Component = componentTags[component.component.tag];
+  const renderPreview = (component: BlockComponentDto) => {
+    const Component = componentTags[component.component.tag.name];
     return (
       <Component
         {...Object.fromEntries(
@@ -488,8 +511,8 @@ function Designer() {
         key={component.code}
       >
         {component.children?.map((child) => {
-          if (child.component.tag in componentTags) {
-            const ChildComponent = componentTags[child.component.tag];
+          if (child.component.tag.name in componentTags) {
+            const ChildComponent = componentTags[child.component.tag.name];
 
             return (
               <ChildComponent
@@ -536,7 +559,7 @@ function Designer() {
             (isPreview ? (
               <div className="flex flex-col  w-full gap-2 p-4">
                 {tree.map((component) => {
-                  if (component.component.tag in componentTags) {
+                  if (component.component.tag.name in componentTags) {
                     return renderPreview(component);
                   }
                   return null;
@@ -545,7 +568,7 @@ function Designer() {
             ) : (
               <div className="flex flex-col  w-full gap-2 p-4">
                 {tree.map((component) => {
-                  if (component.component.tag in componentTags) {
+                  if (component.component.tag.name in componentTags) {
                     return renderDesignWrapper(component);
                   }
                   return null;
@@ -567,7 +590,7 @@ const DesignWrapper = ({
 }: {
   hoveredElement: string[];
   setHoveredElement: React.Dispatch<React.SetStateAction<string[]>>;
-  component: PageComponent;
+  component: BlockComponentDto;
   [key: string]: any;
 }) => {
   const { removeElement, setSelectedElement } = useDesigner();
@@ -600,18 +623,18 @@ const DesignWrapper = ({
     },
   });
 
-  const Component = componentTags[component.component.tag];
+  const Component = componentTags[component.component.tag.name];
   const { addElement } = useDesigner();
   const duplicateElement = useCallback(
-    (component: PageComponent, parentCode?: string) => {
+    (component: BlockComponentDto, parentCode?: string) => {
       const code = crypto.randomUUID();
       const newElement = {
         ...component,
         code: code,
         order: parentCode ? component.order : component.order + 1,
-        belong_component_id: parentCode
+        belong_block_component_code: parentCode
           ? parentCode
-          : component.belong_component_id,
+          : component.belong_block_component_code,
       };
       if (parentCode) {
         addElement(component.order, newElement);
@@ -619,7 +642,7 @@ const DesignWrapper = ({
         addElement(component.order + 2, newElement);
       }
       component.children?.forEach((child) => {
-        if (child.component.tag in componentTags) {
+        if (child.component.tag.name in componentTags) {
           duplicateElement(child, code);
         }
       });

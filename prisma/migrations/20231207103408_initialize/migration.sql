@@ -143,7 +143,7 @@ CREATE TABLE `block_component` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `component_id` INTEGER NOT NULL,
     `block_id` INTEGER NOT NULL,
-    `belong_component_id` INTEGER NULL,
+    `belong_block_component_code` INTEGER NULL,
     `depth` INTEGER NOT NULL,
     `order` INTEGER NOT NULL,
     `code` VARCHAR(191) NOT NULL,
@@ -306,7 +306,7 @@ ALTER TABLE `block_component` ADD CONSTRAINT `fk_bcom_component_id` FOREIGN KEY 
 ALTER TABLE `block_component` ADD CONSTRAINT `fk_bcom_table_id` FOREIGN KEY (`block_id`) REFERENCES `block`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `block_component` ADD CONSTRAINT `fk_bcom_belong_component_id` FOREIGN KEY (`belong_component_id`) REFERENCES `component`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `block_component` ADD CONSTRAINT `fk_bcom_belong_block_component_code` FOREIGN KEY (`belong_block_component_code`) REFERENCES `component`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `block_component_prop` ADD CONSTRAINT `fk_bcomp_prop_id` FOREIGN KEY (`prop_id`) REFERENCES `prop`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

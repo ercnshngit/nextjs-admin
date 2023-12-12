@@ -25,7 +25,7 @@ export default function BuilderPage({
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
     {
-      onSuccess: async () => { },
+      onSuccess: async () => {},
     }
   );
 
@@ -35,18 +35,27 @@ export default function BuilderPage({
         component: {
           id: el.component.id,
           name: el.component.name,
-          type_id: el.component.type_id,
+          type_id: el.component.type.id,
           icon: el.component.icon,
-          tag_id: el.component.tag_id,
+          tag_id: el.component.tag.id,
+          tag: {
+            id: el.component.tag.id,
+            name: el.component.tag.name,
+          },
+          type: {
+            id: el.component.type.id,
+            name: el.component.type.name,
+          },
+          props: el.component.props,
         },
         block: {
           id: Number(params.id),
           title: "Deneme sdfdsfdsfSayfa",
           type_id: 10,
         },
-        belong_component_id: el.belong_component_id
-          ? Number(el.belong_component_id)
-          : undefined,
+        belong_block_component_code: el.belong_block_component_code
+          ? el.belong_block_component_code
+          : null,
         depth: el.depth,
         order: el.order,
         code: el.code,
