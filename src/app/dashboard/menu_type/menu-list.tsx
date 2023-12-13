@@ -14,10 +14,10 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteMenu } from "@/services/menu";
 import { toast } from "react-toastify";
+import { deleteMenu } from "@/services/dashboard";
 
 export default function MenuList({
   data,
@@ -88,6 +88,7 @@ export default function MenuList({
         })
     );
   }, [data]);
+  const { translate } = useTranslate();
 
   const queryClient = useQueryClient();
   const deleteMutation = useMutation({

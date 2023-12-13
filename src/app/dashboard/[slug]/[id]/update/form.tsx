@@ -1,5 +1,5 @@
 "use client";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import React, { useEffect } from "react";
 
 import { useForm, SubmitHandler } from "react-hook-form";

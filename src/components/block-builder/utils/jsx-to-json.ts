@@ -1,64 +1,72 @@
+import { getComponents } from "@/services/dashboard";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
+import { ComponentDto } from "@/services/dto/component.dto";
+import { ComponentPropDto } from "@/services/dto/prop.dto";
+import { useQuery } from "@tanstack/react-query";
 
 export function transformInput({
   input,
   code,
   depth,
   order,
+  components,
 }: {
   input: [string, { [key: string]: any }];
   code?: string;
   depth?: number;
   order?: number;
+  components: ComponentDto[];
 }) {
   const [componentName, props, ...children] = input;
   const temp: BlockComponentDto[] = [];
   const newCode = crypto.randomUUID();
-  const newdepth = depth ? depth + 1 : 0;
-  const neworder = order ? order + 1 : 0;
+  const newdepth = typeof depth === "number" ? depth + 1 : 0;
+  const neworder = typeof order === "number" ? order + 1 : 0;
 
-  const transformedOutput: BlockComponentDto = {
-    component: {
-      name: componentName,
-      tag: {
-        id: 0,
-        name: componentName,
-      },
+  const existingComponent = components.find(
+    (component) => component.tag.name === componentName
+  ) || {
+    name: componentName,
+    tag: {
       id: 0,
-      type: {
-        id: 3,
-        name: "Page Component",
-      },
-      props: [
-        ...Object.entries(props).map(([key, value]) => {
+      name: componentName,
+    },
+    id: 0,
+    type: {
+      id: 3,
+      name: "Page Component",
+    },
+    props: [
+      ...Object.entries(props).map(([key, value]) => {
+        return {
+          id: 0,
+          key: key,
+          type: {
+            id: 5,
+            name: "string",
+          },
+        };
+      }),
+      ...children
+        .filter((child) => !Array.isArray(child))
+        .filter((child) => child !== " " && child !== "" && child !== "\n")
+        .map((child) => {
           return {
-            id: 0,
-            key: key,
+            id: 37,
+            key: "value",
             type: {
               id: 5,
               name: "string",
             },
           };
         }),
-        ...children
-          .map((child) => {
-            if (child === " " || child === "" || child === "\n") return null;
-            if (!Array.isArray(child)) {
-              return {
-                id: 37,
-                key: "value",
-                type: {
-                  id: 5,
-                  name: "string",
-                },
-              };
-            } else {
-              return null;
-            }
-          })
-          .filter((e) => e),
-      ],
-    },
+    ],
+  };
+
+  const existingComponentProps = existingComponent.props;
+
+  const transformedOutput: BlockComponentDto = {
+    component: existingComponent,
     block: {
       id: 0,
       title: "Page",
@@ -71,40 +79,35 @@ export function transformInput({
     hasChildren: Array.isArray(children) && children.length > 0,
     props: [
       ...Object.entries(props).map(([key, value]) => {
+        const prop = existingComponentProps.find((prop) => prop.key === key);
+
+        const existingProp = prop
+          ? { ...prop, type_id: prop.type.id, type: undefined }
+          : {
+              id: 0,
+              key: key,
+              type_id: 5,
+            };
         return {
           id: 0,
-          prop: {
-            id: 0,
-            key: key,
-            type: {
-              id: 5,
-              name: "string",
-            },
-          },
-          value: value,
+          prop: existingProp,
+          value: value || "",
         };
       }),
       ...children
+        .filter((child) => !Array.isArray(child))
+        .filter((child) => child !== " " && child !== "" && child !== "\n")
         .map((child) => {
-          if (child === " " || child === "" || child === "\n") return null;
-          if (!Array.isArray(child)) {
-            return {
-              id: 0,
-              prop: {
-                id: 37,
-                key: "value",
-                type: {
-                  id: 5,
-                  name: "string",
-                },
-              },
-              value: child,
-            };
-          } else {
-            return null;
-          }
-        })
-        .filter((e) => e),
+          return {
+            id: 0,
+            prop: {
+              id: 37,
+              key: "value", // TODO: Burası saçma
+              type_id: 5,
+            },
+            value: child,
+          };
+        }),
     ],
   };
   temp.push(transformedOutput);
@@ -114,6 +117,7 @@ export function transformInput({
       Array.isArray(child)
         ? temp.push(
             ...transformInput({
+              components: components,
               input: child,
               code: newCode,
               depth: newdepth,
@@ -125,13 +129,16 @@ export function transformInput({
   return temp.flat();
 }
 
-export function transformToDesiredFormat(jsxtext: any) {
+export function transformToDesiredFormat(
+  jsxtext: any,
+  components: ComponentDto[]
+) {
   const jsxToJson = require("simplified-jsx-to-json");
   try {
     const input = jsxToJson(jsxtext);
     console.log("input", input);
     const desiredOutput = input
-      .map((e: any) => transformInput({ input: e }))
+      .map((e: any) => transformInput({ input: e, components: components }))
       .flat();
     console.log("hi", desiredOutput);
 

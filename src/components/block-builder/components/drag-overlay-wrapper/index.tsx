@@ -4,7 +4,8 @@ import { useDesigner } from "@/contexts/designer-context";
 import { PageComponent } from "@/types/page-component";
 import { componentTags } from "../../utils/component-tags";
 import { createChildrenTree } from "../../utils/tree-operations";
-import { Icons } from "../..";
+import { Icons } from "../../utils/icons";
+import { BlockComponentDto } from "@/services/dto/block_component.dto";
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);
@@ -44,13 +45,13 @@ function DragOverlayWrapper() {
     if (!component) {
       node = <div>Element not found!</div>;
     } else {
-      const getComponent = (componentWithoutChildren: PageComponent) => {
+      const getComponent = (componentWithoutChildren: BlockComponentDto) => {
         const component = createChildrenTree(
           componentWithoutChildren,
           elements
         );
-        const Component = componentTags[component.component.tag];
-        if (component.component.tag in componentTags) {
+        const Component = componentTags[component.component.tag.name];
+        if (component.component.tag.name in componentTags) {
           if (component.children && component.children.length > 0) {
             return (
               <Component
@@ -60,8 +61,9 @@ function DragOverlayWrapper() {
                 key={component.code}
               >
                 {component.children.map((child) => {
-                  if (child.component.tag in componentTags) {
-                    const ChildComponent = componentTags[child.component.tag];
+                  if (child.component.tag.name in componentTags) {
+                    const ChildComponent =
+                      componentTags[child.component.tag.name];
 
                     return (
                       <ChildComponent

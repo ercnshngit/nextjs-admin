@@ -1,5 +1,5 @@
 import { useAuth, useUser } from "@/hooks/useAuth";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import React from "react";
 import { FieldErrors, RegisterOptions, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "./form-input-factory";
@@ -23,6 +23,8 @@ export default function BaseForm(props: {
     component: React.FC<any>;
   }[];
 }) {
+  const { translate } = useTranslate();
+
   const {
     handleSubmit,
     onSubmit,

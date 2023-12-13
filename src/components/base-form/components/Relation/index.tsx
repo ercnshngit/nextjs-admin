@@ -1,4 +1,4 @@
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { getTable } from "@/services/panel";
 import { useQuery } from "@tanstack/react-query";
 import { PlusCircle } from "lucide-react";
@@ -110,10 +110,12 @@ function CreateRelation({
   control: any;
 }) {
   const { table: joinedTable } = useDatabase(field.relation!.table!);
+  const { translate } = useTranslate();
 
   const joinedTableData = useQuery([joinedTable.name], () =>
     getTable({ tableName: joinedTable.name })
   );
+
   return (
     <div
       key={field.name}

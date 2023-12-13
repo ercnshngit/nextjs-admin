@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { getTableItem } from "@/services/panel";
 import { ArrowLeftIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +15,8 @@ export default function MasrafContent({
 }: {
   params: { id: string; slug: string };
 }) {
+  const { translate } = useTranslate();
+
   const { id, slug } = params;
   const { table } = useDatabase(slug);
   const tableName = table?.name || "";

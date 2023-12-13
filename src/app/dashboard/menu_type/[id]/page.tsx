@@ -1,8 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { translate } from "@/langs";
-import { getMenuItems, updateMenu } from "@/services/menu";
+import { useTranslate } from "@/langs";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +12,7 @@ import { MENU_TYPE } from "@/types/menu_types";
 import { MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
 import { useRouter } from "next/navigation";
 import MenuList from "../menu-list";
+import { getMenuItems, updateMenu } from "@/services/dashboard";
 
 export default function MenuType({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -47,6 +47,7 @@ function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
     }
   );
   const router = useRouter();
+  const { translate } = useTranslate();
 
   const handleUpdate = (id: UniqueIdentifier, parentId: UniqueIdentifier) => {
     const item = data?.menus.find((menu) => menu.menu.title === id);

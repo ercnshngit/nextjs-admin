@@ -1,6 +1,6 @@
 import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
 import { useUser } from "@/hooks/useAuth";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 

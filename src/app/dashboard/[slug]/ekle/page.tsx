@@ -7,13 +7,14 @@ import React from "react";
 import Form from "./form";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { useDatabase } from "@/hooks/use-database";
 
 export default function Ekle({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const { table } = useDatabase(slug);
   const tableName = table?.name || "";
+  const { translate } = useTranslate();
 
   return (
     <div className="container py-10 mx-auto">

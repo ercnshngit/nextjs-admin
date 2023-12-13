@@ -8,9 +8,20 @@ export async function GET(
   const id = params.id;
   const tableService = new BlockService();
   try {
-    const block = await prisma.block.findUnique({ where: { id } });
+    const block = await prisma.block.findUnique({
+      select: {
+        id: true,
+        title: true,
+        type_id: true,
+      },
+      where: {
+        id: +id,
+      },
+    });
+
     return new Response(JSON.stringify(block));
   } catch (error) {
+    console.log(error);
     return new Response(JSON.stringify({ status: "error", message: error }), {
       status: 500,
     });

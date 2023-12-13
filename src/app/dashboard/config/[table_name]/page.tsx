@@ -26,6 +26,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTableInputTypes, updateTableConfig } from "@/services/dashboard";
 import { toast } from "react-toastify";
 import { type } from "@prisma/client";
+import { useTranslate } from "@/langs";
 export default function TableConfig({
   params,
 }: {
@@ -37,6 +38,8 @@ export default function TableConfig({
   const { data: input_types } = useQuery<type[]>(["input_types"], () =>
     getTableInputTypes()
   );
+
+  const { translate } = useTranslate();
 
   const tableStructure = tables?.find((t) => t.name === table_name);
   const columns = tableStructure?.columns?.map((column) => ({
@@ -135,12 +138,12 @@ export default function TableConfig({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{translate("CONFIG_TABLENAME_TITLE")}</FormLabel>
               <FormControl>
                 <Input readOnly {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                {translate("CONFIG_TABLENAME_DESCRIPTION")}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -151,12 +154,12 @@ export default function TableConfig({
           name="icon"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{translate("CONFIG_ICON_TITLE")}</FormLabel>
               <FormControl>
                 <Input placeholder="shadcn" {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                {translate("CONFIG_ICON_DESCRIPTION")}
               </FormDescription>
               <FormMessage />
             </FormItem>

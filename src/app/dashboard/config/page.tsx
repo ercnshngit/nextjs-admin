@@ -1,16 +1,14 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { useDatabase } from "@/hooks/use-database";
 import Link from "next/link";
 import React from "react";
 
 export default function Config() {
-  const { tables, configs, createConfig } = useDatabase();
+  const { tables, configs, createConfig, deleteConfig } = useDatabase();
 
   const tablesHasConfigs = configs?.map((config) => config.name);
 
-  const handleCreateConfig = (table_name: string) => {
-    createConfig.mutate(table_name);
-  };
   return (
     <div className="container flex-1 py-10 mx-auto overflow-hidden ">
       {tables &&
@@ -18,11 +16,21 @@ export default function Config() {
           <div key={table.id} className="flex justify-between border-b py-4">
             <h2>{table.name}</h2>
             {tablesHasConfigs?.includes(table.name) ? (
-              <Link href={`/dashboard/config/${table.name}`}>edit</Link>
+              <div className="flex gap-2">
+                <Button asChild>
+                  <Link href={`/dashboard/config/${table.name}`}>edit</Link>
+                </Button>
+                <Button
+                  variant={"destructive"}
+                  onClick={() => deleteConfig.mutate(table.name)}
+                >
+                  delete
+                </Button>
+              </div>
             ) : (
-              <button onClick={() => handleCreateConfig(table.name)}>
+              <Button onClick={() => createConfig.mutate(table.name)}>
                 create
-              </button>
+              </Button>
             )}
           </div>
         ))}

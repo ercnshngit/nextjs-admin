@@ -1,5 +1,5 @@
 import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import React from "react";
 import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import Label from "../Label";

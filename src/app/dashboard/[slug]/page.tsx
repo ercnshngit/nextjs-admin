@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 
-import { translate } from "@/langs";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import { CircleIcon } from "lucide-react";
@@ -12,12 +11,15 @@ import { DataTableExpandable } from "./components/data-table/data-table";
 
 import { getTable } from "@/services/panel";
 import { useDatabase } from "@/hooks/use-database";
+import { useLanguage } from "@/contexts/language-context";
+import { useTranslate } from "@/langs";
 
 export default function Masraf({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const { table, filterables, searchables } = useDatabase(slug);
   const tableName = table?.name || "";
   const tableColumns = columns(slug, table?.columns || []);
+  const { translate } = useTranslate();
 
   const { data, error } = useQuery([tableName], () =>
     getTable({ tableName: tableName })

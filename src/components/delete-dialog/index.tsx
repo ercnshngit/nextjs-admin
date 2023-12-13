@@ -14,10 +14,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { deleteTableItem } from "@/services/panel";
 import { DELETE_TABLE_ITEM } from "@/types/panel";
 export default function DeleteItem({ open, setOpen, tableName, id }: any) {
+  const { translate } = useTranslate();
+
   const router = useRouter();
   const queryClient = useQueryClient();
   const deleteMutation = useMutation(

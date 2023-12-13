@@ -20,10 +20,6 @@ export default function BuilderPage({
     id: string;
   };
 }) {
-  const { data: sidebarComponents } = useQuery(["components"], () =>
-    getComponents()
-  );
-
   const { elements } = useDesigner();
 
   const createBlocks = useMutation(
@@ -56,9 +52,9 @@ export default function BuilderPage({
   };
 
   return (
-    <div className="h-full w-full flex">
-      <h1>{JSON.stringify(block)}</h1>
-      <BlockBuilder sidebarComponents={sidebarComponents} onSave={handleSave} />
+    <div className="h-full w-full flex flex-col">
+      <h1 className="font-medium p-2">{block?.title}</h1>
+      <BlockBuilder onSave={handleSave} />
     </div>
   );
 }

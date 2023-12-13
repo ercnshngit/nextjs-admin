@@ -3,7 +3,7 @@
 import DeleteItem from "@/components/delete-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import React from "react";
@@ -16,6 +16,8 @@ export default function Update({
 }: {
   params: { id: string; slug: string };
 }) {
+  const { translate } = useTranslate();
+
   const [open, setOpen] = React.useState(false);
   const { id, slug } = params;
   const { table } = useDatabase(slug);

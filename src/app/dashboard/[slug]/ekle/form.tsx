@@ -1,5 +1,5 @@
 "use client";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import BaseForm from "@/components/base-form";

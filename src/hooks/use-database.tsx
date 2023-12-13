@@ -1,6 +1,7 @@
 "use client";
 import {
   createTableConfig,
+  deleteTableConfig,
   getTablesConfigs,
   getTablesStructure,
 } from "@/services/dashboard";
@@ -40,11 +41,23 @@ export function useDatabase(table_name?: string) {
       },
     }
   );
+  const deleteConfig = useMutation(
+    (table_name: string) => {
+      return deleteTableConfig({ table_name });
+    },
+    {
+      onSuccess: () => {
+        toast.success("Tablo oluşturuldu");
+        queryClient.invalidateQueries(["configs"]);
+      },
+    }
+  );
 
   if (!table_name)
     return {
       tables,
       createConfig,
+      deleteConfig,
       configs,
       isLoading,
       error,
@@ -62,6 +75,7 @@ export function useDatabase(table_name?: string) {
     tables,
     configs,
     createConfig,
+    deleteConfig,
     isLoading,
     error,
     table,

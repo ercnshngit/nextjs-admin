@@ -9,7 +9,7 @@ import { DataTableFacetedFilter } from "./datatable-faceted-filter";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { CalendarDateRangePicker } from "./date-range-picker";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { Column } from "@/types/config";
 
 interface DataTableToolbarProps<TData> {
@@ -27,6 +27,8 @@ export function DataTableToolbar<TData>({
   tableName,
   databaseTableColumns,
 }: DataTableToolbarProps<TData>) {
+  const { translate } = useTranslate();
+
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (

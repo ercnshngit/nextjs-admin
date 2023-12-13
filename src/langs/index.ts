@@ -1,3 +1,8 @@
+import { useLanguage } from "@/contexts/language-context";
+import { getTranslations } from "@/services/dashboard";
+import { TranslationDto } from "@/services/dto/translation.dto";
+import { useQuery } from "@tanstack/react-query";
+
 const DEFAULT_LANG = "tr";
 
 type Translations = {
@@ -163,40 +168,63 @@ export const translations: Translations = {
   },
 };
 
-export const translate = (key: string) => {
-  //TODO: get from api
-  if (key.startsWith("page/1")) return "Başlık Bloğu";
-  if (key.startsWith("page/2")) return "Açıklama Bloğu";
-  if (key.startsWith("page/3")) return "Resim Bloğu";
-  if (key.startsWith("page/4")) return "Yazı Editör Bloğu";
-  if (key.startsWith("page/5")) return "HTML Bloğu";
+// export const translateDeprecated = (key: string) => {
+//   //TODO: get from api
+//   if (key.startsWith("page/1")) return "Başlık Bloğu";
+//   if (key.startsWith("page/2")) return "Açıklama Bloğu";
+//   if (key.startsWith("page/3")) return "Resim Bloğu";
+//   if (key.startsWith("page/4")) return "Yazı Editör Bloğu";
+//   if (key.startsWith("page/5")) return "HTML Bloğu";
 
-  const keyCat = key?.split("/")[0];
-  const keyString = key?.split("/")[1];
-  const keys = key.split("/");
-  if (Array.isArray(keys)) {
-    keys.forEach((key, index) => {
-      if (index === 0) {
-      }
-    });
-  }
-  if (keyString) {
-    if (keyString === "created_at") return "Oluşturulma Tarihi";
-    if (keyString === "updated_at") return "Güncellenme Tarihi";
-    if (keyString === "id") return "No";
-    if (keyString === "slug") return "Kod";
-    if (keyString === "language_code") return "Dil";
+//   const keyCat = key?.split("/")[0];
+//   const keyString = key?.split("/")[1];
+//   const keys = key.split("/");
+//   if (Array.isArray(keys)) {
+//     keys.forEach((key, index) => {
+//       if (index === 0) {
+//       }
+//     });
+//   }
+//   if (keyString) {
+//     if (keyString === "created_at") return "Oluşturulma Tarihi";
+//     if (keyString === "updated_at") return "Güncellenme Tarihi";
+//     if (keyString === "id") return "No";
+//     if (keyString === "slug") return "Kod";
+//     if (keyString === "language_code") return "Dil";
 
-    const translatedText =
-      translations[keyCat as keyof typeof translations]?.[
-        keyString as keyof (typeof translations)[typeof keyCat]
-      ];
-    return translatedText?.[DEFAULT_LANG as "tr" | "en"] || key;
-  } else {
-    const keyName = Object.keys(translations).find((table) => {
-      return table === key;
-    });
-    const translatedText = translations[keyName as keyof typeof translations];
-    return translatedText?.[DEFAULT_LANG as "tr" | "en"] || key;
+//     const translatedText =
+//       translations[keyCat as keyof typeof translations]?.[
+//         keyString as keyof (typeof translations)[typeof keyCat]
+//       ];
+//     return translatedText?.[DEFAULT_LANG as "tr" | "en"] || key;
+//   } else {
+//     const keyName = Object.keys(translations).find((table) => {
+//       return table === key;
+//     });
+//     const translatedText = translations[keyName as keyof typeof translations];
+//     return translatedText?.[DEFAULT_LANG as "tr" | "en"] || key;
+//   }
+// };
+
+export function useTranslate() {
+  const { data: translations } = useQuery<TranslationDto[]>(
+    ["translations"],
+    () => getTranslations()
+  );
+  const { language } = useLanguage();
+
+  function translate(key: string) {
+    let translatedText = key;
+    if (!translations) return translatedText;
+    translations
+      .filter((translation) => translation.language_code === language)
+      .find((translation) => {
+        if (translation.key === key) {
+          translatedText = translation.translated_text;
+        }
+      });
+    return translatedText;
   }
-};
+
+  return { translate, translations };
+}

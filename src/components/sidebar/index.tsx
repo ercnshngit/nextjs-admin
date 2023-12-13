@@ -2,12 +2,14 @@
 import { cn } from "@/libs/utils";
 import { Button } from "../ui/button";
 import { List } from "lucide-react";
-import { translate } from "@/langs";
+import { useTranslate } from "@/langs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useDatabase } from "@/hooks/use-database";
 
 export function Sidebar({ className }: { className?: string }) {
+  const { translate } = useTranslate();
+
   const pathname = usePathname();
   const { configs, error } = useDatabase();
   return (

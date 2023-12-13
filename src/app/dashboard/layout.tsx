@@ -1,3 +1,4 @@
+import LanguageSwitcher from "@/components/language-switcher";
 import Logo from "@/components/logo";
 import { Sidebar } from "@/components/sidebar";
 import ThemeSwitcher from "@/components/theme-switcher";
@@ -17,7 +18,10 @@ export default function DashboardLayout({
         <div className="flex flex-col min-h-screen min-w-full bg-background ">
           <nav className="flex justify-between border-b border-border h-14 px-4 py-2">
             <Logo />
-            <ThemeSwitcher />
+            <div className="flex gap-2">
+              <LanguageSwitcher />
+              <ThemeSwitcher />
+            </div>
           </nav>
           <main className="flex flex-grow w-full">
             <div className="container flex-1 py-10 mx-auto overflow-y-hidden ">
