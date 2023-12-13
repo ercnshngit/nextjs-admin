@@ -1,12 +1,21 @@
 import { prisma } from "@/libs/prisma";
 import { TypeCategories, TypeJsons } from "../../constants/types.constants";
+import { table } from "console";
+import { ErrorMessages } from "../../constants/messages.constants";
 
 export class TypeService {
 
     // TypeJsonda kaydedılmıs input_type lerini varsa pas gecıyor yoksa insertliyor
     async setInputDataTypes() {
         try {
-            
+            const table = await prisma.database_table.findFirst({
+                where:{
+                  name: TypeCategories.INPUT_TYPE,
+                }
+            });
+            if(!table){
+                return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
             let input_types = [] as any
             TypeJsons.INPUT_TYPES.forEach(async element => {
                 const result = await prisma.type.create({
@@ -20,13 +29,8 @@ export class TypeService {
                     data: {
                         name: element.name,
                         table:{
-                            connectOrCreate:{
-                                where:{
-                                    name: element.table_name
-                                },
-                                create:{
-                                    name: element.table_name
-                                }
+                            connect:{
+                                id: table.id
                             }
                         }
                     },
@@ -42,26 +46,25 @@ export class TypeService {
 
     async setRelationTypes() {
         try {
+            const table = await prisma.database_table.findFirst({
+                where:{
+                  name: TypeCategories.RELATION_TYPE,
+                }
+            });
+            if(!table){
+                return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
             let relation_types = [] as any
             TypeJsons.RELATION_TYPES.forEach(async element => {
                 const result = await prisma.type.create({
                     include:{
-                        table : {
-                            where:{
-                                name: element.table_name
-                            }
-                        }
+                        table : true
                     },
                     data: {
                         name: element.name,
                         table:{
-                            connectOrCreate:{
-                                where:{
-                                    name: element.table_name
-                                },
-                                create:{
-                                    name: element.table_name
-                                }
+                            connect:{
+                                id: table.id
                             }
                         }
                     },

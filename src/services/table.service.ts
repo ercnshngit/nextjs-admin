@@ -877,4 +877,24 @@ export class TableService {
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
+
+  async createColumnRelation(data: ColumnRelationCreateDto) {
+    try {
+      const result = await prisma.column_relation.create({
+        data: {
+          table_id: data.table_id,
+          column_id: data.column_id,
+          referenced_table_id: data.referenced_table_id,
+          referenced_column_id: data.referenced_column_id,
+          pivot_table_id : data.pivot_table_id,
+          relation_type_id: data.relation_type_id,
+          foreign_key_name: data.foreign_key_name,
+        },
+      });
+      return new Response(JSON.stringify({ result }), { status: 200 });
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    }
+  }
 }
