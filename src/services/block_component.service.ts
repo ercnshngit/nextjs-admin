@@ -9,51 +9,44 @@ import {
 } from "./dto/block_component.dto";
 
 export class BlockComponentService {
-  async getBlockComponent(id: number) {
+  async getBlockComponent(block_id: number) {
     try {
-      let components: any = [];
-      let props: any = [];
-      let result: any = [];
       const blockComponent = await prisma.block_component.findMany({
-        where: { id },
+        where: { block_id },
+        include: {
+          component: {
+            include: {
+              tag: true,
+              type: true
+            }
+          },
+          block: true,
+          block_component_prop: {
+            include: {
+              prop: true,
+            }
+          }
+        }
       });
 
-      for (let i = 0; i < blockComponent.length; i++) {
-        const block_component_prop = await prisma.block_component_prop.findMany(
-          {
-            where: { block_component_id: blockComponent[i].id },
-            select: {
-              prop: { select: { key: true, type_id: true } },
-              value: true,
-            },
-          }
-        );
-        await props.push(block_component_prop);
-
-        const component = await prisma.component.findUnique({
-          where: { id: blockComponent[i].component_id },
+      const result = blockComponent.map((item) => {
+        const block_component_prop = item.block_component_prop.map((propItem) => {
+          return { prop: propItem.prop, value: propItem.value };
         });
-        await components.push(component);
-
-        const block_component = await prisma.block_component.findMany({
-          where: { id: blockComponent[i].id },
-          select: {
-            id: true,
-            component_id: true,
-            depth: true,
-            order: true,
-            belong_block_component_code: true,
-            block_id: true,
-            code: true,
-            hasChildren: true,
-          },
-        });
-
-        const assign: any = Object.assign(block_component[0], component);
-        result.concat(assign);
-        assign["props"] = block_component_prop;
-        await result.push(assign);
+        return {
+          component: item.component,
+          block: item.block,
+          belong_block_component_code: item.belong_block_component_code,
+          depth: item.depth,
+          order: item.order,
+          code: item.code,
+          hasChildren: item.hasChildren,
+          props: block_component_prop,
+        };
       }
+      );
+
+
 
       return new Response(JSON.stringify(result));
     } catch (error) {
@@ -318,7 +311,6 @@ export class BlockComponentService {
       const block_component = await prisma.block_component.findMany({
         where: { block_id },
       });
-      console.log(block_component)
       if (!block_component) {
         return new Response(
           JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() }),
