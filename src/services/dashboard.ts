@@ -85,3 +85,8 @@ export const getTranslation = async (key: string) => {
 
   return data;
 };
+export const getBlockComponents = async (id: number) => {
+  const { data } = await axiosClient.get(`/block/component/get/${id}`);
+
+  return data;
+};
