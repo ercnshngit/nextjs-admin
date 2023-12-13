@@ -126,7 +126,7 @@ export class TypeService {
         try {
             const table = await prisma.database_table.findFirst({
                 where:{
-                  name: TypeCategories.RELATION_TYPE,
+                  name: table_name,
                 }
             });
             if(!table){
