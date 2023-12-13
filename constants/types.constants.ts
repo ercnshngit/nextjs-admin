@@ -1,3 +1,8 @@
+export class TypeCategories {
+    static RELATION_TYPE = "column_relation";
+    static INPUT_TYPE = "database_table_column";
+}
+
 export class InputTypes {
     static 1 = "hidden";
     static 2 = "image";
@@ -24,37 +29,53 @@ export class InputTypes {
     static RICHTEXT = 11;
 
     static INPUT_TYPES = [
-        { name: InputTypes[1], id: InputTypes.HIDDEN, table_name: "database_table_column" },
-        { name: InputTypes[2], id: InputTypes.IMAGE, table_name: "database_table_column" },
-        { name: InputTypes[3], id: InputTypes.TEXT, table_name: "database_table_column" },
-        { name: InputTypes[4], id: InputTypes.TEXTAREA, table_name: "database_table_column" },
-        { name: InputTypes[5], id: InputTypes.SELECT, table_name: "database_table_column" },
-        { name: InputTypes[6], id: InputTypes.CHECKBOX, table_name: "database_table_column" },
-        { name: InputTypes[7], id: InputTypes.NUMBER, table_name: "database_table_column" },
-        { name: InputTypes[8], id: InputTypes.RELATION, table_name: "database_table_column" },
-        { name: InputTypes[9], id: InputTypes.MULTI_SELECT, table_name: "database_table_column" },
-        { name: InputTypes[10], id: InputTypes.DATE, table_name: "database_table_column" },
-        { name: InputTypes[11], id: InputTypes.RICHTEXT, table_name: "database_table_column" },
+        { name: InputTypes[1], id: InputTypes.HIDDEN, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[2], id: InputTypes.IMAGE, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[3], id: InputTypes.TEXT, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[4], id: InputTypes.TEXTAREA, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[5], id: InputTypes.SELECT, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[6], id: InputTypes.CHECKBOX, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[7], id: InputTypes.NUMBER, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[8], id: InputTypes.RELATION, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[9], id: InputTypes.MULTI_SELECT, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[10], id: InputTypes.DATE, table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[11], id: InputTypes.RICHTEXT, table_name: TypeCategories.INPUT_TYPE },
     ]
 }
 
-export class TypeCategories {
-    static RELATION_TYPE = "column_relation";
-    static INPUT_TYPE = "database_table_column";
+export class RelationTypes {
+    static 1 = "One to One";
+    static 2 = "One to Many";
+    static 3 = "Many to Many";
+
+    static ONE_TO_ONE = 1;
+    static ONE_TO_MANY = 2;
+    static MANY_TO_MANY = 3;
+
+    static RELATION_TYPES = [
+        { name: RelationTypes[1], id: RelationTypes.ONE_TO_ONE, table_name: TypeCategories.RELATION_TYPE },
+        { name: RelationTypes[2], id: RelationTypes.ONE_TO_MANY, table_name: TypeCategories.RELATION_TYPE },
+        { name: RelationTypes[3], id: RelationTypes.MANY_TO_MANY, table_name: TypeCategories.RELATION_TYPE  },
+    ]
 }
 
 export class TypeJsons {
     static INPUT_TYPES = [
-        { name: InputTypes[1], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[2], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[3], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[4], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[5], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[6], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[7], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[8], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[9], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[10], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
-        { name: InputTypes[11], type_id: TypeCategories.INPUT_TYPE, table_name: "database_table_column" },
+        { name: InputTypes[1], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[2], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[3], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[4], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[5], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[6], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[7], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[8], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[9], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[10], table_name: TypeCategories.INPUT_TYPE },
+        { name: InputTypes[11], table_name: TypeCategories.INPUT_TYPE },
+    ]
+    static RELATION_TYPES = [
+        { name: RelationTypes[1], table_name: TypeCategories.RELATION_TYPE },
+        { name: RelationTypes[2], table_name: TypeCategories.RELATION_TYPE },
+        { name: RelationTypes[3], table_name: TypeCategories.RELATION_TYPE },
     ]
 }
