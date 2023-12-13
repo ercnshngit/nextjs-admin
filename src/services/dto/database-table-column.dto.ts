@@ -9,6 +9,7 @@ export interface DataBaseTableColumnDto{
     is_filterable: boolean | false;
     is_searchable: boolean | false;
     is_sortable: boolean | false;
+    input_type_id: number;
     input_type?: DataTypeDto;
     create_crud_option_id?: number;
     update_crud_option_id?: number; 

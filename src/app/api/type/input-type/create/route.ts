@@ -1,5 +1,5 @@
 import { TypeService } from "@/services/type.service"
-import { ServerMessages } from "../../../../../constants/messages.constants";
+import { ServerMessages } from "../../../../../../constants/messages.constants";
 
 export async function GET(
     req: Request,

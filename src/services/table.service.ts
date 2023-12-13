@@ -468,6 +468,7 @@ export class TableService {
       if (!data) {
         return new Response(JSON.stringify({ message: "Data boş geldi." }));
       }
+      //upserte cevir.
       Object.assign(tableData, data);
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
@@ -489,8 +490,7 @@ export class TableService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
-                type_id: column.type?.id,
-                input_type_id: column.input_type?.id,
+                input_type_id: column.input_type_id,
                 create_crud_option_id: column.create_crud_option_id,
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
@@ -504,31 +504,23 @@ export class TableService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
-                type: {
-                  connect: {
-                    id: column.type?.id,
-                  },
-                },
                 input_type: {
                   connect: {
-                    id: column.input_type?.id,
+                    id: column.input_type_id,
                   },
                 },
-                create_crud_option: {
-                  connectOrCreate: {
-                    where: { id: column.create_crud_option?.id },
+                create_crud_option: column.create_crud_option == undefined ? undefined : {
                     create: {
                       name: column.create_crud_option?.name,
                       is_hidden: column.create_crud_option?.is_hidden,
                       is_required: column.create_crud_option?.is_required,
                       is_readonly: column.create_crud_option?.is_readonly,
                       type_id: column.create_crud_option?.input_type?.id,
-                    },
-                  },
+                    }
                 },
-                read_crud_option: {
+                read_crud_option: column.read_crud_option == undefined ? undefined : {
                   connectOrCreate: {
-                    where: { id: column.read_crud_option?.id },
+                    where: { id: column.read_crud_option_id },
                     create: {
                       name: column.read_crud_option?.name,
                       is_hidden: column.read_crud_option?.is_hidden,
@@ -538,9 +530,9 @@ export class TableService {
                     },
                   },
                 },
-                update_crud_option: {
+                update_crud_option: column.update_crud_option_id == undefined ? undefined :{
                   connectOrCreate: {
-                    where: { id: column.update_crud_option?.id },
+                    where: { id: column.update_crud_option_id },
                     create: {
                       name: column.update_crud_option?.name,
                       is_hidden: column.update_crud_option?.is_hidden,
