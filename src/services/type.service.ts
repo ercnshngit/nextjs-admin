@@ -37,6 +37,9 @@ export class TypeService {
                 })
                 input_types.push(result)
             });
+            if(input_types.length > 1){
+                return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
             return new Response(JSON.stringify({ status: "success", message: "Input types created successfully", data: input_types }), { status: 200 })
         } catch (error) {
             console.log(error)
@@ -71,6 +74,9 @@ export class TypeService {
                 })
                 relation_types.push(result)
             });
+            if(relation_types.length > 1){
+                return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
             return new Response(JSON.stringify({ status: "success", message: "Relation types created successfully", data: relation_types }), { status: 200 })
         } catch (error) {
             console.log(error)
@@ -87,6 +93,9 @@ export class TypeService {
                     }
                 }
             })
+            if(!result){
+                return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
             return new Response(JSON.stringify( result ), { status: 200 })
         } catch (error) {
             console.log(error)
@@ -103,6 +112,36 @@ export class TypeService {
                     }
                 }
             })
+            if(!result){
+                return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
+            return new Response(JSON.stringify( result ), { status: 200 })
+        } catch (error) {
+            console.log(error)
+            return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
+        }
+    }
+
+    async getTypeWithTableName(table_name: string) {
+        try {
+            const table = await prisma.database_table.findFirst({
+                where:{
+                  name: TypeCategories.RELATION_TYPE,
+                }
+            });
+            if(!table){
+                return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
+            const result = await prisma.type.findMany({
+                where: {
+                    table: {
+                        id: table.id
+                    }
+                }
+            });
+            if(!result){
+                return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
             return new Response(JSON.stringify( result ), { status: 200 })
         } catch (error) {
             console.log(error)
