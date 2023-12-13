@@ -118,6 +118,9 @@ export class BlockComponentService {
 
   async createBlockComponent(data: CreateBlockComponentsDto) {
     try {
+
+      if (data.block_id) { await this.deleteBlockComponentWithBlockId(data.block_id) }
+
       const results = [];
 
       for (const item of data.block_components) {
@@ -218,13 +221,13 @@ export class BlockComponentService {
     let component = componentData.id
       ? await prisma.component.findUnique({ where: { id: componentData.id } })
       : await prisma.component.create({
-          data: {
-            name: componentData.name,
-            tag_id: tag.id,
-            type_id: type.id,
-            icon: componentData.icon,
-          },
-        });
+        data: {
+          name: componentData.name,
+          tag_id: tag.id,
+          type_id: type.id,
+          icon: componentData.icon,
+        },
+      });
     if (!component) {
       return new Response(
         JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
@@ -283,10 +286,10 @@ export class BlockComponentService {
       !check_component
         ? (msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN)
         : !check_block
-        ? (msg = ErrorMessages.BLOCK_NOT_FOUND_ERROR().en)
-        : !check_belong_component
-        ? (msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN)
-        : null;
+          ? (msg = ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR().en)
+          : !check_belong_component
+            ? (msg = ErrorMessages.COMPONENT_NOT_FOUND_ERROR().EN)
+            : null;
 
       if (msg) {
         return new Response(JSON.stringify({ message: msg }), { status: 400 });
@@ -314,14 +317,60 @@ export class BlockComponentService {
     }
   }
 
-  async deleteBlockComponent(id: number) {
+  async deleteBlockComponentWithBlockId(block_id: number) { // Deletes all "block components" and "children" connected to the "block id"
+    try {
+      const block_component = await prisma.block_component.findMany({
+        where: { block_id },
+      });
+      console.log(block_component)
+      if (!block_component) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      for (let i = 0; i < block_component.length; i++) {
+        const delete_block_component_props =
+          await prisma.block_component_prop.deleteMany({
+            where: { block_component_id: block_component[i].id },
+          });
+        if (!delete_block_component_props) {
+          return new Response(
+            JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }),
+            { status: 400 }
+          );
+        }
+        const delete_block_component = await prisma.block_component.delete({
+          where: { id: block_component[i].id },
+        });
+        if (!delete_block_component) {
+          return new Response(
+            JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }),
+            { status: 400 }
+          );
+        }
+      }
+      return new Response(
+        JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }),
+        { status: 200 }
+      );
+    } catch (error) {
+      console.log(error);
+      return new Response(
+        JSON.stringify({ status: "error", error_message: error }),
+        { status: 500 }
+      );
+    }
+  }
+
+  async deleteBlockComponent(id: number) { // Deletes all "block components" and "children" connected to the "block component id"
     try {
       const block_component = await prisma.block_component.findUnique({
         where: { id },
       });
       if (!block_component) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.BLOCK_NOT_FOUND_ERROR() }),
+          JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() }),
           { status: 404 }
         );
       }

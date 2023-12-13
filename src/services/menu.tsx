@@ -69,8 +69,8 @@ export class MenuService {
   }
 
 
-  async getMenusByType() {
-    const menu = await prisma.menu.findMany({ where: { menu_belong_id: null } });
+  async getMenusByType(id: number) {
+    const menu = await prisma.menu.findMany({ where: { type_id: id, menu_belong_id: null } });
     if (!menu || menu.length === 0) {
       return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }), { status: 404 });
     }
