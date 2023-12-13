@@ -47,7 +47,7 @@ export class MenuService {
   async getMenu(id: number) {
     const menu = await prisma.menu.findMany({ where: { id } });
     if (!menu || menu.length === 0) {
-      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),{status:404});
+      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }), { status: 404 });
     }
 
     const result = [];
@@ -62,17 +62,17 @@ export class MenuService {
   async getMenus() {
     const menus = await prisma.menu.findMany();
     if (!menus || menus.length === 0) {
-      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),{status:404});
+      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }), { status: 404 });
     }
 
     return new Response(JSON.stringify(menus));
   }
 
 
-  async getMenusByType(type_id: number) {
-    const menu = await prisma.menu.findMany({ where: { type: { id: type_id }, menu_belong_id: null } });
+  async getMenusByType() {
+    const menu = await prisma.menu.findMany({ where: { menu_belong_id: null } });
     if (!menu || menu.length === 0) {
-      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),{status:404});
+      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }), { status: 404 });
     }
 
     const result = [];
@@ -101,11 +101,11 @@ export class MenuService {
 
   async createMenu(data: MenuDto) {
     if (data.type_id && !(await func.checkTypeExist(data.type_id))) {
-      return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }),{status:404});
+      return new Response(JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }), { status: 404 });
     }
 
     if (data.menu_belong_id && !(await func.checkMenuBelongExist(data.menu_belong_id))) {
-      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),{status:404});
+      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }), { status: 404 });
     }
 
     if (data.title) {
@@ -115,7 +115,7 @@ export class MenuService {
 
     const menu = await prisma.menu.create({ data });
 
-    if (!menu) { return new Response(JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),{status:400}) }
+    if (!menu) { return new Response(JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }), { status: 400 }) }
 
     return new Response(JSON.stringify(menu));
   }
@@ -129,13 +129,13 @@ export class MenuService {
         : data.menu_belong_id && !(await func.checkMenuBelongExist(data.menu_belong_id)) ? msg = ErrorMessages.MENU_NOT_FOUND_ERROR()
           : data.title ? data.slug = data.slug ?? await func.slugCreator(data.title) : data.route = data.route ?? `/${data.slug}`;
 
-    if (msg) { return new Response(JSON.stringify({ message: msg }),{status:404}) }
+    if (msg) { return new Response(JSON.stringify({ message: msg }), { status: 404 }) }
 
     Object.assign(menuExist, data);
 
     const updatedMenu = await prisma.menu.update({ where: { id }, data });
 
-    if (!updatedMenu) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }),{status:400}) }
+    if (!updatedMenu) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }), { status: 400 }) }
 
     return new Response(JSON.stringify(updatedMenu));
   }
@@ -143,17 +143,17 @@ export class MenuService {
   async deleteMenu(id: number) {
     const checkMenuExist = await prisma.menu.findUnique({ where: { id } });
     if (!checkMenuExist) {
-      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),{status:404});
+      return new Response(JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }), { status: 404 });
     }
     if (checkMenuExist.menu_belong_id !== null) {
       const checkMenuBelongExist = await prisma.menu.findFirst({ where: { id: checkMenuExist.menu_belong_id } });
       if (checkMenuBelongExist) {
-        return new Response(JSON.stringify({ message: ErrorMessages.MENU_BELONG_DELETE_ERROR(), menuBelong: checkMenuBelongExist }),{status:400});
+        return new Response(JSON.stringify({ message: ErrorMessages.MENU_BELONG_DELETE_ERROR(), menuBelong: checkMenuBelongExist }), { status: 400 });
       }
     }
     const menu = await prisma.menu.delete({ where: { id } });
-    if (!menu) return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }),{status:400});
-    return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }),{status:200});
+    if (!menu) return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }), { status: 400 });
+    return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
   }
 
 }
