@@ -638,7 +638,7 @@ export class TableService {
           },
         },
       });
-      return new Response(JSON.stringify({ result }), {status : 400});
+      return new Response(JSON.stringify({ result }), {status : 200});
     } catch (error) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {status : 500});
@@ -647,7 +647,6 @@ export class TableService {
 
   async deleteTableConfigWithTableName(table_name: string) {
     try {
-      const tbName = "'"+table_name+"'";
       const table = await prisma.database_table.findFirst({
         where:{
           name: table_name,
@@ -680,6 +679,42 @@ export class TableService {
     } catch (error) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    }
+  }
+
+  async createCrudOption(column_id : number, data : CrudOptionCreateDto){
+    try {
+      const result = await prisma.crud_option.create({
+        data:{
+          name: data.name,
+          is_hidden: data.is_hidden,
+          is_readonly: data.is_readonly,
+          is_required: data.is_required,
+          input_type_id: data.input_type_id,
+        }
+      });
+      if(!result){
+        return new Response(JSON.stringify({ message: ErrorMessages.CRUD_OPTION_CREATE_FAILED_ERROR() }), { status: 400 });
+      }
+      
+      const updatedDataBaseTableColumn = await prisma.database_table_column.update({
+        where:{
+          id: +column_id
+        },
+        data: (
+          data.crud_type == 1 ? {create_crud_option_id: result.id} : 
+          data.crud_type == 2 ? {update_crud_option_id: result.id} :
+          {read_crud_option_id: result.id} )
+      });
+
+      if(!updatedDataBaseTableColumn){
+        return new Response(JSON.stringify({ message: ErrorMessages.DATABASE_TABLE_COLUMN_UPDATE_FAILED_ERROR() }), { status: 400 });
+      }
+      
+      return new Response(JSON.stringify({ updatedDataBaseTableColumn }), {status : 200});
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), {status : 500});
     }
   }
 

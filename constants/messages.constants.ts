@@ -300,6 +300,36 @@ export class ErrorMessages {
          en: "Accounts different."
       }
    }
+   static CRUD_OPTION_NOT_FOUND_ERROR() {
+      return {
+         tr: "Crud option bulunamadı.",
+         en: "Crud option not found."
+      }
+   }
+   static CRUD_OPTION_CREATE_FAILED_ERROR() {
+      return {
+         tr: "Crud option oluşturulamadı.",
+         en: "Crud option cannot create."
+      }
+   }
+   static CRUD_OPTION_UPDATE_FAILED_ERROR() {
+      return {
+         tr: "Crud option güncellenemedi.",
+         en: "Crud option cannot update."
+      }
+   }
+   static CRUD_OPTION_DELETE_FAILED_ERROR() {
+      return {
+         tr: "Crud option silinemedi.",
+         en: "Crud option cannot delete."
+      }
+   }
+   static DATABASE_TABLE_COLUMN_UPDATE_FAILED_ERROR() {
+      return {
+         tr: "Database table column güncellenemedi.",
+         en: "Database table column cannot update."
+      }
+   }
 }
 
 export class ConfirmMessages {
@@ -376,6 +406,36 @@ export class ConfirmMessages {
       return {
          tr: "Tablo config silme işlemi başarılı.",
          en: "Table config delete successful."
+      }
+   }
+   static TABLE_CONFIG_CREATE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Tablo config oluşturma işlemi başarılı.",
+         en: "Table config create successful."
+      }
+   }
+   static TABLE_CONFIG_UPDATE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Tablo config güncelleme işlemi başarılı.",
+         en: "Table config update successful."
+      }
+   }
+   static CRUD_OPTION_CREATE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Crud option oluşturma işlemi başarılı.",
+         en: "Crud option create successful."
+      }
+   }
+   static CRUD_OPTION_UPDATE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Crud option güncelleme işlemi başarılı.",
+         en: "Crud option update successful."
+      }
+   }
+   static CRUD_OPTION_DELETE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Crud option silme işlemi başarılı.",
+         en: "Crud option delete successful."
       }
    }
 }
