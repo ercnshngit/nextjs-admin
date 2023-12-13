@@ -42,7 +42,7 @@ model database_table_column {
   update_crud_option_id Int?
   read_crud_option_id   Int?
 
-  database_table     database_table? @relation("fk_dbtc_table_id", fields: [table_id], references: [id], map: "fk_dbtc_table_id")
+  database_table     database_table? @relation("fk_dbtc_table_id", fields: [table_id], references: [id], map: "fk_dbtc_table_id", onDelete: Cascade, onUpdate: Cascade)
   input_type         type?           @relation("fk_dbtc_input_type_id", fields: [input_type_id], references: [id], map: "fk_dbtc_input_type_id")
   create_crud_option crud_option?    @relation("fk_dbtc_create_crud_option_id", fields: [create_crud_option_id], references: [id], map: "fk_dbtc_create_crud_option_id")
   update_crud_option crud_option?    @relation("fk_dbtc_update_crud_option_id", fields: [update_crud_option_id], references: [id], map: "fk_dbtc_update_crud_option_id")

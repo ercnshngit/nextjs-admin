@@ -589,6 +589,100 @@ export class TableService {
     }
   }
 
+  async createTableConfigWithTableName(table_name: string) {
+    try {
+      const tableDatas = await this.getTableWithDatas(table_name);
+      const tableDataArray = Object.values(tableDatas)
+      const input_type_ids = await prisma.type.findMany({
+        select:{
+          id: true,
+          name: true,
+          table:{
+            select:{
+              id: true,
+              name: true,
+            }
+          }
+        },
+        where: { 
+          table:{
+            name: TypeCategories.INPUT_TYPE
+          },
+        },
+      });
+      if(!input_type_ids){
+        return new Response(JSON.stringify({ message: "Input type mevcut değil." }), { status: 404 });
+      }
+      const inputTypesArray = Object.values(input_type_ids);
+      const result = await prisma.database_table.create({
+        include: {
+          columns: {
+            include: {
+              input_type: true,
+            },
+          },
+        },
+        data: {
+          name: table_name,
+          columns: {
+            create: tableDataArray[0].columns.map((column: any) => ({
+              name: column.name,
+              input_type:{
+                connect:{
+                  id: inputTypesArray.filter(
+                    (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
+                  )[0].id,
+                }
+              },
+            })),
+          },
+        },
+      });
+      return new Response(JSON.stringify({ result }), {status : 400});
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), {status : 500});
+    }
+  }
+
+  async deleteTableConfigWithTableName(table_name: string) {
+    try {
+      const tbName = "'"+table_name+"'";
+      const table = await prisma.database_table.findFirst({
+        where:{
+          name: table_name,
+        }
+      });
+      if(!table){
+        return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }), { status: 404 });
+      }
+      console.log(table.id);
+      const result = await prisma.database_table.delete({
+        include:{
+          columns: true
+        },
+        where: {
+            id: table.id,
+            columns:{
+              every: {
+                table_id: table.id
+              }
+            }
+        },
+      });
+      return new Response(
+        JSON.stringify({
+          message: ConfirmMessages.TABLE_CONFIG_DELETE_SUCCESS_CONFIRM(),
+          data : result
+        }),
+        { status: 200 }
+      );
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    }
+  }
+
   async createTableConfig() {
     let tableConifgs = [] as any[];
     try {

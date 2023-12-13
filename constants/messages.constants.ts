@@ -372,4 +372,10 @@ export class ConfirmMessages {
          en: "Table config data update successful."
       }
    }
+   static TABLE_CONFIG_DELETE_SUCCESS_CONFIRM() {
+      return {
+         tr: "Tablo config silme işlemi başarılı.",
+         en: "Table config delete successful."
+      }
+   }
 }
