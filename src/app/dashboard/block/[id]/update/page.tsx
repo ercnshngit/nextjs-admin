@@ -23,8 +23,9 @@ export default function BuilderPage({
 }) {
   const { elements, setElements } = useDesigner();
 
-  const { data: block_components } = useQuery(["components"], () =>
-    getBlockComponents(Number(params.id))
+  const { data: block_components } = useQuery(
+    ["block_components", params.id],
+    () => getBlockComponents(Number(params.id))
   );
 
   useEffect(() => {
