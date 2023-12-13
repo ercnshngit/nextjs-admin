@@ -64,7 +64,7 @@ export class TableService {
       let columns = " (";
       let values = " (";
       data.forEach((element: { key: string; value: string }) => {
-        columns += element.key + ", ";
+        columns += table_name+"."+element.key + ", ";
         values += "'" + element.value + "', ";
       });
       columns = columns.substring(0, columns.length - 2) + ") ";

@@ -6,7 +6,7 @@ export async function GET(
 ) {
     const service = new TypeService();
     try {
-        return await service.setInputDataTypes()
+        return await service.setRelationTypes()
     } catch (error) {
         console.log(error)
         throw new Error(ServerMessages[500]);
