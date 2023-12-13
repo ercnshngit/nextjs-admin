@@ -229,8 +229,6 @@ model translation {
   language_code   String
 
   language language? @relation("fk_trs_language_code", fields: [language_code], references: [code], map: "fk_trs_language_code")
-
-  @@unique([key], name: "ui_key")
 }
 
 model language {
