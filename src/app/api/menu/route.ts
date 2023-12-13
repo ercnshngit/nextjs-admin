@@ -1,4 +1,4 @@
-import { MenuService } from "@/services/menu"
+import { MenuService } from "@/services/menu.service";
 import { ServerMessages } from "../../../../constants/messages.constants";
 
 export async function GET(

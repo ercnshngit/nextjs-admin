@@ -1,5 +1,5 @@
-import { MenuService } from "@/services/menu"
-import { ServerMessages } from "../../../../../../constants/messages.constants";
+import { MenuService } from "@/services/menu.service";
+import { ServerMessages } from "../../../../../../../constants/messages.constants";
 
 export async function GET(
     req: Request,
@@ -7,7 +7,7 @@ export async function GET(
 ) {
     try {
         const menuService = new MenuService()
-        return await menuService.getMenu(Number(params.id))
+        return await menuService.getMenuById(Number(params.id))
     } catch (error) {
         console.log(error)
         throw new Error(ServerMessages[500]);
