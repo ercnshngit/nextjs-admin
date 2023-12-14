@@ -20,11 +20,12 @@ export async function GET(
   request: Request,
   { params }: { params: { table_name: string } }
 ) {
-  const table_name = params.table_name as Prisma.ModelName;
+  const table_name = params.table_name;
   const tableService = new TableService();
   try {
     return await tableService.getTable(table_name);
   } catch (error) {
+    console.log(error);
     return new Response(JSON.stringify({ status: "error", message: error }));
   }
 }

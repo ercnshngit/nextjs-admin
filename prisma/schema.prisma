@@ -138,17 +138,17 @@ model menu {
 }
 
 model general {
-  id            Int      @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   title         String
-  description   String?  @db.Text
+  description   String?   @db.Text
   slug          String
-  image         String?  @db.Text
-  href          String?  @db.Text
-  button        String?  @db.Text
+  image         String?   @db.Text
+  href          String?   @db.Text
+  button        String?   @db.Text
   language_code String?
-  status        Int      @default(0)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  status        Int       @default(0)
+  created_at    DateTime  @default(now())
+  updated_at    DateTime? @default(now()) @updatedAt
 
   language language? @relation("fk_general_language_code", fields: [language_code], references: [code], map: "fk_general_language_code")
 }

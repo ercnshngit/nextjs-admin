@@ -23,15 +23,25 @@ export class TableService {
   }
 
   async getTable(table_name: string) {
-    const query = `SELECT * FROM ${table_name}`;
-    const table = await prisma.$queryRawUnsafe(`${query}`);
-    if (!table) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
+    try {
+      const query = 'SELECT * FROM `' +table_name +'`' ;
+      console.log(query);
+      const table = await prisma.$queryRawUnsafe(`${query}`);
+
+      if (!table) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      return new Response(JSON.stringify(table), { status: 200 });
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
-    return new Response(JSON.stringify(table), { status: 200 });
+    
   }
 
   async getTableById(table_name: string, id: number) {
