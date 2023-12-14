@@ -3,8 +3,14 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 import { GeneralDto } from "./dto/general.dto";
 
 export class GeneralService {
-    async getGeneral(id: number) {
+    async getGeneralById(id: number) {
         const general = await prisma.general.findUnique({ where: { id } })
+        if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
+        return new Response(JSON.stringify(general));
+    }
+
+    async getGeneralBySlug(slug: string) {
+        const general = await prisma.general.findFirst({ where: { slug } })
         if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(general));
     }

@@ -1,5 +1,6 @@
 import { AuthService } from "@/services/auth/auth.service";
 import { isAuthenticated } from "@/services/auth/authenticator";
+import { LogService } from "@/services/log.service";
 
 export async function POST(request: Request) {
   const authentication = isAuthenticated(request);
@@ -12,6 +13,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     return await authService.changePassword(body, userPayload.id);
   } catch (error) {
+    const logService = new LogService();
+    await logService.createLog({ error });
     return new Response(JSON.stringify({ status: "error", message: error }));
   }
 }
