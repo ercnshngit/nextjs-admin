@@ -1,12 +1,12 @@
-import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
-import { useTranslate } from "@/langs";
-import React from "react";
-import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
-import Label from "../Label";
 import MediaPicker from "@/components/media-picker";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
 import { getMedia } from "@/services/media";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+import Label from "../Label";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function ImagePicker({
   field,
@@ -16,8 +16,8 @@ export default function ImagePicker({
   defaultValue,
   setValue,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: Partial<DATABASE_TABLE>;
+  field: DataBaseTableColumnDto;
+  table: Partial<DatabaseTableDto>;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   defaultValue?: any;

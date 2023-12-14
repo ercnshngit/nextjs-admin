@@ -1,14 +1,12 @@
 "use client";
-import { useTranslate } from "@/langs";
-import React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import BaseForm from "@/components/base-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { createTableItem } from "@/services/panel";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Database_Table } from "@/types/config";
 
-export default function Form({ table }: { table: Database_Table }) {
+export default function Form({ table }: { table: DatabaseTableDto }) {
   const {
     register,
     handleSubmit,
@@ -50,7 +48,7 @@ export default function Form({ table }: { table: Database_Table }) {
         table={table}
         errors={errors}
         register={register}
-        formType="create"
+        formType="create_crud_option"
       />
     </>
   );

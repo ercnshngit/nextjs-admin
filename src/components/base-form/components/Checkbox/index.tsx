@@ -1,8 +1,9 @@
-import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
 import { useTranslate } from "@/langs";
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Label from "../Label";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function Checkbox({
   field,
@@ -10,8 +11,8 @@ export default function Checkbox({
   register,
   errors,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: Partial<DATABASE_TABLE>;
+  field: DataBaseTableColumnDto;
+  table: Partial<DatabaseTableDto>;
   register: UseFormRegister<any>;
   errors: FieldErrors;
 }) {

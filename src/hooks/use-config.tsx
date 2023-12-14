@@ -1,11 +1,6 @@
 "use client";
 import { getTablesConfigs } from "@/services/dashboard";
-import { Column, Database_Table } from "@/types/config";
-import {
-  column_option,
-  database_table,
-  database_table_column,
-} from "@prisma/client";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { useQuery } from "@tanstack/react-query";
 
 export function useConfig(table_name?: string) {
@@ -13,10 +8,7 @@ export function useConfig(table_name?: string) {
     data: configs,
     isLoading,
     error,
-  } = useQuery<(database_table & { columns: database_table_column[] })[]>(
-    ["tables"],
-    () => getTablesConfigs()
-  );
+  } = useQuery<DatabaseTableDto[]>(["tables"], () => getTablesConfigs());
 
   if (!table_name)
     return {
@@ -25,7 +17,7 @@ export function useConfig(table_name?: string) {
       error,
       table: null,
     } as {
-      configs: database_table[];
+      configs: DatabaseTableDto[];
       isLoading: boolean;
       error: any;
       table: null;
