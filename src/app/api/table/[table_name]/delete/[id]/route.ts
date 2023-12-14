@@ -8,7 +8,7 @@ export async function GET(
     const id = params.id 
     const tableService = new TableService()
     try {
-        return await tableService.getTableById(table_name , id)
+        return await tableService.deleteTableWithId(table_name , id)
     } catch (error) {
         return new Response(JSON.stringify({status : "error" , message : error}));        
     }
