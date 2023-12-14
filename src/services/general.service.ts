@@ -4,20 +4,20 @@ import { GeneralDto } from "./dto/general.dto";
 
 export class GeneralService {
     async getGeneral(id: number) {
-        const general = await prisma.generals.findUnique({ where: { id } })
+        const general = await prisma.general.findUnique({ where: { id } })
         if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(general));
     }
 
     async getGenerals() {
-        const generals = await prisma.generals.findMany()
+        const generals = await prisma.general.findMany()
         if (generals.length < 1) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
         return new Response(JSON.stringify(generals));
     }
 
     async createGeneral(data: GeneralDto) {
         try {
-            const general = await prisma.generals.create({ data })
+            const general = await prisma.general.create({ data })
             if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             return new Response(JSON.stringify(general));
         }
@@ -29,10 +29,10 @@ export class GeneralService {
 
     async updateGeneral(id: number, data: GeneralDto) {
         try {
-            const general = await prisma.generals.findUnique({ where: { id } })
+            const general = await prisma.general.findUnique({ where: { id } })
             if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
             Object.assign(general, data)
-            const new_general = await prisma.generals.update({ where: { id }, data })
+            const new_general = await prisma.general.update({ where: { id }, data })
             if (!new_general) { return new Response(JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }), { status: 400 }); }
             return new Response(JSON.stringify(new_general));
         }
@@ -44,9 +44,9 @@ export class GeneralService {
 
     async deleteGeneral(id: number) {
         try {
-            const general = await prisma.generals.findUnique({ where: { id } })
+            const general = await prisma.general.findUnique({ where: { id } })
             if (!general) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
-            const delete_general = await prisma.generals.delete({ where: { id } })
+            const delete_general = await prisma.general.delete({ where: { id } })
             if (!delete_general) { return new Response(JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }), { status: 400 }); }
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
         }
