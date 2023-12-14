@@ -27,6 +27,7 @@ import { getTableInputTypes, updateTableConfig } from "@/services/dashboard";
 import { toast } from "react-toastify";
 import { type } from "@prisma/client";
 import { useTranslate } from "@/langs";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 export default function TableConfig({
   params,
 }: {
@@ -65,25 +66,25 @@ export default function TableConfig({
       is_primary: column.is_primary || false,
       input_type_id: column.input_type?.id || 0,
       create_crud_option_id: {
-        name: "",
-        is_hidden: false,
-        is_required: false,
-        is_readonly: false,
-        input_type_id: 0,
+        name: column.create_crud_option?.name || "",
+        is_hidden: column.create_crud_option?.is_hidden || false,
+        is_required: column.create_crud_option?.is_required || false,
+        is_readonly: column.create_crud_option?.is_readonly || false,
+        input_type_id: column.create_crud_option?.input_type?.id || 0,
       },
       read_crud_option_id: {
-        name: "",
-        is_hidden: false,
-        is_required: false,
-        is_readonly: false,
-        input_type_id: 0,
+        name: column.read_crud_option?.name || "",
+        is_hidden: column.read_crud_option?.is_hidden || false,
+        is_required: column.read_crud_option?.is_required || false,
+        is_readonly: column.read_crud_option?.is_readonly || false,
+        input_type_id: column.read_crud_option?.input_type?.id || 0,
       },
       update_crud_option_id: {
-        name: "",
-        is_hidden: false,
-        is_required: false,
-        is_readonly: false,
-        input_type_id: 0,
+        name: column.update_crud_option?.name || "",
+        is_hidden: column.update_crud_option?.is_hidden || false,
+        is_required: column.update_crud_option?.is_required || false,
+        is_readonly: column.update_crud_option?.is_readonly || false,
+        input_type_id: column.update_crud_option?.input_type?.id || 0,
       },
     })),
   };

@@ -1,3 +1,6 @@
+import { CrudOptionDto } from "@/services/dto/crud-option.dto";
+import { TypeDto } from "@/services/dto/type.dto";
+
 export type INPUT_TYPE =
   | "hidden"
   | "image"
@@ -65,11 +68,5 @@ export interface CrudOption {
   is_hidden: boolean;
   is_required: boolean;
   is_readonly: boolean;
-  input_type: null | DataTypeDto;
-}
-
-export interface DataTypeDto {
-  id: number;
-  name: string;
-  type_id: number;
+  input_type: null | TypeDto;
 }

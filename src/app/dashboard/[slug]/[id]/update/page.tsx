@@ -9,7 +9,7 @@ import Link from "next/link";
 import React from "react";
 import Form from "./form";
 import { useDatabase } from "@/hooks/use-database";
-import { Database_Table } from "@/types/config";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function Update({
   params,
@@ -56,7 +56,7 @@ export default function Update({
           </CardHeader>
           <CardContent>
             <div className="flex justify-start py-10">
-              <Form id={Number(id)} table={table as Database_Table} />
+              <Form id={Number(id)} table={table as DatabaseTableDto} />
             </div>
           </CardContent>
         </Card>

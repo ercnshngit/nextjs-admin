@@ -1,8 +1,8 @@
-import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
-import { useTranslate } from "@/langs";
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Label from "../Label";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function MultiSelect({
   field,
@@ -10,8 +10,8 @@ export default function MultiSelect({
   register,
   errors,
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: Partial<DATABASE_TABLE>;
+  field: DataBaseTableColumnDto;
+  table: Partial<DatabaseTableDto>;
   register: UseFormRegister<any>;
   errors: FieldErrors;
 }) {
@@ -24,16 +24,16 @@ export default function MultiSelect({
 
       <select
         className="px-2 py-1 border border-gray-200 rounded-md "
-        {...register(field.name, { required: true })}
+        {...register(field.name, { required: field.is_required })}
         multiple
       >
-        {field.options?.map((option) => {
+        {/* {field.options?.map((option) => {
           return (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
           );
-        })}
+        })} */}
       </select>
       {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>

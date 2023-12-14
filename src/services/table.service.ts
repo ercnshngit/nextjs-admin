@@ -7,9 +7,12 @@ import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
 import { prisma } from "../libs/prisma";
 import { DatabaseTableDto } from "./dto/database-table.dto";
+import { Prisma } from "@prisma/client";
+import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 
 config();
 export class TableService {
+
   async getTableNames() {
     try {
       const tableNames = await prisma.$queryRawUnsafe(
@@ -269,17 +272,13 @@ export class TableService {
             include: {
               column_relations: {
                 include: {
-                  referenced_table: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                  pivot_table: {
-                    select: {
-                      name: true,
-                    },
-                  },
-                },
+                  table: true,
+                  referenced_table: true,
+                  pivot_table: true,
+                  column: true,
+                  referenced_column: true,
+                  relation_type: true,
+                }
               },
               input_type: true,
               create_crud_option: {
@@ -307,6 +306,8 @@ export class TableService {
           { status: 404 }
         );
       }
+      return new Response(JSON.stringify(result), { status: 200 });
+      /*
       return new Response(
         JSON.stringify(
           result.map((table) => ({
@@ -348,7 +349,7 @@ export class TableService {
           }))
         ),
         { status: 200 }
-      );
+      );*/
     } catch (error) {
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -797,6 +798,28 @@ export class TableService {
         },
       });
       return new Response(JSON.stringify({ result }), { status: 200 });
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    }
+  }
+
+  async getAllColumnRelations() {
+    try {
+      const relations = await prisma.column_relation.findMany({
+        include: {
+          table: true,
+          referenced_table: true,
+          pivot_table: true,
+          column: true,
+          referenced_column: true,
+          relation_type: true,
+        },
+      });
+      if (!relations) {
+        return new Response(JSON.stringify({ message: ErrorMessages.COLUMN_RELATION_NOT_FOUND_ERROR() }), { status: 404 });
+      }
+      return new Response(JSON.stringify({ relations }), { status: 200 });
     } catch (error) {
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
