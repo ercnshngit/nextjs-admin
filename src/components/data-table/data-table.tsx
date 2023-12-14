@@ -37,7 +37,7 @@ interface DataTableProps<TData, TValue> {
   databaseTableColumns: Column[];
 }
 
-export function DataTableExpandable<TData, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
   filterables,

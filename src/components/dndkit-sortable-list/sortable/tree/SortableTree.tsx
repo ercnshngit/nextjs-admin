@@ -38,6 +38,7 @@ import type { FlattenedItem, SensorContext, TreeItems } from "./types";
 import { sortableTreeKeyboardCoordinates } from "./keyboardCoordinates";
 import { SortableTreeItem } from "./components";
 import { CSS } from "@dnd-kit/utilities";
+import { customCollisionDetectionAlgorithm } from "@/components/block-builder/utils/colision-detection";
 
 const measuring = {
   droppable: {
@@ -177,13 +178,13 @@ export function SortableTree({
       id={id}
       accessibility={{ announcements }}
       sensors={sensors}
-      collisionDetection={closestCenter}
       measuring={measuring}
       onDragStart={handleDragStart}
       onDragMove={handleDragMove}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
+      collisionDetection={customCollisionDetectionAlgorithm}
     >
       <SortableContext items={sortedIds} strategy={verticalListSortingStrategy}>
         {flattenedItems.map(({ id, uniqueId, children, collapsed, depth }) => (
@@ -269,11 +270,14 @@ export function SortableTree({
 
       const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
       const newItems = buildTree(sortedItems);
-
+      console.log("burada");
       if (activeTreeItem.parentId !== parentId) {
         if (parentId !== null) {
           onUpdate(active.id, parentId);
         }
+      } else {
+        console.log("activeTreeItem", activeTreeItem);
+        console.log("parentId", parentId);
       }
 
       setItems(newItems);

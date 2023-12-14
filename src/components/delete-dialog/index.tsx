@@ -15,8 +15,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useTranslate } from "@/langs";
-import { deleteTableItem } from "@/services/panel";
 import { DELETE_TABLE_ITEM } from "@/types/panel";
+import { deleteTableItem } from "@/services/dashboard";
 export default function DeleteItem({ open, setOpen, tableName, id }: any) {
   const { translate } = useTranslate();
 
@@ -28,7 +28,7 @@ export default function DeleteItem({ open, setOpen, tableName, id }: any) {
       onSuccess: () => {
         queryClient.invalidateQueries([tableName]);
         console.log("deleteMutation");
-        router.push("/" + tableName);
+        router.push("/dashboard/" + tableName);
         router.refresh();
       },
       onError: (error) => {

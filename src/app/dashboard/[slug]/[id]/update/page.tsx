@@ -32,7 +32,7 @@ export default function Update({
           </h3>
           <div>
             <Button asChild>
-              <Link href={"/" + tableName}>
+              <Link href={"/dashboard/" + tableName}>
                 <ArrowLeftIcon className="w-4 h-4 mr-2" />
                 Geri Dön
               </Link>

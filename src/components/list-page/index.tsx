@@ -12,18 +12,13 @@ import { useDatabase } from "@/hooks/use-database";
 import { useLanguage } from "@/contexts/language-context";
 import { useTranslate } from "@/langs";
 import { columns } from "@/components/data-table/columns";
-import { DataTableExpandable } from "../data-table/data-table";
+import { DataTable } from "../data-table/data-table";
 
-export default function Masraf({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+export default function ListPage({ slug, data }: { slug: string; data: any }) {
   const { table, filterables, searchables } = useDatabase(slug);
   const tableName = table?.name || "";
   const tableColumns = columns(slug, table?.columns || []);
   const { translate } = useTranslate();
-
-  const { data, error } = useQuery([tableName], () =>
-    getTable({ tableName: tableName })
-  );
 
   const [tableData, setTableData] = useState(data);
   useEffect(() => {
@@ -48,7 +43,6 @@ export default function Masraf({ params }: { params: { slug: string } }) {
   });
 
   const searchablesData = searchables;
-  if (error) return <div>error</div>;
   return (
     <>
       <div className="flex justify-between mb-4">
@@ -66,7 +60,7 @@ export default function Masraf({ params }: { params: { slug: string } }) {
       </div>
       <div className="w-full py-10">
         {tableData && (
-          <DataTableExpandable
+          <DataTable
             tableName={tableName}
             columns={tableColumns}
             data={tableData}

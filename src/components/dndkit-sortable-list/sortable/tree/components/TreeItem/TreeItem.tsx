@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Edit, Edit2 } from "lucide-react";
 import { AiFillEdit } from "react-icons/ai";
 import { MENU_ITEM } from "@/types/menus";
+import { MenuDto } from "@/services/dto/menu.dto";
 
 export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
   childCount?: number;
@@ -19,7 +20,7 @@ export interface Props extends Omit<HTMLAttributes<HTMLLIElement>, "id"> {
   handleProps?: any;
   indicator?: boolean;
   indentationWidth: number;
-  item: Partial<MENU_ITEM>;
+  item: Partial<MenuDto>;
   onCollapse?(): void;
   onRemove?(): void;
   wrapperRef?(node: HTMLLIElement): void;

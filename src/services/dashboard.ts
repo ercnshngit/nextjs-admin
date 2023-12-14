@@ -1,6 +1,7 @@
 import axiosClient from "@/libs/axios";
 import { BlockDto } from "./dto/block.dto";
 import { MenuDto } from "./dto/menu.dto";
+import { CREATE_MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -89,4 +90,62 @@ export const getBlockComponents = async (id: number) => {
   const { data } = await axiosClient.get(`/block/component/get/${id}`);
 
   return data;
+};
+
+export const getTypes = async (table_name: string) => {
+  const { data } = await axiosClient.get(`/type/get/table-name/${table_name}`);
+
+  return data;
+};
+
+export const getMenu = async () => {
+  const { data } = await axiosClient.get("/menu/get/all");
+  return data;
+};
+
+export const deleteMenu = async (id: number) => {
+  const { data } = await axiosClient.delete(`/menu/delete/${id}`);
+  return data;
+};
+
+export const createMenu = async (data: { id: number; data: any }) => {
+  const { data: responseData } = await axiosClient.post("/menu/create", data);
+  return responseData;
+};
+
+export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
+  const { data: responseData } = await axiosClient.post(
+    "/menu/set/" + id,
+    data
+  );
+  return responseData;
+};
+
+export const getMenuItems = async ({
+  slug,
+  lang,
+}: {
+  slug: string;
+  lang: "TR" | "EN";
+}) => {
+  const { data } = await axiosClient.get(`/menu/get/allwith/${slug}/${lang}`);
+  return data;
+};
+
+export const getMenuByTypeId = async (type_id: number) => {
+  const { data } = await axiosClient.get(`/menu/type/${type_id}`);
+  return data;
+};
+
+export const deleteTableItem = async ({
+  tableName,
+  id,
+}: {
+  tableName: string;
+  id: number;
+}) => {
+  const { data: responseData } = await axiosClient.get(
+    "/table/" + tableName + "/delete/" + id
+  );
+  return responseData;
 };

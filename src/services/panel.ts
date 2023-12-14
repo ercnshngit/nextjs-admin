@@ -49,16 +49,3 @@ export const createTableItem = async ({
   );
   return responseData;
 };
-
-export const deleteTableItem = async ({
-  tableName,
-  id,
-}: {
-  tableName: string;
-  id: number;
-}) => {
-  const { data: responseData } = await axiosClient.post(
-    "/table/" + tableName + "/delete/" + id
-  );
-  return responseData;
-};
