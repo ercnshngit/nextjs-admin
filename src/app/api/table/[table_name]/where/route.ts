@@ -1,3 +1,4 @@
+import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
 
 // TÜm verileri döner
@@ -11,6 +12,8 @@ export async function POST(
     const res = await request.json();
     return await tableService.getTableWithWhere(table_name, res);
   } catch (error) {
+    const logService = new LogService();
+    await logService.createLog({ error });
     return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
       status: 400,
     });

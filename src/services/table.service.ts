@@ -10,6 +10,7 @@ import { DatabaseTableDto } from "./dto/database-table.dto";
 import { Prisma } from "@prisma/client";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
+import { LogService } from "./log.service";
 
 config();
 export class TableService {
@@ -21,6 +22,8 @@ export class TableService {
       );
       return tableNames;
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return;
     }
@@ -28,7 +31,7 @@ export class TableService {
 
   async getTable(table_name: string) {
     try {
-      const query = 'SELECT * FROM `' +table_name +'`' ;
+      const query = 'SELECT * FROM `' + table_name + '`';
       console.log(query);
       const table = await prisma.$queryRawUnsafe(`${query}`);
 
@@ -40,12 +43,14 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
     }
-    
+
   }
 
   async getTableById(table_name: string, id: number) {
@@ -67,6 +72,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -78,7 +85,7 @@ export class TableService {
       let columns = " (";
       let values = " (";
       data.forEach((element: { key: string; value: string }) => {
-        columns += table_name+"."+element.key + ", ";
+        columns += table_name + "." + element.key + ", ";
         values += "'" + element.value + "', ";
       });
       columns = columns.substring(0, columns.length - 2) + ") ";
@@ -102,6 +109,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -129,6 +138,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -152,6 +163,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -175,6 +188,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -212,6 +227,8 @@ export class TableService {
       });
       return new Response(JSON.stringify(new_result), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -258,6 +275,8 @@ export class TableService {
       });
       return new_result;
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -309,6 +328,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -400,6 +421,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -485,13 +508,13 @@ export class TableService {
                   },
                 },
                 create_crud_option: column.create_crud_option == undefined ? undefined : {
-                    create: {
-                      name: column.create_crud_option?.name,
-                      is_hidden: column.create_crud_option?.is_hidden,
-                      is_required: column.create_crud_option?.is_required,
-                      is_readonly: column.create_crud_option?.is_readonly,
-                      type_id: column.create_crud_option?.input_type?.id,
-                    }
+                  create: {
+                    name: column.create_crud_option?.name,
+                    is_hidden: column.create_crud_option?.is_hidden,
+                    is_required: column.create_crud_option?.is_required,
+                    is_readonly: column.create_crud_option?.is_readonly,
+                    type_id: column.create_crud_option?.input_type?.id,
+                  }
                 },
                 read_crud_option: column.read_crud_option == undefined ? undefined : {
                   connectOrCreate: {
@@ -505,7 +528,7 @@ export class TableService {
                     },
                   },
                 },
-                update_crud_option: column.update_crud_option_id == undefined ? undefined :{
+                update_crud_option: column.update_crud_option_id == undefined ? undefined : {
                   connectOrCreate: {
                     where: { id: column.update_crud_option_id },
                     create: {
@@ -559,6 +582,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -569,23 +594,23 @@ export class TableService {
       const tableDatas = await this.getTableWithDatas(table_name);
       const tableDataArray = Object.values(tableDatas)
       const input_type_ids = input_types == undefined ? await prisma.type.findMany({
-        select:{
+        select: {
           id: true,
           name: true,
-          table:{
-            select:{
+          table: {
+            select: {
               id: true,
               name: true,
             }
           }
         },
-        where: { 
-          table:{
+        where: {
+          table: {
             name: TypeCategories.INPUT_TYPE
           },
         },
       }) : input_types;
-      if(!input_type_ids){
+      if (!input_type_ids) {
         return new Response(JSON.stringify({ message: "Input type mevcut değil." }), { status: 404 });
       }
       const inputTypesArray = Object.values(input_type_ids);
@@ -602,8 +627,8 @@ export class TableService {
           columns: {
             create: tableDataArray[0].columns.map((column: any) => ({
               name: column.name,
-              input_type:{
-                connect:{
+              input_type: {
+                connect: {
                   id: inputTypesArray.filter(
                     (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
                   )[0].id,
@@ -613,54 +638,58 @@ export class TableService {
           },
         },
       });
-      return new Response(JSON.stringify({ result }), {status : 200});
+      return new Response(JSON.stringify({ result }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }), {status : 500});
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
   async deleteTableConfigWithTableName(table_name: string) {
     try {
       const table = await prisma.database_table.findFirst({
-        where:{
+        where: {
           name: table_name,
         }
       });
-      if(!table){
+      if (!table) {
         return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }), { status: 404 });
       }
       console.log(table.id);
       const result = await prisma.database_table.delete({
-        include:{
+        include: {
           columns: true
         },
         where: {
-            id: table.id,
-            columns:{
-              every: {
-                table_id: table.id
-              }
+          id: table.id,
+          columns: {
+            every: {
+              table_id: table.id
             }
+          }
         },
       });
       return new Response(
         JSON.stringify({
           message: ConfirmMessages.TABLE_CONFIG_DELETE_SUCCESS_CONFIRM(),
-          data : result
+          data: result
         }),
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
-  async createCrudOption(column_id : number, data : CrudOptionCreateDto){
+  async createCrudOption(column_id: number, data: CrudOptionCreateDto) {
     try {
       const result = await prisma.crud_option.create({
-        data:{
+        data: {
           name: data.name,
           is_hidden: data.is_hidden,
           is_readonly: data.is_readonly,
@@ -668,28 +697,30 @@ export class TableService {
           input_type_id: data.input_type_id,
         }
       });
-      if(!result){
+      if (!result) {
         return new Response(JSON.stringify({ message: ErrorMessages.CRUD_OPTION_CREATE_FAILED_ERROR() }), { status: 400 });
       }
-      
+
       const updatedDataBaseTableColumn = await prisma.database_table_column.update({
-        where:{
+        where: {
           id: +column_id
         },
         data: (
-          data.crud_type == 1 ? {create_crud_option_id: result.id} : 
-          data.crud_type == 2 ? {update_crud_option_id: result.id} :
-          {read_crud_option_id: result.id} )
+          data.crud_type == 1 ? { create_crud_option_id: result.id } :
+            data.crud_type == 2 ? { update_crud_option_id: result.id } :
+              { read_crud_option_id: result.id })
       });
 
-      if(!updatedDataBaseTableColumn){
+      if (!updatedDataBaseTableColumn) {
         return new Response(JSON.stringify({ message: ErrorMessages.DATABASE_TABLE_COLUMN_UPDATE_FAILED_ERROR() }), { status: 400 });
       }
-      
-      return new Response(JSON.stringify({ updatedDataBaseTableColumn }), {status : 200});
+
+      return new Response(JSON.stringify({ updatedDataBaseTableColumn }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }), {status : 500});
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -702,29 +733,29 @@ export class TableService {
       }
       const tableNamesArray = Object.values(tableNames);
       const input_type_ids = await prisma.type.findMany({
-        select:{
+        select: {
           id: true,
           name: true,
-          table:{
-            select:{
+          table: {
+            select: {
               id: true,
               name: true,
             }
           }
         },
-        where: { 
-          table:{
+        where: {
+          table: {
             name: TypeCategories.INPUT_TYPE
           },
         },
       });
-      if(!input_type_ids){
+      if (!input_type_ids) {
         return new Response(JSON.stringify({ message: "Input type mevcut değil." }), { status: 404 });
       }
       const inputTypesArray = Object.values(input_type_ids);
       tableNamesArray.forEach(async (element) => {
         const result = this.createTableConfigWithTableName(element, inputTypesArray);
-        if(result){
+        if (result) {
           tableConifgs.push(result);
         }
       });
@@ -737,8 +768,10 @@ export class TableService {
         { status: 200 }
       );
     } catch (error: any) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }), { status : 500 });
+      return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
   }
 
@@ -750,13 +783,15 @@ export class TableService {
           column_id: data.column_id,
           referenced_table_id: data.referenced_table_id,
           referenced_column_id: data.referenced_column_id,
-          pivot_table_id : data.pivot_table_id,
+          pivot_table_id: data.pivot_table_id,
           relation_type_id: data.relation_type_id,
           foreign_key_name: data.foreign_key_name,
         },
       });
       return new Response(JSON.stringify({ result }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }
@@ -779,6 +814,8 @@ export class TableService {
       }
       return new Response(JSON.stringify({ relations }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     }

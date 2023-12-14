@@ -7,6 +7,7 @@ import {
   CreateBlockComponentsDto,
   UpdateBlockComponentDto
 } from "./dto/block_component.dto";
+import { LogService } from "./log.service";
 
 export class BlockComponentService {
   async getBlockComponent(block_id: number) {
@@ -50,6 +51,8 @@ export class BlockComponentService {
 
       return new Response(JSON.stringify(result));
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
@@ -101,6 +104,8 @@ export class BlockComponentService {
 
       return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -178,6 +183,8 @@ export class BlockComponentService {
 
       return new Response(JSON.stringify({ results }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),
@@ -298,6 +305,8 @@ export class BlockComponentService {
       return new Response(JSON.stringify({ message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM() }), { status: 200 });
 
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),
@@ -343,6 +352,8 @@ export class BlockComponentService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),
@@ -386,6 +397,8 @@ export class BlockComponentService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),

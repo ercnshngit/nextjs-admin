@@ -1,3 +1,4 @@
+import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
 
 export async function GET(
@@ -9,6 +10,8 @@ export async function GET(
   try {
     return await tableService.createTableConfigWithTableName(table_name);
   } catch (error) {
+    const logService = new LogService();
+        await logService.createLog({ error });
     return new Response(JSON.stringify({ status: "error", message: error }));
   }
 }

@@ -1,6 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { BlockComponentPropDto } from "./dto/block_component_prop.dto";
+import { LogService } from "./log.service";
 
 export class BlockComponentPropService {
     async getBlockComponentProp(id: number) {
@@ -22,6 +23,8 @@ export class BlockComponentPropService {
             return new Response(JSON.stringify(blockComponentProp));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -37,6 +40,8 @@ export class BlockComponentPropService {
             return new Response(JSON.stringify(new_blockComponentProp));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -51,6 +56,8 @@ export class BlockComponentPropService {
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }

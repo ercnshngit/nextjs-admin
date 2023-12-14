@@ -6,6 +6,7 @@ import {
   ErrorMessages,
 } from "../../../constants/messages.constants";
 import { generateAccessToken } from "./jwt";
+import { LogService } from "../log.service";
 
 const encryptor = new Encryptor();
 export class AuthService {
@@ -54,6 +55,8 @@ export class AuthService {
         })
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -109,6 +112,8 @@ export class AuthService {
       ); // user veriliyor cunku hashlenmemıs hali ile login işlemi gerçekleşiyor
       return res;
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -187,6 +192,8 @@ export class AuthService {
         })
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
