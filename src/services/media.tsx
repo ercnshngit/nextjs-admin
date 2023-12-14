@@ -12,12 +12,14 @@ export const getMediaFromServer = async ({
 };
 
 export const uploadMediaToServer = async ({
-  formData,
+  file,
   route,
 }: {
-  formData: FormData;
+  file: File;
   route: string;
 }) => {
+  const formData = new FormData();
+  formData.append("file", file);
   return axiosFileClient.post("/media/upload/" + route, formData, {
     headers: {
       "Content-Type": "multipart/form-data",

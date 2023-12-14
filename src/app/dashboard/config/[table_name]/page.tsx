@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -27,7 +26,6 @@ import { getTableInputTypes, updateTableConfig } from "@/services/dashboard";
 import { toast } from "react-toastify";
 import { type } from "@prisma/client";
 import { useTranslate } from "@/langs";
-import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 export default function TableConfig({
   params,
 }: {

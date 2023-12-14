@@ -125,8 +125,7 @@ function handleIsSidebarComponentDroppingOverDesignerDropArea({
       : undefined,
     props: sidebarComponent.props.map((prop) => ({
       prop: {
-        id: prop.id,
-        key: prop.key,
+        ...prop,
         type_id: prop.type.id,
       },
       value: "",
@@ -187,8 +186,7 @@ function handleIsSidebarComponentDroppingOverComponent({
       : undefined,
     props: sidebarComponent.props.map((prop) => ({
       prop: {
-        id: prop.id,
-        key: prop.key,
+        ...prop,
         type_id: prop.type.id,
       },
       value: "",
@@ -238,8 +236,7 @@ function handleIsSidebarComponentInComponent({
       : undefined,
     props: sidebarComponent.props.map((prop) => ({
       prop: {
-        id: prop.id,
-        key: prop.key,
+        ...prop,
         type_id: prop.type.id,
       },
       value: "",
