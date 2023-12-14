@@ -1,3 +1,4 @@
+"use client";
 import ListPage from "@/components/list-page";
 import { getTable } from "@/services/panel";
 import { useQuery } from "@tanstack/react-query";

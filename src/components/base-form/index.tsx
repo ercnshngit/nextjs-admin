@@ -6,11 +6,12 @@ import FormInputFactory from "./form-input-factory";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
 import { Database_Table } from "@/types/config";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function BaseForm(props: {
   handleSubmit: any;
   onSubmit: any;
-  table: Database_Table;
+  table: DatabaseTableDto;
   errors: FieldErrors;
   register: UseFormRegister<any>;
   formType: "create" | "update";
@@ -105,7 +106,7 @@ export default function BaseForm(props: {
   }: {
     handleSubmit: any;
     onSubmit: any;
-    table: Database_Table;
+    table: DatabaseTableDto;
     errors: FieldErrors;
     register: UseFormRegister<any>;
     formType: "create" | "update";

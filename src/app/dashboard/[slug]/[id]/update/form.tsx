@@ -11,13 +11,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import { UPDATE_TABLE_ITEM } from "@/types/panel";
 import { useRouter } from "next/navigation";
 import { queryClient } from "@/libs/react-query";
-import { DATABASE_TABLE } from "@/config/general";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function Form({
   table,
   id,
 }: {
-  table: DATABASE_TABLE;
+  table: DatabaseTableDto;
   id: number;
 }) {
   const {
@@ -33,7 +33,7 @@ export default function Form({
   const router = useRouter();
   const updateMutation = useMutation(
     (data: UPDATE_TABLE_ITEM) =>
-      updateTableItem({ tableName: table.name, id: id, data: data }),
+      updateTableItem({ tableName: table.name!, id: id, data: data }),
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries({
@@ -64,7 +64,9 @@ export default function Form({
   );
 
   const onSubmit: SubmitHandler<any> = (data) => {
-    if (table.columns.some((column) => column.inputType === "relation")) {
+    if (
+      table?.columns?.some((column) => column.input_type?.name === "relation")
+    ) {
       const relationData = Object.keys(data).filter(
         (key: any) => key.split("/")[0] === "relation"
       );
