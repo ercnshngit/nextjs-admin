@@ -2,16 +2,14 @@
 import { Button } from "@/components/ui/button";
 
 import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@tanstack/react-query";
 import { CircleIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { getTable } from "@/services/panel";
-import { useDatabase } from "@/hooks/use-database";
-import { useLanguage } from "@/contexts/language-context";
-import { useTranslate } from "@/langs";
 import { columns } from "@/components/data-table/columns";
+import { useDatabase } from "@/hooks/use-database";
+import { useTranslate } from "@/langs";
+
 import { DataTable } from "../data-table/data-table";
 
 export default function ListPage({ slug, data }: { slug: string; data: any }) {

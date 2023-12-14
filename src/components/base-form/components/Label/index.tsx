@@ -1,13 +1,14 @@
 import { useTranslate } from "@/langs";
-import { Column, Database_Table } from "@/types/config";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import React from "react";
 
 export default function Label({
   field,
   table,
 }: {
-  field: Column;
-  table: Partial<Database_Table>;
+  field: DataBaseTableColumnDto;
+  table: Partial<DatabaseTableDto>;
 }) {
   const { translate } = useTranslate();
 

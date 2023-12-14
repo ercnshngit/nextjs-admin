@@ -12,13 +12,14 @@ import Select from "./components/Select";
 import String from "./components/String";
 import TextArea from "./components/TextArea";
 import { Column, Database_Table } from "@/types/config";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 type FormInputFactoryProps = {
   field: Column;
-  table: Database_Table;
+  table: DatabaseTableDto;
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  formType: "create" | "update";
+  formType: "create_crud_option" | "update_crud_option";
   defaultValue?: any;
   id?: number;
   setValue: any;
@@ -37,7 +38,7 @@ export default function FormInputFactory({
   ...props
 }: FormInputFactoryProps) {
   const inputType =
-    props.field?.[formType]?.inputType || props.field?.inputType;
+    props.field?.[formType]?.input_type?.name || props.field?.input_type.name;
 
   if (customInput) {
     const CustomInputItem = customInput.find(
