@@ -1,3 +1,5 @@
+import { ColumnRelationDto } from "./column-relation.dto";
+
 export interface DataBaseTableColumnDto{
     id: number;
     name: string;
@@ -11,6 +13,7 @@ export interface DataBaseTableColumnDto{
     is_sortable: boolean | false;
     input_type_id: number;
     input_type?: DataTypeDto;
+    column_relations: ColumnRelationDto[];
     create_crud_option_id?: number;
     update_crud_option_id?: number; 
     read_crud_option_id?: number;
