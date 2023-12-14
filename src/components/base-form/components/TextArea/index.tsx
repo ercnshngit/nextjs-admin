@@ -26,7 +26,7 @@ export default function TextArea({
 
       <textarea
         className="px-2 py-1 border border-gray-200 rounded-md "
-        {...register(field.name, { required: true })}
+        {...register(field.name, { required: field.is_required })}
         defaultValue={defaultValue}
       />
       {errors[field.name] && <span>Bu alan gereklidir</span>}

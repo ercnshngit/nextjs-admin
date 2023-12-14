@@ -24,7 +24,7 @@ export default function MultiSelect({
 
       <select
         className="px-2 py-1 border border-gray-200 rounded-md "
-        {...register(field.name, { required: true })}
+        {...register(field.name, { required: field.is_required })}
         multiple
       >
         {field.options?.map((option) => {
