@@ -264,3 +264,10 @@ model role {
 
   users user[] @relation("fk_u_role_id")
 }
+
+model log {
+  id         Int      @id @default(autoincrement())
+  body       String   @db.LongText
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
