@@ -5,26 +5,34 @@ import { PlusCircle } from "lucide-react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "../../form-input-factory";
 import Label from "../Label";
-import { Column, Database_Table, INPUT_TYPE } from "@/types/config";
 import { useDatabase } from "@/hooks/use-database";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function Relation(props: {
-  field: Column;
-  table: Database_Table;
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  formType: "create" | "update";
+  formType: "create_crud_option" | "update_crud_option";
   id?: number;
   setValue: any;
   control: any;
   defaultValue?: any;
 }) {
-  if (props.formType === "update" && props.field.relation?.pivotTable) {
-    return <RelationWithPivot {...props} />;
-  } else if (props.formType === "update") {
-    return <UpdateRelation {...props} />;
+  const { table: joinedTable } = useDatabase(
+    props.field.column_relations[0].referenced_table.name
+  );
+  if (!joinedTable) return null;
+  if (
+    props.formType === "update_crud_option" &&
+    props.field.column_relations[0].pivot_table_id
+  ) {
+    return <RelationWithPivot {...props} joinedTable={joinedTable} />;
+  } else if (props.formType === "update_crud_option") {
+    return <UpdateRelation {...props} joinedTable={joinedTable} />;
   } else {
-    return <CreateRelation {...props} />;
+    return <CreateRelation {...props} joinedTable={joinedTable} />;
   }
 }
 
@@ -37,20 +45,20 @@ function UpdateRelation({
   id,
   setValue,
   control,
+  joinedTable,
 }: {
-  field: Column;
-  table: Database_Table;
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
+  formType: "create_crud_option" | "update_crud_option";
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  formType: "create" | "update";
   id?: number;
   setValue?: any;
   control: any;
+  joinedTable?: DatabaseTableDto;
 }) {
-  const { table: joinedTable } = useDatabase(field.relation!.table!);
-
-  const joinedTableData = useQuery([joinedTable.name], () =>
-    getTable({ tableName: joinedTable.name })
+  const joinedTableData = useQuery([joinedTable?.name], () =>
+    getTable({ tableName: joinedTable?.name || "" })
   );
 
   return (
@@ -99,17 +107,18 @@ function CreateRelation({
   id,
   setValue,
   control,
+  joinedTable,
 }: {
-  field: Column;
-  table: Database_Table;
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
+  formType: "create_crud_option" | "update_crud_option";
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  formType: "create" | "update";
   id?: number;
   setValue?: any;
   control: any;
+  joinedTable: DatabaseTableDto;
 }) {
-  const { table: joinedTable } = useDatabase(field.relation!.table!);
   const { translate } = useTranslate();
 
   const joinedTableData = useQuery([joinedTable.name], () =>
@@ -132,7 +141,8 @@ function CreateRelation({
                 className="flex items-center justify-between gap-2 px-2 py-1 bg-gray-100 rounded-md"
                 key={item.id}
               >
-                <p>{item[field.relation!.displayColumn!]}</p>
+                {/* Name display column */}
+                <p>{item["name"]}</p>
                 <PlusCircle size="16" className="stroke-teal-500" />
               </div>
             ))}
@@ -174,26 +184,35 @@ function RelationWithPivot({
   id,
   setValue,
   control,
+  joinedTable,
 }: {
-  field: Column;
-  table: Database_Table;
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
+  formType: "create_crud_option" | "update_crud_option";
   register: UseFormRegister<any>;
   errors: FieldErrors;
-  formType: "create" | "update";
   id?: number;
   setValue?: any;
   control: any;
+  joinedTable: DatabaseTableDto;
 }) {
-  const { table: joinedTable } = useDatabase(field.relation!.table!);
-
   const joinedTableData = useQuery([joinedTable.name], () =>
     getTable({ tableName: joinedTable.name })
   );
 
-  const { table: pivotTable } = useDatabase(field.relation!.pivotTable!);
-  const pivotTableData = useQuery([pivotTable.name + "/" + id], () =>
-    getTable({ tableName: pivotTable.name })
+  const { table: pivotTable } = useDatabase(
+    field.column_relations[0].pivot_table.name!
   );
+
+  const pivotTableData = useQuery(
+    [pivotTable?.name + "/" + id],
+    () => getTable({ tableName: pivotTable?.name || "" }),
+    {
+      enabled: !!pivotTable?.name,
+    }
+  );
+
+  const { translate } = useTranslate();
 
   return (
     <div
@@ -208,23 +227,23 @@ function RelationWithPivot({
           pivotTableData.data
             .filter((pivot: any) => {
               // MANY-TO-MANY bu filtre kalkacak  databsae e where li get gelince
-              return pivot[field.relation!.pivotTableKeyColumn!] === id;
+              // pivot table Table key column page_id
+              return pivot[field.column_relations[0].table.name + "_id"] === id;
             })
             .map((pivot: any) => {
               const joinedTableRelationField = joinedTableData.data.find(
                 (joinedTableColumn: any) =>
                   joinedTableColumn.id ===
-                  pivot[field.relation!.pivotTableForeignKeyColumn!]
+                  pivot[field.column_relations[0].referenced_table.name + "_id"]
               );
 
               if (!joinedTableRelationField) return null;
               return (
                 <div key={pivot.id}>
                   <h2 className="font-medium">
-                    Komponent:{" "}
-                    {joinedTableRelationField[field.relation!.displayColumn!]}
+                    Komponent: {joinedTableRelationField["name"]}
                   </h2>
-                  {
+                  {/* {
                     field.relation!.pivotTableExtraColumns?.map(
                       (extraColumn) => {
                         const extraColumnField = {
@@ -259,7 +278,7 @@ function RelationWithPivot({
                         );
                       }
                     ) //düzeltilecek
-                  }
+                  } */}
                 </div>
               );
             })}

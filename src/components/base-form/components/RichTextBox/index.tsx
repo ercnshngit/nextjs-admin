@@ -7,8 +7,9 @@ import {
   UseFormRegister,
   useController,
 } from "react-hook-form";
-import { DATABASE_TABLE, DATABASE_TABLE_COLUMN } from "@/config/general";
 import Label from "../Label";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 // const SunEditor = dynamic(() => import("suneditor-react"), {
 //   ssr: false,
@@ -35,8 +36,8 @@ const RichTextBox = ({
   defaultValue,
   ...props
 }: {
-  field: DATABASE_TABLE_COLUMN;
-  table: DATABASE_TABLE;
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   defaultValue?: any;

@@ -11,11 +11,11 @@ import RichTextBox from "./components/RichTextBox";
 import Select from "./components/Select";
 import String from "./components/String";
 import TextArea from "./components/TextArea";
-import { Column, Database_Table } from "@/types/config";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 type FormInputFactoryProps = {
-  field: Column;
+  field: DataBaseTableColumnDto;
   table: DatabaseTableDto;
   register: UseFormRegister<any>;
   errors: FieldErrors;
@@ -38,7 +38,9 @@ export default function FormInputFactory({
   ...props
 }: FormInputFactoryProps) {
   const inputType =
-    props.field?.[formType]?.input_type?.name || props.field?.input_type.name;
+    props.field?.[formType]?.input_type?.name ||
+    props.field?.input_type?.name ||
+    "text";
 
   if (customInput) {
     const CustomInputItem = customInput.find(

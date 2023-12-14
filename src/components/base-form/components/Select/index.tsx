@@ -1,6 +1,5 @@
 "use client";
 
-import { Column, Database_Table, Option } from "@/types/config";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Label from "../Label";
 import RelationOptions from "./components/RelationOptions";

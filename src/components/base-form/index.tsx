@@ -5,7 +5,6 @@ import { FieldErrors, RegisterOptions, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "./form-input-factory";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
-import { Database_Table } from "@/types/config";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function BaseForm(props: {
@@ -14,7 +13,7 @@ export default function BaseForm(props: {
   table: DatabaseTableDto;
   errors: FieldErrors;
   register: UseFormRegister<any>;
-  formType: "create" | "update";
+  formType: "create_crud_option" | "update_crud_option";
   id?: number;
   setValue: any;
   watch?: any;
@@ -39,7 +38,7 @@ export default function BaseForm(props: {
     watch,
     control,
   } = props;
-  if (formType === "create") {
+  if (formType === "create_crud_option") {
     return (
       <>
         <form
@@ -109,7 +108,7 @@ export default function BaseForm(props: {
     table: DatabaseTableDto;
     errors: FieldErrors;
     register: UseFormRegister<any>;
-    formType: "create" | "update";
+    formType: "create_crud_option" | "update_crud_option";
     id: number;
     setValue?: any;
     customInput?: {

@@ -10,16 +10,14 @@ export default function Hidden({
   table,
   register,
   errors,
+  defaultValue,
 }: {
   field: DataBaseTableColumnDto;
   table: Partial<DatabaseTableDto>;
   register: UseFormRegister<any>;
   errors: FieldErrors;
+  defaultValue?: string;
 }) {
-  const user = useUser();
-
-  const defaultValue =
-    field.default === "user.id" && user && user.sub ? (user.sub as any).id : "";
   return (
     <input
       key={field.name}

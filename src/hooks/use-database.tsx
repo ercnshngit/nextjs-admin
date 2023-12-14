@@ -5,8 +5,7 @@ import {
   getTablesConfigs,
   getTablesStructure,
 } from "@/services/dashboard";
-import { Database_Table } from "@/types/config";
-import { database_table, database_table_column } from "@prisma/client";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
@@ -23,7 +22,7 @@ export function useDatabase(table_name?: string) {
     data: configs,
     error: configError,
     isLoading: isLoadingConfigs,
-  } = useQuery<Database_Table[]>(["configs"], () => getTablesConfigs());
+  } = useQuery<DatabaseTableDto[]>(["configs"], () => getTablesConfigs());
 
   const error = configError || tableError;
   const isLoading = isLoadingTables || isLoadingConfigs;
