@@ -336,6 +336,13 @@ export class ErrorMessages {
          en: "Database table column cannot update."
       }
    }
+
+   static COLUMN_RELATION_NOT_FOUND_ERROR() {
+      return {
+         tr: "Column relation bulunamadı.",
+         en: "Column relation not found."
+      }
+   }
 }
 
 export class ConfirmMessages {

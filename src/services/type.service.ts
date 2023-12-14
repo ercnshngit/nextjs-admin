@@ -147,4 +147,33 @@ export class TypeService {
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
     }
+
+    async getTypesTableNames() {
+        try {
+            const tableNames = await prisma.type.findMany({
+                select: {
+                    table: {
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                        
+                    }
+                }
+            });
+            if(!tableNames){
+                return new Response(JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }), { status: 404 });
+            }
+            const tableNameAndIds = Object.values(tableNames);
+            const uniqueTableNames = new Set();
+            tableNameAndIds.forEach(element => {
+                uniqueTableNames.add(element?.table?.name);
+            });
+            const uniqueTableNamesArray = Array.from(uniqueTableNames);
+            return new Response(JSON.stringify( uniqueTableNamesArray ), { status: 200 })
+        } catch (error) {
+            console.log(error)
+            return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
+        }
+    }
 }
