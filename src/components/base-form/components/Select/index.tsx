@@ -4,6 +4,8 @@ import { Column, Database_Table, Option } from "@/types/config";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Label from "../Label";
 import RelationOptions from "./components/RelationOptions";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 export default function Select({
   field,
@@ -12,8 +14,8 @@ export default function Select({
   errors,
   defaultValue,
 }: {
-  field: Column;
-  table: Database_Table;
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
   register: UseFormRegister<any>;
   errors: FieldErrors;
   defaultValue?: string;
@@ -32,17 +34,16 @@ export default function Select({
         })}
         defaultValue={defaultValue}
       >
-        {!field.options ? (
-          <RelationOptions field={field} />
-        ) : (
-          field.options?.map((option) => {
+        <RelationOptions field={field} />
+
+        {/* field.options?.map((option) => {
             return (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             );
           })
-        )}
+         */}
       </select>
       {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>
