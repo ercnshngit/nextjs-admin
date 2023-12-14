@@ -7,8 +7,8 @@ import { ArrowLeftIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
-import ColumnCellFactory from "../components/data-table/column-cell-factory";
 import { useDatabase } from "@/hooks/use-database";
+import ColumnCellFactory from "@/components/data-table/column-cell-factory";
 
 export default function MasrafContent({
   params,
