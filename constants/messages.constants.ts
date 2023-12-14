@@ -239,6 +239,12 @@ export class ErrorMessages {
          tr: "Tablo güncellenemedi.",
          en: "Table cannot update."
       }
+   } 
+   static TABLE_CANNOT_DELETED_ERROR() {
+      return {
+         tr: "Tablo silinemedi.",
+         en: "Table cannot delete."
+      }
    }
    static REGISTER_ERROR_REQUIRED_FIELDS() {
       return {

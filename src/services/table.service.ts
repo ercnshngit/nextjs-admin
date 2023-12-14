@@ -23,15 +23,25 @@ export class TableService {
   }
 
   async getTable(table_name: string) {
-    const query = `SELECT * FROM ${table_name}`;
-    const table = await prisma.$queryRawUnsafe(`${query}`);
-    if (!table) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
+    try {
+      const query = 'SELECT * FROM `' +table_name +'`' ;
+      console.log(query);
+      const table = await prisma.$queryRawUnsafe(`${query}`);
+
+      if (!table) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      return new Response(JSON.stringify(table), { status: 200 });
+    } catch (error) {
+      console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
-    return new Response(JSON.stringify(table), { status: 200 });
+    
   }
 
   async getTableById(table_name: string, id: number) {
@@ -147,7 +157,13 @@ export class TableService {
   async deleteTableWithId(table_name: string, id: number) {
     try {
       const query = SqlConstants.DELETE_QUERY_WITH_ID(table_name, id);
-      const result = await prisma.$queryRaw`${query}`;
+      const result = await prisma.$queryRawUnsafe(`${query}`);
+      if (!result) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_CANNOT_DELETED_ERROR() }),
+          { status: 400 }
+        );
+      }
       return new Response(
         JSON.stringify({
           message: ConfirmMessages.TABLE_DELETE_SUCCESS_CONFIRM(),
@@ -589,11 +605,11 @@ export class TableService {
     }
   }
 
-  async createTableConfigWithTableName(table_name: string) {
+  async createTableConfigWithTableName(table_name: string, input_types: any[] | undefined) {
     try {
       const tableDatas = await this.getTableWithDatas(table_name);
       const tableDataArray = Object.values(tableDatas)
-      const input_type_ids = await prisma.type.findMany({
+      const input_type_ids = input_types == undefined ? await prisma.type.findMany({
         select:{
           id: true,
           name: true,
@@ -609,7 +625,7 @@ export class TableService {
             name: TypeCategories.INPUT_TYPE
           },
         },
-      });
+      }) : input_types;
       if(!input_type_ids){
         return new Response(JSON.stringify({ message: "Input type mevcut değil." }), { status: 404 });
       }
@@ -748,120 +764,9 @@ export class TableService {
       }
       const inputTypesArray = Object.values(input_type_ids);
       tableNamesArray.forEach(async (element) => {
-        if (
-          element.table_name == undefined ||
-          element.table_name == "_prisma_migrations"
-        ) {
-          // prismanın migration tablosunu almasın dıye
-          return;
-        }
-        const tableData = await this.getTableWithDatas(element.table_name);
-        
-        if (tableData instanceof Response) {
-          // response donerse eger onu return et.
-          return tableData;
-        }
-        const table = tableData[0];
-        console.log(table);
-        try {
-          const result = await prisma.database_table.upsert({
-            include: {
-              columns: {
-                include: {
-                  input_type: true,
-                },
-              },
-            },
-            where: {
-              name: table.name,
-            },
-            create: {
-              name: table.name,
-              columns: {
-                create: table.columns.map((column: any) => ({
-                  name: column.name,
-                  input_type:{
-                    connect:{
-                      id: inputTypesArray.filter(
-                        (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
-                      )[0].id,
-                    }
-                  },
-                })),
-              },
-            },
-            update: {
-              name: table.name,
-              columns: {
-                upsert: table.columns.map((column: any) => ({
-                  where: { name: column.name },
-                  update: {
-                    name: column.name,
-                    input_type:{
-                      connect:{
-                        id: inputTypesArray.filter(
-                          (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
-                        )[0].id,
-                      }
-                    },
-                  },
-                  create: {
-                    name: column.name,
-                    input_type:{
-                      connect:{
-                        id: inputTypesArray.filter(
-                          (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
-                        )[0].id,
-                      }
-                    },
-                  },
-                })),
-              },
-            },
-            
-          });
-
-          /*
-          const result = await prisma.database_table.create({
-            include: {
-              columns: {
-                include: {
-                  input_type: true,
-                },
-              },
-            },
-            data: {
-              name: table.name,
-              columns: {
-                create: table.columns.map((column: any) => ({
-                  name: column.name,
-                  input_type:{
-                    connect:{
-                      id: inputTypesArray.filter(
-                        (input_type) => input_type.name == column.type && input_type.table?.name == TypeCategories.INPUT_TYPE
-                      )[0].id,
-                    }
-                  },
-                })),
-              },
-            },
-          });
-          */
+        const result = this.createTableConfigWithTableName(element, inputTypesArray);
+        if(result){
           tableConifgs.push(result);
-        } catch (error: any) {
-          console.log("error ::" , error);
-          if (
-            error.meta != undefined &&
-            error.meta.target != undefined &&
-            error.meta.target == "ui_name"
-            ) {
-            console.log(error);
-            // var olan bir sey eklenmeye clısıldıysa
-            return;
-          }
-          return new Response(
-            JSON.stringify({ status: "error", message: error })
-          );
         }
       });
       return new Response(
@@ -874,7 +779,7 @@ export class TableService {
       );
     } catch (error: any) {
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), { status : 500 });
     }
   }
 

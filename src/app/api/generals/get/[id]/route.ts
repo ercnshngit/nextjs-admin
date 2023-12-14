@@ -1,4 +1,4 @@
-import { GeneralService } from "@/services/generals.service";
+import { GeneralService } from "@/services/general.service";
 import { ServerMessages } from "../../../../../../constants/messages.constants";
 
 export async function GET(req: Request, { params }: { params: { id: number } }) {

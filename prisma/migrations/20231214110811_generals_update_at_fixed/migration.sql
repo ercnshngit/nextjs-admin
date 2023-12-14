@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `general` MODIFY `updated_at` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3);
