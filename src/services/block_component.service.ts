@@ -23,7 +23,7 @@ export class BlockComponentService {
           block: true,
           block_component_prop: {
             include: {
-              prop: true,
+              prop: { include: { type: true } },
             }
           }
         }
