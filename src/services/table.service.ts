@@ -9,6 +9,7 @@ import { prisma } from "../libs/prisma";
 import { DatabaseTableDto } from "./dto/database-table.dto";
 import { Prisma } from "@prisma/client";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
+import { CrudOptionCreateDto } from "./dto/crud-option.dto";
 
 config();
 export class TableService {
@@ -307,49 +308,6 @@ export class TableService {
         );
       }
       return new Response(JSON.stringify(result), { status: 200 });
-      /*
-      return new Response(
-        JSON.stringify(
-          result.map((table) => ({
-            ...table,
-            columns: table.columns.map((column) => {
-              const relation = column.column_relations.find(
-                (relation) => relation.column_id == column.id
-              );
-              return {
-                ...column,
-                read: {
-                  inputType: column.read_crud_option?.input_type?.name,
-                },
-                create: {
-                  inputType: column.create_crud_option?.input_type?.name,
-                },
-                update: {
-                  inputType: column.update_crud_option?.input_type?.name,
-                },
-                inputType: column.input_type?.name,
-
-                relation: {
-                  ...relation,
-                  table: relation?.referenced_table?.name,
-                  keyColumn: relation?.referenced_column_id,
-                  displayColumn: "name",
-                  type: "one",
-                  referenced_table: {
-                    ...relation?.referenced_table,
-                    name: relation?.referenced_table?.name,
-                  },
-                  pivot_table: {
-                    ...relation?.pivot_table,
-                    name: relation?.pivot_table?.name,
-                  },
-                },
-              };
-            }),
-          }))
-        ),
-        { status: 200 }
-      );*/
     } catch (error) {
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
