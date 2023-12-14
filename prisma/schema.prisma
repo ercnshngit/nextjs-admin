@@ -271,3 +271,51 @@ model log {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
+
+model management {
+  id          Int     @id @default(autoincrement())
+  first_name  String
+  last_name   String
+  title       String
+  description String
+  image_url   String? @db.Text
+}
+
+model sector {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  companies company[] @relation("fk_compy_sector_id")
+}
+
+model post {
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String
+  image_url  String?  @db.Text
+  type_id    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  type post_type? @relation("fk_po_type_id", fields: [type_id], references: [id], map: "fk_po_type_id")
+}
+
+model company {
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String
+  image_url    String?  @db.Text
+  office_count Int?
+  sector_id    Int?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  sector sector? @relation("fk_compy_sector_id", fields: [sector_id], references: [id], map: "fk_compy_sector_id")
+}
+
+model post_type {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  posts post[] @relation("fk_po_type_id")
+}
