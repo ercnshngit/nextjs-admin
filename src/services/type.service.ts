@@ -1,6 +1,5 @@
 import { prisma } from "@/libs/prisma";
 import { TypeCategories, TypeJsons } from "../../constants/types.constants";
-import { table } from "console";
 import { ErrorMessages } from "../../constants/messages.constants";
 
 export class TypeService {
