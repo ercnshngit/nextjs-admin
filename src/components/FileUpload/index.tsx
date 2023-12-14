@@ -1,14 +1,11 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FaFileUpload } from "react-icons/fa";
 import {
   AiFillCheckCircle,
   AiFillCloseCircle,
   AiOutlineLoading,
 } from "react-icons/ai";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadMedia } from "@/services/media";
-import { toast } from "react-toastify";
+import { FaFileUpload } from "react-icons/fa";
 const MAX_FILE_SIZE = 500000;
 
 type Image = {
@@ -17,24 +14,13 @@ type Image = {
   id?: number;
 };
 
-export default function FileUpload({ tableName }: { tableName: string }) {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: (file: File) => uploadMedia({ file, route: tableName }),
-    onSuccess: (response) => {
-      setStatus("success");
-      queryClient.invalidateQueries(["media"]);
-      toast.success("Dosya Başarıyla Yüklendi");
-    },
-    onError: (error) => {
-      setStatus("error");
-    },
-    onMutate: (file) => {
-      setStatus("loading");
-    },
-  });
-
-  const [status, setStatus] = useState("idle");
+export default function FileUpload({
+  uploadFile,
+  status,
+}: {
+  uploadFile: any;
+  status: string;
+}) {
   const [file, setFile] = useState<File | null>(null);
 
   const [message, setMessage] = useState<string | null>(null);
@@ -62,7 +48,7 @@ export default function FileUpload({ tableName }: { tableName: string }) {
         return;
       }
       setFile(acceptedFiles[0]);
-      mutation.mutate(acceptedFiles[0]);
+      uploadFile(acceptedFiles[0]);
     },
     [setFile]
   );

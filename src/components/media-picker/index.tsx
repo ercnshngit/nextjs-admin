@@ -6,13 +6,15 @@ import FileUpload from "../FileUpload";
 export default function MediaPicker({
   images,
   handleImageSelect,
-  tableName,
   setMediaPickerOpen,
+  handleUpload,
+  status,
 }: {
   images: any[];
   handleImageSelect: (image: any) => void;
-  tableName: string;
   setMediaPickerOpen: any;
+  handleUpload: any;
+  status: string;
 }) {
   return createPortal(
     <>
@@ -46,7 +48,7 @@ export default function MediaPicker({
               </div>
             ))}
           </div>
-          <div>{<FileUpload tableName={tableName} />}</div>
+          <div>{<FileUpload status={status} uploadFile={handleUpload} />}</div>
         </div>
       </div>
     </>,

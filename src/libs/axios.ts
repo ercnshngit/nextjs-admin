@@ -58,6 +58,7 @@ export const axiosFileClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
+    Authorization: `Bearer ${process.env.FILE_API_TOKEN}`,
   },
 });
 

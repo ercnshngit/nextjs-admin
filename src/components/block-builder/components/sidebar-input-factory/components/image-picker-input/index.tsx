@@ -1,30 +1,19 @@
 import MediaPicker from "@/components/media-picker";
 import { Button } from "@/components/ui/button";
-import {
-  getMedia,
-  getMediaFromServer,
-  uploadMediaToServer,
-} from "@/services/media";
+import { FormLabel } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
+import { ComponentPropDto } from "@/services/dto/prop.dto";
+import { getMediaFromServer, uploadMediaToServer } from "@/services/media";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import Label from "../Label";
-import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
-import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { toast } from "react-toastify";
 
-export default function ImagePicker({
-  field,
-  table,
-  register,
-  errors,
+export default function ImagePickerInput({
+  blockComponentProp,
   defaultValue,
   setValue,
 }: {
-  field: DataBaseTableColumnDto;
-  table: Partial<DatabaseTableDto>;
-  register: UseFormRegister<any>;
-  errors: FieldErrors;
+  blockComponentProp: ComponentPropDto;
   defaultValue?: any;
   setValue: any;
 }) {
@@ -58,15 +47,11 @@ export default function ImagePicker({
   });
 
   return (
-    <div
-      key={field.name}
-      className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200"
-    >
-      <Label field={field} table={table} />
+    <div className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200">
+      <Label htmlFor="images">Image</Label>
 
       <input
         className="px-2 py-1 border border-gray-200 rounded-md "
-        {...register(field.name, { required: field.is_required })}
         defaultValue={defaultValue}
       />
       <Button
@@ -81,12 +66,11 @@ export default function ImagePicker({
         <MediaPicker
           handleImageSelect={handleImageSelect}
           images={data.images}
-          setMediaPickerOpen={setMediaPickerOpen}
           status={status}
+          setMediaPickerOpen={setMediaPickerOpen}
           handleUpload={(file: File) => mutation.mutate(file)}
         />
       )}
-      {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>
   );
 }
