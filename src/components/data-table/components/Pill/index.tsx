@@ -60,7 +60,6 @@ export default function Pill({
                     valueItem?.key ||
                     valueItem?.code ||
                     "Bulunamadı"}
-                  {JSON.stringify(valueItem)}
                 </div>
               )}
         </div>

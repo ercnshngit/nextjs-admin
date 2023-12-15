@@ -30,7 +30,7 @@ export class TableService {
 
   async getTable(table_name: string) {
     try {
-      const query = 'SELECT * FROM `' + table_name + '`';
+      const query = "SELECT * FROM `" + table_name + "`";
       console.log(query);
       const table = await prisma.$queryRawUnsafe(`${query}`);
 
@@ -49,7 +49,6 @@ export class TableService {
         status: 500,
       });
     }
-
   }
 
   async getTableById(table_name: string, id: number) {
@@ -670,7 +669,6 @@ export class TableService {
     try {
       const table = await prisma.database_table.findFirst({
         where: {
-        where: {
           name: table_name,
         },
       });
@@ -712,10 +710,8 @@ export class TableService {
   }
 
   async createCrudOption(column_id: number, data: CrudOptionCreateDto) {
-  async createCrudOption(column_id: number, data: CrudOptionCreateDto) {
     try {
       const result = await prisma.crud_option.create({
-        data: {
         data: {
           name: data.name,
           is_hidden: data.is_hidden,
@@ -778,11 +774,9 @@ export class TableService {
       const tableNamesArray = Object.values(tableNames);
       const input_type_ids = await prisma.type.findMany({
         select: {
-        select: {
           id: true,
           name: true,
-          table: {
-            select: {
+
           table: {
             select: {
               id: true,

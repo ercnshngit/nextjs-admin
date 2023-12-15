@@ -29,6 +29,7 @@ import { ColumnDefWithName } from "./columns";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 interface DataTableProps<TData, TValue> {
+  page: number;
   columns: ColumnDefWithName<TData>[];
   data: TData[];
   filterables?: any[] | null;
@@ -38,6 +39,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
+  page,
   columns,
   data,
   filterables,

@@ -11,14 +11,21 @@ import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
 
 import { DataTable } from "../data-table/data-table";
+import { useSearchParams } from "next/navigation";
 
 export default function ListPage({ slug, data }: { slug: string; data: any }) {
+  const searchParams = useSearchParams();
+  const page = searchParams.get("page");
+  const filterBy = searchParams.get("filterBy");
+  const filterValue = searchParams.get("filterValue");
+
   const { table, filterables, searchables } = useTable(slug);
   const tableName = table?.name || "";
   const tableColumns = columns(slug, table?.columns || []);
   const { translate } = useTranslate();
 
   const [tableData, setTableData] = useState(data);
+
   useEffect(() => {
     setTableData(data);
   }, [data]);
@@ -61,7 +68,14 @@ export default function ListPage({ slug, data }: { slug: string; data: any }) {
           <DataTable
             tableName={tableName}
             columns={tableColumns}
-            data={tableData}
+            data={
+              filterBy && filterValue
+                ? tableData.filter(
+                    (data: any) => data[filterBy as any] === filterValue
+                  )
+                : tableData
+            }
+            page={page ? parseInt(page) : 1}
             filterables={filterablesData}
             searchables={searchablesData}
             databaseTableColumns={table?.columns || []}
