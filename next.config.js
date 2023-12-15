@@ -7,11 +7,13 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: ["localhost", "server.trakyateknopark.com.tr"],
+  },
   async headers() {
     return [
       {
-        // matching all API routes
-        source: "/api/(.*)",
+        source: "/(.*)",
         headers: [
           {
             key: "Access-Control-Allow-Origin",

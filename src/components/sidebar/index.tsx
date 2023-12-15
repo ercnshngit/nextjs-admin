@@ -34,7 +34,7 @@ export function Sidebar({ className }: { className?: string }) {
               <Link
                 href={{
                   pathname: "/dashboard/block",
-                  query: { filterBy: "type_id", filterValue: 3 },
+                  query: { filterBy: "type_id", filterValue: 10 },
                 }}
               >
                 <List className="w-5 h-5 mr-2" />

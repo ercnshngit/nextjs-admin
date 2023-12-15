@@ -12,6 +12,7 @@ export default function Form({ table }: { table: DatabaseTableDto }) {
     handleSubmit,
     watch,
     setValue,
+    reset,
     control,
     formState: { errors },
   } = useForm<any>({});
@@ -27,6 +28,7 @@ export default function Form({ table }: { table: DatabaseTableDto }) {
       onSuccess: () => {
         queryClient.invalidateQueries([table.name]);
         toast.success("Kayıt başarıyla oluşturuldu");
+        reset();
       },
       onError: (error) => {
         //@ts-ignore

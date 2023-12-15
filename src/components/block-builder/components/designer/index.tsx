@@ -94,7 +94,7 @@ export default function Designer() {
 
   const renderUnsupported = (component: BlockComponentDto) => {
     return (
-      <div className="text-center bg-red-100 text-red-400">
+      <div className="text-center text-red-400 bg-red-100">
         {component.component.tag.name}
         <p className="text-red-400">Desteklenmeyen bileşen lütfen silin</p>
         <Button
@@ -104,7 +104,7 @@ export default function Designer() {
         >
           Sil
         </Button>
-        <div className="border-b border-red-400 w-full"></div>
+        <div className="w-full border-b border-red-400"></div>
         {component.children?.map((child) => {
           if (child.component.tag.name in componentTags) {
             return mode === "preview"
@@ -122,7 +122,7 @@ export default function Designer() {
   return (
     <div className="flex w-full h-full ">
       <div
-        className="p-4 w-full h-full "
+        className="w-full h-full p-4 "
         onClick={() => {
           if (selectedElement) setSelectedElement(null);
         }}
@@ -133,23 +133,23 @@ export default function Designer() {
           <div
             ref={droppable.setNodeRef}
             className={cn(
-              "bg-background max-w-[920px] h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
+              "bg-background h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
               droppable.isOver && "ring-4 ring-primary ring-inset"
             )}
           >
             {!droppable.isOver && elements.length === 0 && (
-              <p className="text-3xl text-muted-foreground flex flex-grow items-center font-bold">
+              <p className="flex items-center flex-grow text-3xl font-bold text-muted-foreground">
                 Buraya bırakın
               </p>
             )}
 
             {droppable.isOver && elements.length === 0 && (
-              <div className="p-4 w-full">
+              <div className="w-full p-4">
                 <div className="h-[120px] rounded-md bg-primary/20"></div>
               </div>
             )}
             {elements.length > 0 && (
-              <div className="flex flex-col  w-full gap-2 p-4">
+              <div className="flex flex-col w-full gap-2 p-4">
                 {tree.map((component) => {
                   if (component.component.tag.name in componentTags) {
                     return mode === "preview"

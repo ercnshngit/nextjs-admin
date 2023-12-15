@@ -8,7 +8,7 @@ import { getComponents } from "@/services/dashboard";
 import FormInputFactory from "@/components/base-form/form-input-factory";
 import SidebarInputFactory from "../sidebar-input-factory";
 
-export default function DesignerSidebar({ onSave }: { onSave: () => void }) {
+export default function DesignerSidebar() {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
     ["components"],
     () => getComponents()
@@ -16,15 +16,9 @@ export default function DesignerSidebar({ onSave }: { onSave: () => void }) {
   const { elements, selectedElement, mode, setMode, updateElement } =
     useDesigner();
 
-  const saveElements = () => {
-    onSave();
-  };
   return (
-    <div className="bg-white px-4 py-10 h-full min-w-[300px]">
-      <div>
-        <Button onClick={saveElements}>Gönder</Button>
-      </div>
-      <div className="flex items-center mb-6 justify-between  w-full space-x-2">
+    <div className="bg-white px-4 py-10 h-full min-w-[300px] min-h-screen">
+      <div className="flex items-center justify-between w-full mb-6 space-x-2">
         <Button
           onClick={() => setMode("ui")}
           variant={mode === "ui" ? "default" : "secondary"}
@@ -37,15 +31,15 @@ export default function DesignerSidebar({ onSave }: { onSave: () => void }) {
         >
           Önizleme
         </Button>
-        <Button
+        {/* <Button
           onClick={() => setMode("html")}
           variant={mode === "html" ? "default" : "secondary"}
         >
           HTML
-        </Button>
+        </Button> */}
       </div>
       {selectedElement && (
-        <div className="flex flex-col w-full  gap-2">
+        <div className="flex flex-col w-full gap-2">
           <h1 className="text-2xl font-bold">Properties</h1>
 
           {selectedElement.props.map((prop) => {

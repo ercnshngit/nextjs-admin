@@ -11,7 +11,7 @@ import DesignerSidebar from "./components/designer-sidebar";
 import DragOverlayWrapper from "./components/drag-overlay-wrapper";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
 
-export default function BlockBuilder({ onSave }: { onSave: () => void }) {
+export default function BlockBuilder() {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10, // 10px
@@ -34,7 +34,7 @@ export default function BlockBuilder({ onSave }: { onSave: () => void }) {
     >
       <div className="flex">
         <Designer />
-        <DesignerSidebar onSave={onSave} />
+        <DesignerSidebar />
       </div>
       <DragOverlayWrapper />
     </DndContext>

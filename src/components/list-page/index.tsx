@@ -71,7 +71,8 @@ export default function ListPage({ slug, data }: { slug: string; data: any }) {
             data={
               filterBy && filterValue
                 ? tableData.filter(
-                    (data: any) => data[filterBy as any] === filterValue
+                    (data: any) =>
+                      String(data[filterBy as any]) === String(filterValue)
                   )
                 : tableData
             }

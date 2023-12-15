@@ -1,9 +1,11 @@
 "use client";
 import BlockBuilder from "@/components/block-builder";
+import { Button } from "@/components/ui/button";
 import {
   DesignerContextProvider,
   useDesigner,
 } from "@/contexts/designer-context";
+import { cn } from "@/libs/utils";
 import {
   createComponentsInBlock,
   getBlock,
@@ -12,7 +14,9 @@ import {
 } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function BuilderPage({
@@ -23,7 +27,7 @@ export default function BuilderPage({
   };
 }) {
   const { elements, setElements } = useDesigner();
-
+  const router = useRouter();
   const { data: block_components } = useQuery(
     ["block_components", params.id],
     () => getBlockComponents(Number(params.id))
@@ -54,6 +58,9 @@ export default function BuilderPage({
     })
   );
 
+  const [blockName, setBlockName] = useState(block?.title || "");
+  const [fullscreen, setFullscreen] = useState(false);
+
   const handleSave = async () => {
     if (!block) {
       toast.error("Blok bulunamadı");
@@ -73,7 +80,7 @@ export default function BuilderPage({
           ...el,
           block: {
             id: Number(params.id),
-            title: block.title,
+            title: blockName,
             type_id: block.type_id,
           },
         })),
@@ -83,9 +90,43 @@ export default function BuilderPage({
   };
 
   return (
-    <div className="h-full w-full flex flex-col">
-      <h1 className="font-medium p-2">{block?.title}</h1>
-      <BlockBuilder onSave={handleSave} />
+    <div
+      className={cn(
+        " flex flex-col w-full h-full  bg-gray-700",
+        fullscreen && "absolute inset-0"
+      )}
+    >
+      <div className="bg-gray-900">
+        <div className="flex items-center justify-between px-4 py-2">
+          <div className="flex items-center gap-6">
+            <Button onClick={() => router.back()} variant="secondary">
+              <ArrowLeftCircleIcon className="w-5 h-5" />
+            </Button>
+            <div className="">
+              <input
+                value={blockName}
+                onChange={(e) => setBlockName(e.target.value)}
+                className="text-lg font-bold text-white bg-transparent border-none"
+              />
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              onClick={() => setFullscreen((prev) => !prev)}
+              variant="secondary"
+            >
+              <FullscreenIcon className="w-5 h-5" />
+            </Button>
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className="text-sm text-white">Kaydet</div>
+            <Button onClick={handleSave} variant="secondary">
+              <Save className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+      </div>
+      <BlockBuilder />
     </div>
   );
 }
