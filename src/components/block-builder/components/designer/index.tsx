@@ -8,6 +8,7 @@ import { componentTags } from "../../utils/component-tags";
 import ElementsHtml from "../elements-html";
 import { cn } from "@/libs/utils";
 import ComponentWrapper from "../component-wrapper";
+import { Button } from "@/components/ui/button";
 
 export default function Designer() {
   const {
@@ -61,20 +62,19 @@ export default function Designer() {
         )}
         key={component.code}
       >
-        {component.hasChildren &&
-          component.children &&
-          component.children.map((child) => {
-            if (child.component.tag.name in componentTags) {
-              return renderComponentWrapper(child);
-            }
-            return null;
-          })}
+        {component.children?.map((child) => {
+          if (child.component.tag.name in componentTags) {
+            return renderComponentWrapper(child);
+          }
+          return renderUnsupported(child);
+        })}
       </ComponentWrapper>
     );
   };
 
   const renderPreview = (component: BlockComponentDto) => {
     const Component = componentTags[component.component.tag.name];
+
     return (
       <Component
         {...Object.fromEntries(
@@ -84,20 +84,38 @@ export default function Designer() {
       >
         {component.children?.map((child) => {
           if (child.component.tag.name in componentTags) {
-            const ChildComponent = componentTags[child.component.tag.name];
-
-            return (
-              <ChildComponent
-                key={child.code}
-                {...Object.fromEntries(
-                  child.props.map((prop) => [prop.prop.key, prop.value])
-                )}
-              />
-            );
+            renderPreview(child);
           }
-          return null;
+          return renderUnsupported(child);
         })}
       </Component>
+    );
+  };
+
+  const renderUnsupported = (component: BlockComponentDto) => {
+    return (
+      <div className="text-center bg-red-100 text-red-400">
+        {component.component.tag.name}
+        <p className="text-red-400">Desteklenmeyen bileşen lütfen silin</p>
+        <Button
+          variant={"destructive"}
+          size={"sm"}
+          onClick={() => removeElement(component.code)}
+        >
+          Sil
+        </Button>
+        <div className="border-b border-red-400 w-full"></div>
+        {component.children?.map((child) => {
+          if (child.component.tag.name in componentTags) {
+            return mode === "preview"
+              ? renderPreview(component)
+              : mode === "ui"
+              ? renderComponentWrapper(component)
+              : null;
+          }
+          return renderUnsupported(child);
+        })}
+      </div>
     );
   };
 
@@ -130,26 +148,20 @@ export default function Designer() {
                 <div className="h-[120px] rounded-md bg-primary/20"></div>
               </div>
             )}
-            {elements.length > 0 &&
-              (mode === "preview" ? (
-                <div className="flex flex-col  w-full gap-2 p-4">
-                  {tree.map((component) => {
-                    if (component.component.tag.name in componentTags) {
-                      return renderPreview(component);
-                    }
-                    return null;
-                  })}
-                </div>
-              ) : mode === "ui" ? (
-                <div className="flex flex-col  w-full gap-2 p-4">
-                  {tree.map((component) => {
-                    if (component.component.tag.name in componentTags) {
-                      return renderComponentWrapper(component);
-                    }
-                    return null;
-                  })}
-                </div>
-              ) : null)}
+            {elements.length > 0 && (
+              <div className="flex flex-col  w-full gap-2 p-4">
+                {tree.map((component) => {
+                  if (component.component.tag.name in componentTags) {
+                    return mode === "preview"
+                      ? renderPreview(component)
+                      : mode === "ui"
+                      ? renderComponentWrapper(component)
+                      : null;
+                  }
+                  return renderUnsupported(component);
+                })}
+              </div>
+            )}
           </div>
         )}
       </div>

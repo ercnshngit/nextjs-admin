@@ -5,7 +5,7 @@ import { PlusCircle } from "lucide-react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "../../form-input-factory";
 import Label from "../Label";
-import { useDatabase } from "@/hooks/use-database";
+import { useTable } from "@/hooks/use-database";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
@@ -20,7 +20,7 @@ export default function Relation(props: {
   control: any;
   defaultValue?: any;
 }) {
-  const { table: joinedTable } = useDatabase(
+  const { table: joinedTable } = useTable(
     props.field.column_relations[0].referenced_table.name
   );
   if (!joinedTable) return null;
@@ -200,7 +200,7 @@ function RelationWithPivot({
     getTable({ tableName: joinedTable.name })
   );
 
-  const { table: pivotTable } = useDatabase(
+  const { table: pivotTable } = useTable(
     field.column_relations[0].pivot_table.name!
   );
 

@@ -7,7 +7,7 @@ import { ArrowLeftIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
-import { useDatabase } from "@/hooks/use-database";
+import { useTable } from "@/hooks/use-database";
 import ColumnCellFactory from "@/components/data-table/column-cell-factory";
 
 export default function MasrafContent({
@@ -18,7 +18,7 @@ export default function MasrafContent({
   const { translate } = useTranslate();
 
   const { id, slug } = params;
-  const { table } = useDatabase(slug);
+  const { table } = useTable(slug);
   const tableName = table?.name || "";
   const { data, error } = useQuery([tableName + "/" + id], () =>
     getTableItem({ tableName: tableName, id: Number(id) })
@@ -58,7 +58,7 @@ export default function MasrafContent({
         <CardContent>
           <div className="py-10">
             {data &&
-              table?.columns.map((column) => {
+              table?.columns?.map((column) => {
                 return (
                   <div
                     key={column.name}

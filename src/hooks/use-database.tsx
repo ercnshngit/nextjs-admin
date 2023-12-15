@@ -2,6 +2,7 @@
 import {
   createTableConfig,
   deleteTableConfig,
+  getTableConfig,
   getTablesConfigs,
   getTablesStructure,
 } from "@/services/dashboard";
@@ -9,7 +10,34 @@ import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-export function useDatabase(table_name?: string) {
+export function useTable(table_name: string) {
+  const {
+    data: table,
+    error: error,
+    isLoading: isLoading,
+  } = useQuery<DatabaseTableDto>(["database_table", "config", table_name], () =>
+    getTableConfig({
+      table_name,
+    })
+  );
+  const filterables = table?.columns?.filter((table) => table.is_filterable);
+  const searchables = table?.columns?.filter((table) => table.is_searchable);
+  const sortables = table?.columns?.filter((table) => table.is_sortable);
+
+  return { table, filterables, sortables, searchables, isLoading, error };
+}
+
+export const useConfigs = () => {
+  const {
+    data: configs,
+    error,
+    isLoading,
+  } = useQuery<DatabaseTableDto[]>(["configs"], () => getTablesConfigs());
+
+  return { configs, error, isLoading };
+};
+
+export const useDatabase = (table_name?: string) => {
   const {
     data: tables,
     isLoading: isLoadingTables,
@@ -82,4 +110,4 @@ export function useDatabase(table_name?: string) {
     sortables,
     searchables,
   };
-}
+};

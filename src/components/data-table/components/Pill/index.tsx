@@ -1,5 +1,5 @@
-import { getTable } from "@/services/panel";
-import { Column } from "@/types/config";
+import { getTable } from "@/services/dashboard";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { checkError } from "@/utils/error-handling";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -9,25 +9,32 @@ export default function Pill({
   column,
 }: {
   value: any;
-  column: Column;
+  column: DataBaseTableColumnDto;
 }) {
   const { data: joinedTableData, error } = useQuery(
-    [column.relation!.table],
-    () => getTable({ tableName: column.relation!.table })
+    [column.column_relations[0].referenced_table.name],
+    () =>
+      getTable({ tableName: column.column_relations[0].referenced_table.name })
   );
-
+  const valueItem = joinedTableData.find(
+    (joinedTableItem: any) => joinedTableItem.id === value
+  );
   return (
     <div>
-      {column.input_type.name === "relation" ? (
+      {column.input_type?.name === "relation" ? (
         <div className="flex flex-wrap gap-1">
-          {column.relation!.type === "many"
+          {column.column_relations[0].relation_type.name === "many-to-many"
             ? checkError(() => JSON.parse(value))?.map(
                 (item: any, index: number) => {
                   const joinedTableColumn = joinedTableData.find(
                     (joinedTableItem: any) => {
+                      // TODO: Key column kullanmak lazım display bi de
                       return (
-                        joinedTableItem[column.relation!.keyColumn] ===
-                        item[column.relation!.pivotTableForeignKeyColumn!]
+                        joinedTableItem.id ===
+                        item[
+                          column.column_relations[0].referenced_table.name +
+                            "_id"
+                        ]
                       );
                     }
                   );
@@ -37,17 +44,23 @@ export default function Pill({
                       key={index}
                       className="px-2 py-1 text-xs bg-red-300 rounded-full"
                     >
-                      {joinedTableColumn[column.relation!.displayColumn!]}
+                      {/* buraya da display column lazım */}
+                      {joinedTableColumn?.name ||
+                        joinedTableColumn?.title ||
+                        joinedTableColumn?.key}
                     </div>
                   );
                 }
               )
-            : column.relation!.type === "one" && (
+            : column.column_relations[0].relation_type.name ===
+                "one-to-many" && (
                 <div>
-                  {joinedTableData.find(
-                    (joinedTableItem: any) =>
-                      joinedTableItem[column.relation!.keyColumn] === value
-                  )?.[column.relation!.displayColumn!] || "Bulunamadı"}
+                  {valueItem?.name ||
+                    valueItem?.title ||
+                    valueItem?.key ||
+                    valueItem?.code ||
+                    "Bulunamadı"}
+                  {JSON.stringify(valueItem)}
                 </div>
               )}
         </div>

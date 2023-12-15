@@ -14,16 +14,7 @@ export const componentTags: ComponentTagsType = {
   VStack: VStack,
   HStack: HStack,
   Image: Image,
-  img: Image,
   Title: Title,
   CardGrid: CardGrid,
   Div: Div,
-  div: Div,
-  p: Text,
-  h1: Title,
-  button: Button,
-};
-
-export const getComponentTag = (tag: string) => {
-  return componentTags[tag] || HTMLText;
 };

@@ -7,5 +7,11 @@ export default function Image({
   className: string;
   src: string;
 }) {
-  return <img className={className} src={src} alt="" />;
+  return (
+    <img
+      className={className}
+      src={"https://" + process.env.NEXT_PUBLIC_FILE_URL + src}
+      alt=""
+    />
+  );
 }

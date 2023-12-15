@@ -8,11 +8,11 @@ import Form from "./form";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
 import { useTranslate } from "@/langs";
-import { useDatabase } from "@/hooks/use-database";
+import { useTable } from "@/hooks/use-database";
 
 export default function Ekle({ params }: { params: { slug: string } }) {
   const { slug } = params;
-  const { table } = useDatabase(slug);
+  const { table } = useTable(slug);
   const tableName = table?.name || "";
   const { translate } = useTranslate();
 

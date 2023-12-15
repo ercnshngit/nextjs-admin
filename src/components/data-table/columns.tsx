@@ -6,8 +6,8 @@ import { useTranslate } from "@/langs";
 import { ColumnDef } from "@tanstack/react-table";
 import ColumnCellFactory from "./column-cell-factory";
 import { DataTableRowActions } from "./components/data-table-row-actions";
-import { useDatabase } from "@/hooks/use-database";
 import { Column } from "@/types/config";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export type ColumnDefWithName<TData> =
   | ColumnDef<TData>
@@ -17,7 +17,7 @@ export type ColumnDefWithName<TData> =
 
 export const columns: (
   slug: string,
-  columns: Column[]
+  columns: DatabaseTableDto[]
 ) => ColumnDefWithName<any>[] = (slug, columns) => {
   return [
     {

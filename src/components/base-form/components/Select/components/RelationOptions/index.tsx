@@ -1,6 +1,6 @@
 "use client";
-import { useDatabase } from "@/hooks/use-database";
-import { getTableWhere } from "@/services/dashboard";
+import { useTable } from "@/hooks/use-database";
+import { getTable, getTableWhere } from "@/services/dashboard";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { Option } from "@/types/config";
@@ -11,7 +11,7 @@ export default function RelationOptions({
 }: {
   field: DataBaseTableColumnDto;
 }) {
-  const { table: joinedTable } = useDatabase(
+  const { table: joinedTable } = useTable(
     field.column_relations[0].referenced_table.name
   )!;
   if (!joinedTable?.name) return null;
@@ -28,21 +28,34 @@ function Options({
   const { data, error } = useQuery(
     [joinedTable.name],
     () =>
-      getTableWhere({
-        tableName: joinedTable.name,
-        where: [{ key: "table_id", value: field.column_relations[0].table_id }],
-      }),
+      field.column_relations[0].referenced_table.name === "type"
+        ? getTableWhere({
+            tableName: joinedTable.name,
+            where: [
+              { key: "table_id", value: field.column_relations[0].table_id },
+            ],
+          })
+        : getTable({
+            tableName: joinedTable.name,
+          }),
     { enabled: !!joinedTable }
   );
 
   const options: Option[] =
     data !== ""
-      ? data?.map((item: any) => {
-          return {
-            label: item.name,
-            value: item.id,
-          };
-        })
+      ? field.column_relations[0].referenced_table.name === "language"
+        ? data?.map((item: any) => {
+            return {
+              label: item.name,
+              value: item.code,
+            };
+          })
+        : data?.map((item: any) => {
+            return {
+              label: item.name,
+              value: item.id,
+            };
+          })
       : [];
 
   return (

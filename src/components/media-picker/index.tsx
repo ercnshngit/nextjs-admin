@@ -1,4 +1,3 @@
-import { IMAGE_URL } from "@/config/general";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import FileUpload from "../FileUpload";
@@ -42,7 +41,9 @@ export default function MediaPicker({
                 <Image
                   fill
                   className="object-contain"
-                  src={IMAGE_URL + image.img}
+                  src={
+                    "https://" + process.env.NEXT_PUBLIC_FILE_URL + image.img
+                  }
                   alt=""
                 />
               </div>

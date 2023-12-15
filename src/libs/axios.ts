@@ -58,25 +58,10 @@ export const axiosFileClient = axios.create({
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
-    Authorization: `Bearer ${process.env.FILE_API_TOKEN}`,
+    Authorization: `Bearer ${process.env.NEXT_PUBLIC_FILE_API_TOKEN}`,
   },
 });
 
 axiosFileClient.interceptors.request.use(async (config) => {
-  if (isServer) {
-    const accessToken = await useAuth.fromServer();
-
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
-  } else {
-    const cookies = new Cookies();
-    const accessToken = await cookies.get("accessToken");
-
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
-    }
-  }
-
   return config;
 });

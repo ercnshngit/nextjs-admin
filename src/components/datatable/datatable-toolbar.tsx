@@ -10,14 +10,14 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { CalendarDateRangePicker } from "./date-range-picker";
 import { useTranslate } from "@/langs";
-import { Column } from "@/types/config";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
   filterables?: any[] | null;
   searchables?: any[] | null;
   tableName: string;
-  databaseTableColumns: Column[];
+  databaseTableColumns: DataBaseTableColumnDto[];
 }
 
 export function DataTableToolbar<TData>({
@@ -70,9 +70,9 @@ export function DataTableToolbar<TData>({
             }
           })}
 
-        {databaseTableColumns?.find(
+        {/* {databaseTableColumns?.find(
           (column) => column.name === "created_at"
-        ) && <CalendarDateRangePicker column={table.getColumn("created_at")} />}
+        ) && <CalendarDateRangePicker column={table.getColumn("created_at")} />} */}
         {isFiltered && (
           <Button
             variant="ghost"

@@ -56,6 +56,20 @@ export const updateTableConfig = async ({
   return res;
 };
 
+export const getTableConfig = async ({
+  table_name,
+}: {
+  table_name: string;
+}) => {
+  const { data } = await axiosClient.get(`/table/${table_name}/config`);
+  return data;
+};
+
+export const getTable = async ({ tableName }: { tableName: string }) => {
+  const { data } = await axiosClient.get("/table/" + tableName);
+  return data;
+};
+
 export const getTableWhere = async ({
   tableName,
   where,
@@ -146,6 +160,14 @@ export const deleteTableItem = async ({
 }) => {
   const { data: responseData } = await axiosClient.get(
     "/table/" + tableName + "/delete/" + id
+  );
+  return responseData;
+};
+
+export const createCrudOption = async (column_id: number, data: any) => {
+  const { data: responseData } = await axiosClient.post(
+    "/crud-option/create/" + column_id,
+    data
   );
   return responseData;
 };

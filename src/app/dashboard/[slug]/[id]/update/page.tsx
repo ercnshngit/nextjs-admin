@@ -8,7 +8,7 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import React from "react";
 import Form from "./form";
-import { useDatabase } from "@/hooks/use-database";
+import { useTable } from "@/hooks/use-database";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
 export default function Update({
@@ -20,7 +20,7 @@ export default function Update({
 
   const [open, setOpen] = React.useState(false);
   const { id, slug } = params;
-  const { table } = useDatabase(slug);
+  const { table } = useTable(slug);
   const tableName = table?.name || "";
 
   return (

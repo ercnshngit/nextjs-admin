@@ -51,6 +51,7 @@ function DragOverlayWrapper() {
           elements
         );
         const Component = componentTags[component.component.tag.name];
+
         if (component.component.tag.name in componentTags) {
           if (component.children && component.children.length > 0) {
             return (
@@ -79,6 +80,7 @@ function DragOverlayWrapper() {
               </Component>
             );
           }
+
           return (
             <Component
               key={component.code}

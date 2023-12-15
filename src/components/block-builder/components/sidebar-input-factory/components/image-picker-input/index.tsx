@@ -10,11 +10,11 @@ import { toast } from "react-toastify";
 
 export default function ImagePickerInput({
   blockComponentProp,
-  defaultValue,
+  value,
   setValue,
 }: {
   blockComponentProp: ComponentPropDto;
-  defaultValue?: any;
+  value: any;
   setValue: any;
 }) {
   const [mediaPickerOpen, setMediaPickerOpen] = React.useState(false);
@@ -47,12 +47,11 @@ export default function ImagePickerInput({
   });
 
   return (
-    <div className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200">
-      <Label htmlFor="images">Image</Label>
-
+    <>
       <input
         className="px-2 py-1 border border-gray-200 rounded-md "
-        defaultValue={defaultValue}
+        id={blockComponentProp.prop.key}
+        value={value}
       />
       <Button
         className="w-fit"
@@ -71,6 +70,6 @@ export default function ImagePickerInput({
           handleUpload={(file: File) => mutation.mutate(file)}
         />
       )}
-    </div>
+    </>
   );
 }

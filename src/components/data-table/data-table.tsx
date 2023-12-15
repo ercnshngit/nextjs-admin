@@ -26,7 +26,7 @@ import {
 } from "@tanstack/react-table";
 import React from "react";
 import { ColumnDefWithName } from "./columns";
-import { Column } from "@/types/config";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDefWithName<TData>[];
@@ -34,7 +34,7 @@ interface DataTableProps<TData, TValue> {
   filterables?: any[] | null;
   tableName: string;
   searchables?: any[] | null;
-  databaseTableColumns: Column[];
+  databaseTableColumns: DataBaseTableColumnDto[];
 }
 
 export function DataTable<TData, TValue>({

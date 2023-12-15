@@ -7,13 +7,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { columns } from "@/components/data-table/columns";
-import { useDatabase } from "@/hooks/use-database";
+import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
 
 import { DataTable } from "../data-table/data-table";
 
 export default function ListPage({ slug, data }: { slug: string; data: any }) {
-  const { table, filterables, searchables } = useDatabase(slug);
+  const { table, filterables, searchables } = useTable(slug);
   const tableName = table?.name || "";
   const tableColumns = columns(slug, table?.columns || []);
   const { translate } = useTranslate();
