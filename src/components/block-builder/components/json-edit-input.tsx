@@ -7,6 +7,7 @@ import { highlight, languages } from "prismjs";
 import Editor from "react-simple-code-editor";
 import "prismjs/components/prism-json";
 import "prismjs/themes/prism.css";
+import { LogService } from "@/services/log.service";
 
 export default function JSONEditInput() {
   const [code, setCode] = useState('[{"dsfsdfds":"sdfsdfsdf"}]');
@@ -16,6 +17,8 @@ export default function JSONEditInput() {
     try {
       return JSON.stringify(JSON.parse(code), null, 4);
     } catch (e) {
+      const logService = new LogService();
+      logService.createLog({ e });
       console.log("hata", e);
       return code;
     }

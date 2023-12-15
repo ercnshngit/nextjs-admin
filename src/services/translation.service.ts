@@ -1,5 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { TranslationDto } from "./dto/translation.dto";
+import { LogService } from "./log.service";
 
 export class TranslationService {
 
@@ -8,6 +9,8 @@ export class TranslationService {
             const translations = await prisma.translation.findFirst({ where: { key } });
             return new Response(JSON.stringify(translations), { status: 200 });
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -17,6 +20,8 @@ export class TranslationService {
             const translations = await prisma.translation.findFirst({ where: { key, language_code } });
             return new Response(JSON.stringify(translations), { status: 200 });
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -32,6 +37,8 @@ export class TranslationService {
             });
             return new Response(JSON.stringify(translation), { status: 200 });
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -41,6 +48,8 @@ export class TranslationService {
             const translation = await prisma.translation.delete({ where: { id } });
             return new Response(JSON.stringify(translation), { status: 200 });
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -57,6 +66,8 @@ export class TranslationService {
             });
             return new Response(JSON.stringify(translation), { status: 200 });
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }

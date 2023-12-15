@@ -2,6 +2,7 @@ import { getComponents } from "@/services/dashboard";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { ComponentDto } from "@/services/dto/component.dto";
 import { ComponentPropDto } from "@/services/dto/prop.dto";
+import { LogService } from "@/services/log.service";
 import { useQuery } from "@tanstack/react-query";
 
 export function transformInput({
@@ -84,10 +85,10 @@ export function transformInput({
         const existingProp = prop
           ? { ...prop, type_id: prop.type.id, type: undefined }
           : {
-              id: 0,
-              key: key,
-              type_id: 5,
-            };
+            id: 0,
+            key: key,
+            type_id: 5,
+          };
         return {
           id: 0,
           prop: existingProp,
@@ -116,14 +117,14 @@ export function transformInput({
       if (child === " " || child === "" || child === "\n") return;
       Array.isArray(child)
         ? temp.push(
-            ...transformInput({
-              components: components,
-              input: child,
-              code: newCode,
-              depth: newdepth,
-              order: neworder,
-            })
-          )
+          ...transformInput({
+            components: components,
+            input: child,
+            code: newCode,
+            depth: newdepth,
+            order: neworder,
+          })
+        )
         : null;
     });
   return temp.flat();
@@ -144,6 +145,8 @@ export function transformToDesiredFormat(
 
     return desiredOutput;
   } catch (e) {
+    const logService = new LogService();
+    logService.createLog({ e });
     return { error: e };
   }
 }

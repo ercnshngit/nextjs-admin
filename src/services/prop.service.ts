@@ -1,6 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { PropDto } from "./dto/prop.dto";
+import { LogService } from "./log.service";
 
 export class PropService {
 
@@ -25,6 +26,8 @@ export class PropService {
             return new Response(JSON.stringify(prop));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -43,6 +46,8 @@ export class PropService {
             return new Response(JSON.stringify(new_prop));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -57,6 +62,8 @@ export class PropService {
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }

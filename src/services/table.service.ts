@@ -10,6 +10,7 @@ import { DatabaseTableDto } from "./dto/database-table.dto";
 import { Prisma } from "@prisma/client";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
+import { LogService } from "./log.service";
 
 config();
 export class TableService {
@@ -20,6 +21,8 @@ export class TableService {
       );
       return tableNames;
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return;
     }
@@ -27,7 +30,7 @@ export class TableService {
 
   async getTable(table_name: string) {
     try {
-      const query = "SELECT * FROM `" + table_name + "`";
+      const query = 'SELECT * FROM `' + table_name + '`';
       console.log(query);
       const table = await prisma.$queryRawUnsafe(`${query}`);
 
@@ -39,11 +42,14 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
     }
+
   }
 
   async getTableById(table_name: string, id: number) {
@@ -65,6 +71,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -100,6 +108,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -127,6 +137,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -150,6 +162,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -175,6 +189,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -212,6 +228,8 @@ export class TableService {
       });
       return new Response(JSON.stringify(new_result), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -258,6 +276,8 @@ export class TableService {
       });
       return new_result;
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -309,6 +329,8 @@ export class TableService {
       }
       return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -396,6 +418,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -564,6 +588,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -631,6 +657,8 @@ export class TableService {
       });
       return new Response(JSON.stringify({ result }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -641,6 +669,7 @@ export class TableService {
   async deleteTableConfigWithTableName(table_name: string) {
     try {
       const table = await prisma.database_table.findFirst({
+        where: {
         where: {
           name: table_name,
         },
@@ -673,6 +702,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -681,8 +712,10 @@ export class TableService {
   }
 
   async createCrudOption(column_id: number, data: CrudOptionCreateDto) {
+  async createCrudOption(column_id: number, data: CrudOptionCreateDto) {
     try {
       const result = await prisma.crud_option.create({
+        data: {
         data: {
           name: data.name,
           is_hidden: data.is_hidden,
@@ -726,6 +759,8 @@ export class TableService {
         status: 200,
       });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -743,8 +778,11 @@ export class TableService {
       const tableNamesArray = Object.values(tableNames);
       const input_type_ids = await prisma.type.findMany({
         select: {
+        select: {
           id: true,
           name: true,
+          table: {
+            select: {
           table: {
             select: {
               id: true,
@@ -783,6 +821,8 @@ export class TableService {
         { status: 200 }
       );
     } catch (error: any) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -805,6 +845,8 @@ export class TableService {
       });
       return new Response(JSON.stringify({ result }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -834,6 +876,8 @@ export class TableService {
       }
       return new Response(JSON.stringify({ relations }), { status: 200 });
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,

@@ -1,5 +1,6 @@
 import { prisma } from "@/libs/prisma";
 import { LanguageDto } from "./dto/language.dto";
+import { LogService } from "./log.service";
 
 export class LanguageService {
 
@@ -13,6 +14,8 @@ export class LanguageService {
             });
             return new Response(JSON.stringify(language));
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }
@@ -22,6 +25,8 @@ export class LanguageService {
             const languages = await prisma.language.findMany();
             return new Response(JSON.stringify(languages));
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }
@@ -31,6 +36,8 @@ export class LanguageService {
             const language = await prisma.language.findFirst({ where: { code } });
             return new Response(JSON.stringify(language));
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }
@@ -40,6 +47,8 @@ export class LanguageService {
             const language = await prisma.language.findUnique({ where: { id } });
             return new Response(JSON.stringify(language));
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }
@@ -52,6 +61,8 @@ export class LanguageService {
             });
             return new Response(JSON.stringify(language));
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }
@@ -61,6 +72,8 @@ export class LanguageService {
             const language = await prisma.language.delete({ where: { id } });
             return new Response(JSON.stringify(language));
         } catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }));
         }
     }

@@ -1,3 +1,4 @@
+import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
 import { NextResponse } from "next/server";
 
@@ -6,6 +7,8 @@ export async function GET(request: Request) {
   try {
     return await tableService.getConfigs();
   } catch (error) {
+    const logService = new LogService();
+    await logService.createLog({ error });
     const message =
       (error as { message?: string }).message || "Something went wrong";
     return NextResponse.json(

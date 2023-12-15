@@ -1,6 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { BlockDto } from "@/services/dto/block.dto";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
+import { LogService } from "./log.service";
 
 export class BlockService {
     async getBlock(id: number) {
@@ -26,6 +27,8 @@ export class BlockService {
             return new Response(JSON.stringify(block));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -44,6 +47,8 @@ export class BlockService {
             return new Response(JSON.stringify(new_block));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -58,6 +63,8 @@ export class BlockService {
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }

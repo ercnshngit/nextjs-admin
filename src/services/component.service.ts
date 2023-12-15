@@ -1,6 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { ComponentDto, CreateComponentDto } from "./dto/component.dto";
+import { LogService } from "./log.service";
 
 export class ComponentService {
     async getComponent(id: number) {
@@ -69,6 +70,8 @@ export class ComponentService {
             return new Response(JSON.stringify(result));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -84,6 +87,8 @@ export class ComponentService {
             return new Response(JSON.stringify(new_component));
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }
@@ -98,6 +103,8 @@ export class ComponentService {
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }));
         }

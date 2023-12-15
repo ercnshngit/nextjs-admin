@@ -4,6 +4,7 @@ import {
   ErrorMessages,
 } from "../../constants/messages.constants";
 import { GeneralDto } from "./dto/general.dto";
+import { LogService } from "./log.service";
 
 export class GeneralService {
   async getGeneralById(id: number) {
@@ -50,6 +51,8 @@ export class GeneralService {
       }
       return new Response(JSON.stringify(general));
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error })
@@ -76,6 +79,8 @@ export class GeneralService {
       }
       return new Response(JSON.stringify(new_general));
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error })
@@ -104,6 +109,8 @@ export class GeneralService {
         { status: 200 }
       );
     } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error })

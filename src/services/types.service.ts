@@ -1,6 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { TypeDto } from "./dto/type.dto";
+import { LogService } from "./log.service";
 
 export class TypeService {
     async getType(id: number) {
@@ -28,6 +29,8 @@ export class TypeService {
             return new Response(JSON.stringify(type), { status: 200 });
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }), { status: 500 });
         }
@@ -47,6 +50,8 @@ export class TypeService {
             return new Response(JSON.stringify(new_type), { status: 200 });
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }), { status: 500 });
         }
@@ -65,6 +70,8 @@ export class TypeService {
             return new Response(JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }), { status: 200 });
         }
         catch (error) {
+            const logService = new LogService();
+            await logService.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", error_message: error }), { status: 500 });
         }
