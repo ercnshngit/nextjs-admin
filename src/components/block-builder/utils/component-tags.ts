@@ -5,9 +5,8 @@ import { Title } from "../components/tags/title";
 import { ComponentTagsType } from "../types";
 import { CardGrid } from "../components/tags/card-grid";
 import { Div } from "../components/tags/div";
-import { HTMLText } from "../components/tags/html-text";
 import Image from "../components/tags/image";
-import Button from "../components/tags/button";
+import { RichText } from "../components/tags/richtext";
 
 export const componentTags: ComponentTagsType = {
   Text: Text,
@@ -17,4 +16,5 @@ export const componentTags: ComponentTagsType = {
   Title: Title,
   CardGrid: CardGrid,
   Div: Div,
+  RichText: RichText,
 };

@@ -6,6 +6,7 @@ import ImagePickerInput from "./components/image-picker-input";
 import TextInput from "./components/text-input";
 import { Label } from "@/components/ui/label";
 import { useTranslate } from "@/langs";
+import RichTextEditor from "./components/rich-text";
 
 type SidebarInputFactoryProps = {
   blockComponentProp: ComponentPropDto;
@@ -39,7 +40,7 @@ export default function SidebarInputFactory({
       case "image":
         return <ImagePickerInput {...props} />;
       case "richtext":
-        return <ImagePickerInput {...props} />;
+        return <RichTextEditor {...props} />;
       default:
         return <TextInput {...props} />;
     }
@@ -50,7 +51,7 @@ export default function SidebarInputFactory({
       <Label htmlFor={props.blockComponentProp.prop.key}>
         {translate(props.blockComponentProp.prop.key)}
       </Label>
-      <p className="text-gray-400 text-xs">
+      <p className="text-xs text-gray-400">
         {props.blockComponentProp.prop.key}
       </p>
       {getInputComponent()}

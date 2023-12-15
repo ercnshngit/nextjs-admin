@@ -88,27 +88,31 @@ export default function ComponentWrapper({
       onMouseEnter={() => {
         setHoveredElement((prev) => [...prev, component.code]);
       }}
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelectedElement(component);
+      }}
       onMouseLeave={() =>
         setHoveredElement((prev) =>
           prev.filter((item) => item !== component.code)
         )
       }
-      className="border relative group border-dashed border-gray-400 rounded-md"
+      className="relative border border-gray-400 border-dashed rounded-md group"
     >
       <div
         ref={topHalf.setNodeRef}
-        className="absolute w-full h-1/3  rounded-t-md"
+        className="absolute w-full h-1/3 rounded-t-md"
       />
       {component.hasChildren && component.children?.length === 0 && (
         <div
           ref={children.setNodeRef}
-          className="absolute w-full h-1/3 bg-red-500 bottom-1/3 "
+          className="absolute w-full bg-red-500 h-1/3 bottom-1/3 "
         />
       )}
 
       <div
         ref={bottomHalf.setNodeRef}
-        className="absolute  w-full bottom-0 h-1/3 rounded-b-md"
+        className="absolute bottom-0 w-full h-1/3 rounded-b-md"
       />
 
       <div
@@ -134,7 +138,7 @@ export default function ComponentWrapper({
           }}
           variant="default"
           size="icon"
-          className="h-6 w-6 p-1"
+          className="w-6 h-6 p-1"
         >
           <CopyIcon />
         </Button>
@@ -145,7 +149,7 @@ export default function ComponentWrapper({
           }}
           variant="default"
           size="icon"
-          className="h-6 w-6 p-1"
+          className="w-6 h-6 p-1"
         >
           <Pencil2Icon />
         </Button>
@@ -156,7 +160,7 @@ export default function ComponentWrapper({
           }}
           variant="destructive"
           size="icon"
-          className="h-6 w-6 p-1"
+          className="w-6 h-6 p-1"
         >
           <TrashIcon />
         </Button>
@@ -165,7 +169,7 @@ export default function ComponentWrapper({
           {...draggable.attributes}
           variant="secondary"
           size="icon"
-          className="h-6 w-6 p-1"
+          className="w-6 h-6 p-1"
         >
           <MoveIcon />
         </Button>
@@ -174,7 +178,7 @@ export default function ComponentWrapper({
         <div className="absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none" />
       )}
       {children.isOver && (
-        <div className="absolute top-1/3 w-full rounded-md h-1/3 bg-primary " />
+        <div className="absolute w-full rounded-md top-1/3 h-1/3 bg-primary " />
       )}
       <div className="p-2">
         <Component {...props} />
