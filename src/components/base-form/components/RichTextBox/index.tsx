@@ -1,6 +1,5 @@
 import React from "react";
 import dynamic from "next/dynamic";
-import "suneditor/dist/css/suneditor.min.css"; // Import Sun Editor's CSS File
 import {
   Controller,
   FieldErrors,
@@ -10,22 +9,6 @@ import {
 import Label from "../Label";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
-
-// const SunEditor = dynamic(() => import("suneditor-react"), {
-//   ssr: false,
-// });
-
-const ButtonCustomList = [
-  ["undo", "redo"],
-  ["font", "fontSize"],
-  ["bold", "underline", "italic", "strike", "subscript", "superscript"],
-  ["removeFormat"],
-  ["fontColor", "hiliteColor"],
-  ["outdent", "indent"],
-  ["align", "horizontalRule", "list"],
-  ["link"],
-  ["fullScreen", "showBlocks", "codeView"],
-];
 
 const RichTextBox = ({
   field,
@@ -50,18 +33,7 @@ const RichTextBox = ({
       <Controller
         name={field.name}
         control={control}
-        render={({ field }) => (
-          <div></div>
-          // <SunEditor
-          //   defaultValue={defaultValue}
-          //   {...field}
-          //   setOptions={{
-          //     height: "200px",
-          //     buttonList: ButtonCustomList,
-          //     mode: "classic",
-          //   }}
-          // />
-        )}
+        render={({ field }) => <div></div>}
       />
       {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>
