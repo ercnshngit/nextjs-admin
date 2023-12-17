@@ -13,7 +13,7 @@ export async function GET(
     return cors(req, response);
   } catch (error) {
     console.log(error);
-    throw new Error(ServerMessages[500]);
+    return cors(req, new Response(JSON.stringify(error), { status: 400 }));
   }
 }
 
