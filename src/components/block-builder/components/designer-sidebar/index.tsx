@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getComponents } from "@/services/dashboard";
 import FormInputFactory from "@/components/base-form/form-input-factory";
 import SidebarInputFactory from "../sidebar-input-factory";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 export default function DesignerSidebar() {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
@@ -18,25 +20,13 @@ export default function DesignerSidebar() {
 
   return (
     <div className="bg-white px-4 py-10 h-full min-w-[300px] min-h-screen">
-      <div className="flex items-center justify-between w-full mb-6 space-x-2">
-        <Button
-          onClick={() => setMode("ui")}
-          variant={mode === "ui" ? "default" : "secondary"}
-        >
-          Tasarım
-        </Button>
-        <Button
-          onClick={() => setMode("preview")}
-          variant={mode === "preview" ? "default" : "secondary"}
-        >
-          Önizleme
-        </Button>
-        {/* <Button
-          onClick={() => setMode("html")}
-          variant={mode === "html" ? "default" : "secondary"}
-        >
-          HTML
-        </Button> */}
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="preview-mode"
+          checked={mode === "preview"}
+          onChange={() => setMode(mode === "preview" ? "ui" : "preview")}
+        />
+        <Label htmlFor="preview-mode">Preview Mode</Label>
       </div>
       {selectedElement && (
         <div className="flex flex-col w-full gap-2">
