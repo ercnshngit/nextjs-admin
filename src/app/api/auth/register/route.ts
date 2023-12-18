@@ -1,5 +1,6 @@
 import { AuthService } from "@/services/auth/auth.service";
 import { LogService } from "@/services/log.service";
+import cors from "@/utils/cors";
 import { Response } from 'express';
 import { NextApiResponse } from "next";
 
@@ -9,10 +10,10 @@ export async function POST(
   const authService = new AuthService()
   try {
     const body = await request.json()
-    return await authService.registerUser(body)
+    return cors(request, await authService.registerUser(body));
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    return new Response(JSON.stringify({ status: "error", message: error }));
+    return cors(request, new Response(JSON.stringify({ status: "error", message: error })));
   }
 }
