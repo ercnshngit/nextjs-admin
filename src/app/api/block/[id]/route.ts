@@ -1,6 +1,7 @@
 import { prisma } from "@/libs/prisma";
 import { BlockService } from "@/services/block.service";
 import { LogService } from "@/services/log.service";
+import cors from "@/utils/cors";
 
 export async function GET(
   request: Request,
@@ -20,12 +21,14 @@ export async function GET(
       },
     });
     console.log(block);
-    return new Response(JSON.stringify(block));
+    const response = new Response(JSON.stringify(block));
+    return cors(request, response);
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    return new Response(JSON.stringify({ status: "error", message: error }), {
+    const response = new Response(JSON.stringify({ status: "error", message: error }), {
       status: 500,
     });
+    return cors(request, response);
   }
 }

@@ -12,7 +12,8 @@ export async function GET(req: Request) {
     console.log(error);
     const logService = new LogService();
     await logService.createLog({ error });
-    return cors(req, new Response(JSON.stringify(error), { status: 400 }));
+    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    return cors(req, res);
   }
 }
 
@@ -20,12 +21,14 @@ export async function POST(req: Request) {
   try {
     const menuService = new MenuService();
     const body = await req.json();
-    return await menuService.createMenu(body);
+    const res = await menuService.createMenu(body);
+    return cors(req, res);
   } catch (error) {
     console.log(error);
     const logService = new LogService();
     await logService.createLog({ error });
-    throw new Error(ServerMessages[500]);
+    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    return cors(req, res);
   }
 }
 

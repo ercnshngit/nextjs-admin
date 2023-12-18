@@ -1,7 +1,6 @@
 import { AuthService } from "@/services/auth/auth.service";
-import { Response } from 'express';
-import { isAuthenticated } from "@/services/auth/authenticator";
 import { LogService } from "@/services/log.service";
+import cors from "@/utils/cors";
 
 export async function POST(
   request: Request,
@@ -9,10 +8,10 @@ export async function POST(
   const authService = new AuthService()
   try {
     const body = await request.json()
-    return await authService.login(body, false)
+    return cors(request, await authService.login(body, false));
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    return new Response(JSON.stringify({ status: "error", message: error }));
+    return cors(request, new Response(JSON.stringify({ status: "error", message: error })));
   }
 }

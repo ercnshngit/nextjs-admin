@@ -596,7 +596,7 @@ export class TableService {
 
   async createTableConfigWithTableName(
     table_name: string,
-    input_types: any[] | undefined
+    input_types?: any[] | undefined
   ) {
     try {
       const tableDatas = await this.getTableWithDatas(table_name);

@@ -1,23 +1,16 @@
 import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
-import { NextResponse } from "next/server";
+import cors from "@/utils/cors";
 
-export async function GET(request: Request) {
+export async function GET(req: Request) {
   const tableService = new TableService();
   try {
-    return await tableService.getConfigs();
+    const res = await tableService.getConfigs();
+    return cors(req, res);
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    const message =
-      (error as { message?: string }).message || "Something went wrong";
-    return NextResponse.json(
-      {
-        message: message,
-      },
-      {
-        status: 400,
-      }
-    );
+    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    return cors(req, res);
   }
 }
