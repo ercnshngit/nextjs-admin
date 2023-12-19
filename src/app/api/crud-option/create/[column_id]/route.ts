@@ -1,9 +1,9 @@
-import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { column_id: number } }
 ) {
   const column_id = params.column_id
@@ -13,8 +13,7 @@ export async function POST(
     const res = await tableService.createCrudOption(column_id, body);
     return cors(req, res);
   } catch (error) {
-    const logService = new LogService();
-    await logService.createLog({ error });
+    await tableService.createLog({ error }, req.nextUrl.pathname);
     const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     return cors(req, res);
   }

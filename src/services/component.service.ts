@@ -3,7 +3,7 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 import { ComponentDto, CreateComponentDto } from "./dto/component.dto";
 import { LogService } from "./log.service";
 
-export class ComponentService {
+export class ComponentService extends LogService{
     async getComponent(id: number) {
         const component = await prisma.component.findUnique({ where: { id }, include: { type: true, tag: true, component_prop: { include: { prop: { include: { type: true } } } } } })
         if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }

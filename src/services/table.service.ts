@@ -7,13 +7,12 @@ import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
 import { prisma } from "../libs/prisma";
 import { DatabaseTableDto } from "./dto/database-table.dto";
-import { Prisma } from "@prisma/client";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
 import { LogService } from "./log.service";
 
 config();
-export class TableService {
+export class TableService extends LogService {
   async getTableNames() {
     try {
       const tableNames = await prisma.$queryRawUnsafe(

@@ -1,17 +1,21 @@
 import { AuthService } from "@/services/auth/auth.service";
-import { LogService } from "@/services/log.service";
 import cors from "@/utils/cors";
+import { isAuthenticated } from "@/services/auth/authenticator";
+import { NextRequest } from "next/server";
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
 ) {
+  const authentication = isAuthenticated(request)
   const authService = new AuthService()
   try {
     const body = await request.json()
+    if(body == null) {
+      return cors(request, new Response(JSON.stringify({ status: "error", message: "body is null" })));
+    }
     return cors(request, await authService.login(body, false));
-  } catch (error) {
-    const logService = new LogService();
-    await logService.createLog({ error });
-    return cors(request, new Response(JSON.stringify({ status: "error", message: error })));
+  } catch (error : any) {
+    await authService.createLog({ error }, request.nextUrl.pathname);
+    return cors(request, new Response(JSON.stringify( error ), { status: 500 }));
   }
 }

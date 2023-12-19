@@ -2,9 +2,10 @@ import { prisma } from "@/libs/prisma";
 import { BlockService } from "@/services/block.service";
 import { LogService } from "@/services/log.service";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: number } }
 ) {
   const id = params.id;
@@ -24,8 +25,7 @@ export async function GET(
     const response = new Response(JSON.stringify(block));
     return cors(request, response);
   } catch (error) {
-    const logService = new LogService();
-    await logService.createLog({ error });
+    await tableService.createLog({ error }, request.nextUrl.pathname);
     const response = new Response(JSON.stringify({ status: "error", message: error }), {
       status: 500,
     });

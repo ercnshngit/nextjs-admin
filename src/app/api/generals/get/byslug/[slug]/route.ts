@@ -1,18 +1,19 @@
 import { GeneralService } from "@/services/general.service";
-import { ServerMessages } from "../../../../../../../constants/messages.constants";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
+  const generalService = new GeneralService();
   try {
-    const generalService = new GeneralService();
     const response = await generalService.getGeneralsBySlug(params.slug);
     return cors(req, response);
   } catch (error) {
     console.log(error);
-    cors(req, new Response(JSON.stringify(error), { status: 400 }));
+    await generalService.createLog({ error }, req.nextUrl.pathname);
+    return cors(req, new Response(JSON.stringify(error), { status: 400 }));
   }
 }
 

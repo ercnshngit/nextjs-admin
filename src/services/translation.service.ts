@@ -2,7 +2,7 @@ import { prisma } from "@/libs/prisma";
 import { TranslationDto } from "./dto/translation.dto";
 import { LogService } from "./log.service";
 
-export class TranslationService {
+export class TranslationService extends LogService{
 
     async getTranslationsWithKey(key: string) {
         try {

@@ -9,7 +9,8 @@ import { generateAccessToken } from "./jwt";
 import { LogService } from "../log.service";
 
 const encryptor = new Encryptor();
-export class AuthService {
+
+export class AuthService extends LogService {
   async login(
     data: {
       email: string;

@@ -6,7 +6,7 @@ import {
 import { GeneralDto } from "./dto/general.dto";
 import { LogService } from "./log.service";
 
-export class GeneralService {
+export class GeneralService extends LogService{
   async getGeneralById(id: number) {
     const general = await prisma.general.findUnique({ where: { id } });
     if (!general) {
