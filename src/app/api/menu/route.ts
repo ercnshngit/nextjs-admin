@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     return cors(req, res);
   }
 }
-//
+
 //export async function OPTIONS(request: Request) {
 //  return cors(
 //    request,
@@ -37,4 +37,3 @@ export async function POST(req: NextRequest) {
 //    })
 //  );
 //}
-//
