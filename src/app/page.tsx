@@ -1,31 +1,40 @@
 "use client";
-import React from "react";
-import Image from "next/image";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
 import { login } from "@/services/auth";
 import { Login } from "@/types/auth";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Controller } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import Cookies from "universal-cookie";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
 
 export default function Home() {
   const cookies = new Cookies();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
 
   const mutation = useMutation({
     mutationFn: (data: Login) => login(data),
     onSuccess: (response) => {
-      cookies.set("accessToken", response.data.accessToken, { path: "/" });
+      cookies.set("token", response.data.token, { path: "/" });
       cookies.set("user", JSON.stringify(response.data.user), { path: "/" });
-      router.push("/dashboard");
-      router.refresh();
+      try {
+        router.push("/dashboard");
+      } catch (error) {
+        console.log("Navigation error:", error);
+      }
+
+      toast.success("Giriş başarılı");
     },
     onSettled: () => {
       setIsLoading(false);
+    },
+    onError: (error) => {
+      toast.error(
+        JSON.stringify((error as unknown as any).response.data.message.TR)
+      );
     },
   });
 
@@ -49,10 +58,10 @@ export default function Home() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen w-full">
+    <div className="flex items-center justify-center w-full h-screen">
       <div className="md:w-[860px] w-[480px] h-[520px] border-2 flex flex-row items-center rounded-lg shadow-lg">
         <div
-          className="flex  flex-col md:w-[380px] w-0 h-[520px] md:p-12 rounded-md"
+          className="md:flex  flex-col md:w-[380px] hidden  h-[520px] md:p-12 rounded-md"
           style={{ backgroundColor: "#3040D6" }}
         >
           <div className="mt-1 mb-8 font-sans text-3xl text-white">
@@ -60,7 +69,7 @@ export default function Home() {
           </div>
           <p className="mt-8 mb-8 font-sans text-sm text-white">
             Uygulamanız için tüm verilerinizi tek bir yerden yönetmenizi
-            sağlayan yönetici paneli .
+            sağlayan yönetici paneli.
           </p>
         </div>
         <div className="flex flex-col justify-start items-start w-[480px] h-[520px] p-12 rounded-md text-black">

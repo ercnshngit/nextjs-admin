@@ -6,13 +6,13 @@ const isAuthPages = (url: string) =>
 
 export async function middleware(request: any) {
   const { url, nextUrl, cookies } = request;
-  const { value: accessToken } = cookies.get("accessToken") ?? { value: null };
-  const hasVerifiedToken = accessToken && (await verifyJwtToken(accessToken));
+  const { value: token } = cookies.get("token") ?? { value: null };
+  const hasVerifiedToken = token && (await verifyJwtToken(token));
   const isAuthPageRequested = isAuthPages(nextUrl.pathname);
   if (isAuthPageRequested) {
     if (!hasVerifiedToken) {
       const response = NextResponse.next();
-      response.cookies.delete("accessToken");
+      response.cookies.delete("token");
       return response;
     }
     request.nextUrl.pathname = "/dashboard";
@@ -24,7 +24,7 @@ export async function middleware(request: any) {
     searchParams.set("next", nextUrl.pathname);
 
     const response = NextResponse.redirect(new URL(`/?${searchParams}`, url));
-    response.cookies.delete("accessToken");
+    response.cookies.delete("token");
 
     return response;
   }

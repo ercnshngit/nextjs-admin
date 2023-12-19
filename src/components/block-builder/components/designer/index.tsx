@@ -81,6 +81,7 @@ export default function Designer() {
           component.props.map((prop) => [prop.prop.key, prop.value])
         )}
         key={component.code}
+        id={component.code}
       >
         {component.children?.map((child) => {
           if (child.component.tag.name in componentTags) {

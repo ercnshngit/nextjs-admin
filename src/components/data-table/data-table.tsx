@@ -11,8 +11,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import useSearchParams from "@/hooks/use-search-params";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import {
   ColumnFiltersState,
+  PaginationState,
   SortingState,
   VisibilityState,
   flexRender,
@@ -24,9 +27,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { ColumnDefWithName } from "./columns";
-import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 interface DataTableProps<TData, TValue> {
   page: number;
@@ -54,7 +56,12 @@ export function DataTable<TData, TValue>({
     []
   );
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [pagination, setPagination] = React.useState<PaginationState>({
+    pageSize: 10,
+    pageIndex: 0,
+  });
 
+  const searchParams = useSearchParams();
   const table = useReactTable({
     data,
     // @ts-ignore
@@ -64,8 +71,8 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      pagination,
     },
-
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -77,7 +84,12 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    onPaginationChange: setPagination,
   });
+
+  useEffect(() => {
+    // searchParams.setQueryStringNoRefresh("page", String(pagination.pageIndex));
+  }, [pagination.pageIndex, searchParams]);
 
   return (
     <div className="space-y-4">

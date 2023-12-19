@@ -5,7 +5,7 @@ import Cookies from "universal-cookie";
 const isServer = typeof window === "undefined";
 
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5008/api",
+  baseURL: "/api",
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
@@ -14,17 +14,17 @@ const axiosClient = axios.create({
 
 axiosClient.interceptors.request.use(async (config) => {
   if (isServer) {
-    const accessToken = await useAuth.fromServer();
+    const token = await useAuth.fromServer();
 
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
   } else {
     const cookies = new Cookies();
-    const accessToken = await cookies.get("accessToken");
+    const token = await cookies.get("token");
 
-    if (accessToken) {
-      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
   }
 
@@ -44,8 +44,6 @@ axiosClient.interceptors.response.use(
           (window.location.href = "/");
       }
     }
-
-    throw error;
 
     return Promise.reject(error);
   }

@@ -28,7 +28,10 @@ export class AuthService {
           JSON.stringify({
             status: "error",
             message: ErrorMessages.USER_NOT_FOUND_ERROR(),
-          })
+          }),
+          {
+            status: 400,
+          }
         );
       }
       const passwordIsValid = await encryptor.isPasswordCorrect(
@@ -40,7 +43,10 @@ export class AuthService {
           JSON.stringify({
             status: "error",
             message: ErrorMessages.WRONG_PASSWORD_ERROR(),
-          })
+          }),
+          {
+            status: 400,
+          }
         );
       }
       const token = generateAccessToken(user);
@@ -52,13 +58,18 @@ export class AuthService {
             : ConfirmMessages.LOGIN_SUCCESS(),
           user: result,
           token: token,
-        })
+        }),
+        {
+          status: 200,
+        }
       );
     } catch (error) {
       const logService = new LogService();
       await logService.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -76,7 +87,10 @@ export class AuthService {
           JSON.stringify({
             status: "error",
             message: ErrorMessages.REGISTER_ERROR_REQUIRED_FIELDS(),
-          })
+          }),
+          {
+            status: 400,
+          }
         );
       }
       const userCheck = await prisma.user.findFirst({
@@ -89,7 +103,10 @@ export class AuthService {
           JSON.stringify({
             status: "error",
             message: ErrorMessages.USER_ALREADY_EXISTS_ERROR(),
-          })
+          }),
+          {
+            status: 400,
+          }
         );
       }
       data.password = await encryptor.hashPassword(data.password); // password hasleniyor
@@ -115,7 +132,9 @@ export class AuthService {
       const logService = new LogService();
       await logService.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 
@@ -144,14 +163,20 @@ export class AuthService {
           JSON.stringify({
             status: "error",
             message: ErrorMessages.USER_NOT_FOUND_ERROR(),
-          })
+          }),
+          {
+            status: 401,
+          }
         );
       } else if (userResult.id != user_id) {
         return new Response(
           JSON.stringify({
             status: "error",
             message: ErrorMessages.ACOOUNTS_DIFFERENT_ERROR(),
-          })
+          }),
+          {
+            status: 401,
+          }
         );
       }
       if (
@@ -164,7 +189,10 @@ export class AuthService {
           JSON.stringify({
             status: "error",
             message: ErrorMessages.OLD_PASSWORD_NOT_MATCH_ERROR(),
-          })
+          }),
+          {
+            status: 401,
+          }
         );
       }
       if (user.old_password == user.new_password) {
@@ -173,7 +201,10 @@ export class AuthService {
             status: "error",
             message:
               ErrorMessages.OLD_PASSWORD_AND_NEW_PASSWORD_NOT_SAME_ERROR(),
-          })
+          }),
+          {
+            status: 401,
+          }
         );
       }
       user.new_password = await encryptor.hashPassword(user.new_password);
@@ -189,13 +220,18 @@ export class AuthService {
         JSON.stringify({
           status: "success",
           message: ConfirmMessages.PASSWORD_CHANGE_SUCCESS(),
-        })
+        }),
+        {
+          status: 200,
+        }
       );
     } catch (error) {
       const logService = new LogService();
       await logService.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
     }
   }
 }

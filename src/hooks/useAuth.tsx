@@ -6,10 +6,10 @@ import { JWTPayload, decodeJwt } from "jose";
 const fromServer = async () => {
   const cookies = require("next/headers").cookies;
   const cookieList = cookies();
-  const { value: token } = cookieList.get("accessToken") || { value: null };
-  //const verifiedToken = await verifyJwtToken(token)
+  const { value: token } = cookieList.get("token") || { value: null };
+  const verifiedToken = await verifyJwtToken(token);
 
-  return token;
+  return verifiedToken;
 };
 
 // TODO: this `useAuth` creates a vulnerability issue because it needs to have
@@ -23,10 +23,10 @@ export function useAuth() {
 
   const getVerifiedtoken = async () => {
     const cookies = new Cookies();
-    const token = cookies.get("accessToken") || null;
+    const token = cookies.get("token") || null;
     //TODO: verifytoken ayarla
-    // const verifiedToken = await verifyJwtToken(token)
-    setAuth(token);
+    const verifiedToken = await verifyJwtToken(token);
+    setAuth(verifiedToken);
   };
 
   React.useEffect(() => {
@@ -38,23 +38,24 @@ export function useAuth() {
 
 export function useUser() {
   // Have also loading state to not show flickering to user
-  const [auth, setAuth] = React.useState<JWTPayload | null>(null);
+  const [user, setUser] = React.useState<JWTPayload | null>(null);
 
   const getVerifiedtoken = async () => {
     const cookies = new Cookies();
-    const token = cookies.get("accessToken") || null;
+    const token = cookies.get("token") || null;
     console.log(token);
     //TODO: verifytoken ayarla
-    // const verifiedToken = await verifyJwtToken(token)
-    const decodedToken = await decodeJwt(token.toString());
-    setAuth(decodedToken);
+    const verifiedToken = await verifyJwtToken(token);
+    const decodedToken =
+      verifiedToken && (await decodeJwt(verifiedToken.toString()));
+    setUser(decodedToken);
   };
 
   React.useEffect(() => {
     getVerifiedtoken();
   }, []);
 
-  return auth;
+  return user;
 }
 
 useAuth.fromServer = fromServer;

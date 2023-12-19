@@ -60,6 +60,7 @@ function DragOverlayWrapper() {
                   component.props.map((prop) => [prop.prop.key, prop.value])
                 )}
                 key={component.code}
+                id={component.code}
               >
                 {component.children.map((child) => {
                   if (child.component.tag.name in componentTags) {
@@ -69,6 +70,7 @@ function DragOverlayWrapper() {
                     return (
                       <ChildComponent
                         key={child.code}
+                        id={child.code}
                         {...Object.fromEntries(
                           child.props.map((prop) => [prop.prop.key, prop.value])
                         )}
@@ -84,6 +86,7 @@ function DragOverlayWrapper() {
           return (
             <Component
               key={component.code}
+              id={component.code}
               {...Object.fromEntries(
                 component.props.map((prop) => [prop.prop.key, prop.value])
               )}

@@ -7,11 +7,13 @@ import TextInput from "./components/text-input";
 import { Label } from "@/components/ui/label";
 import { useTranslate } from "@/langs";
 import RichTextEditor from "./components/rich-text";
+import { BlockComponentDto } from "@/services/dto/block_component.dto";
 
 type SidebarInputFactoryProps = {
   blockComponentProp: ComponentPropDto;
   value: any;
   setValue: any;
+  blockComponent: BlockComponentDto;
   customInput?: {
     for: string;
     component: React.FC<any>;

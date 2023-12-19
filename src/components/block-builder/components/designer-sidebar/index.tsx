@@ -20,7 +20,7 @@ export default function DesignerSidebar() {
 
   return (
     <div className="bg-white px-4 py-10 h-full min-w-[300px] min-h-screen">
-      <div className="flex items-center space-x-2">
+      <div className="flex mb-2 items-center space-x-2">
         <Switch
           id="preview-mode"
           checked={mode === "preview"}
@@ -38,6 +38,7 @@ export default function DesignerSidebar() {
             }
             return (
               <SidebarInputFactory
+                blockComponent={selectedElement}
                 key={prop.prop.key}
                 blockComponentProp={prop}
                 setValue={(value: string) =>
