@@ -119,6 +119,8 @@ model tag {
   name String
 
   component component[] @relation("fk_comp_tag_id") //one to many
+
+  @@unique([name], name: "ui_name")
 }
 
 model menu {
@@ -215,11 +217,12 @@ model prop {
   id      Int    @id @default(autoincrement())
   key     String
   type_id Int
-
-  type type? @relation("fk_prop_type_id", fields: [type_id], references: [id]) //many to one
+  type    type?  @relation("fk_prop_type_id", fields: [type_id], references: [id]) //many to one
 
   block_component_prop block_component_prop[] @relation("fk_bcomp_prop_id") //one to many
   component_prop       component_prop[]       @relation("fk_compp_prop_id") //one to many
+
+  @@unique([key], name: "ui_key")
 }
 
 model translation {
