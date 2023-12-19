@@ -1,10 +1,9 @@
 import { prisma } from "@/libs/prisma";
-import { TypeCategories, TypeJsons } from "../../constants/types.constants";
 import { ErrorMessages } from "../../constants/messages.constants";
-import { exit } from "process";
+import { TypeCategories, TypeJsons } from "../../constants/types.constants";
 import { LogService } from "./log.service";
 
-export class TypeService {
+export class TypeService extends LogService{
 
     // TypeJsonda kaydedılmıs input_type lerini varsa pas gecıyor yoksa insertliyor
     async setInputDataTypes() {

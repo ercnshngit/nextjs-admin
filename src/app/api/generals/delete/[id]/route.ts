@@ -1,15 +1,16 @@
 import { GeneralService } from "@/services/general.service";
-import { ServerMessages } from "../../../../../../constants/messages.constants";
-import { LogService } from "@/services/log.service";
+import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
-export async function GET(req: Request, { params }: { params: { id: number } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: number } }) {
+    const generalService = new GeneralService();
     try {
-        const generalService = new GeneralService();
-        return await generalService.deleteGeneral(Number(params.id));
+        const res = await generalService.deleteGeneral(Number(params.id));
+        return cors(req, res);
     } catch (error) {
         console.log(error);
-        const logService = new LogService();
-        await logService.createLog({ error });
-        throw new Error(ServerMessages[500]);
+        await generalService.createLog({ error }, req.nextUrl.pathname);
+        const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+        return cors(req, res);
     }
 }

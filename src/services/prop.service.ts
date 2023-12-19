@@ -3,7 +3,7 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 import { PropDto } from "./dto/prop.dto";
 import { LogService } from "./log.service";
 
-export class PropService {
+export class PropService extends LogService {
 
     async getProp(id: number) {
         const prop = await prisma.prop.findUnique({ where: { id } })

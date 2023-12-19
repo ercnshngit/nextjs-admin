@@ -1,21 +1,22 @@
 import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
+import cors from "@/utils/cors";
 
 // TÜm verileri döner
 export async function POST(
-  request: Request,
+  req: Request,
   { params }: { params: { table_name: string } }
 ) {
   const table_name = params.table_name;
   const tableService = new TableService();
   try {
-    const res = await request.json();
-    return await tableService.getTableWithWhere(table_name, res);
+    const body = await req.json();
+    const res = await tableService.getTableWithWhere(table_name, body);
+    return cors(req, res);
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
-      status: 400,
-    });
+    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    return cors(req, res);
   }
 }

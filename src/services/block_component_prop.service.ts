@@ -3,7 +3,7 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 import { BlockComponentPropDto } from "./dto/block_component_prop.dto";
 import { LogService } from "./log.service";
 
-export class BlockComponentPropService {
+export class BlockComponentPropService extends LogService{
     async getBlockComponentProp(id: number) {
         const blockComponentProp = await prisma.block_component_prop.findUnique({ where: { id } })
         if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }

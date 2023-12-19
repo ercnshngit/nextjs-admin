@@ -2,7 +2,7 @@ import { prisma } from "@/libs/prisma";
 import { LanguageDto } from "./dto/language.dto";
 import { LogService } from "./log.service";
 
-export class LanguageService {
+export class LanguageService extends LogService{
 
     async createLanguage(data: LanguageDto) {
         try {

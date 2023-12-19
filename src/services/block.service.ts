@@ -3,7 +3,7 @@ import { BlockDto } from "@/services/dto/block.dto";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { LogService } from "./log.service";
 
-export class BlockService {
+export class BlockService extends LogService{
     async getBlock(id: number) {
         const block = await this.checkBlockExist(id)
         if (block instanceof Response) { return block }

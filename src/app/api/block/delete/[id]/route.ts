@@ -1,18 +1,19 @@
-import { BlockService } from "@/services/block.service"
-import { ServerMessages } from "../../../../../../constants/messages.constants";
-import { LogService } from "@/services/log.service";
+import { BlockService } from "@/services/block.service";
+import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function GET(
-    req: Request,
+    req: NextRequest,
     { params }: { params: { id: number } }
 ) {
+    const blockService = new BlockService()
     try {
-        const blockService = new BlockService()
-        return await blockService.deleteBlock(Number(params.id))
+        const res = await blockService.deleteBlock(Number(params.id))
+        return cors(req, res);
     } catch (error) {
-        const logService = new LogService();
-        await logService.createLog({ error });
+        await blockService.createLog({ error }, req.nextUrl.pathname);
         console.log(error)
-        throw new Error(ServerMessages[500]);
+        const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+        return cors(req, res);
     }
 }

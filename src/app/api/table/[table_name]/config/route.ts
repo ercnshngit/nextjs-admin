@@ -1,33 +1,38 @@
 import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
+import cors from "@/utils/cors";
 
 export async function GET(
-  request: Request,
+  req: Request,
   { params }: { params: { table_name: string } }
 ) {
   const table_name = params.table_name;
   const tableService = new TableService();
   try {
-    return await tableService.getTableConfig(table_name);
+    const res = await tableService.getTableConfig(table_name);
+    return cors(req, res);
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    return new Response(JSON.stringify({ status: "error", message: error }));
+    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    return cors(req, res);
   }
 }
 
 export async function POST(
-  request: Request,
+  req: Request,
   { params }: { params: { table_name: string } }
 ) {
   const table_name = params.table_name;
   const tableService = new TableService();
   try {
-    const body = await request.json();
-    return await tableService.updateTableConfig(table_name, body);
+    const body = await req.json();
+    const res = await tableService.updateTableConfig(table_name, body);
+    return cors(req, res);
   } catch (error) {
     const logService = new LogService();
     await logService.createLog({ error });
-    return new Response(JSON.stringify({ status: "error", message: error }));
+    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
+    return cors(req, res);
   }
 }

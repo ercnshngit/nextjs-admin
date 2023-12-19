@@ -1,33 +1,41 @@
 import { GeneralService } from "@/services/general.service";
 import { ServerMessages } from "../../../../../../../constants/messages.constants";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: number } }
 ) {
+  const generalService = new GeneralService();
   try {
-    const generalService = new GeneralService();
     const response = await generalService.getGeneralById(Number(params.id));
 
     return cors(req, response);
   } catch (error) {
     console.log(error);
+    await generalService.createLog({ error }, req.nextUrl.pathname);
     return cors(req, new Response(JSON.stringify(error), { status: 400 }));
   }
 }
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: number } }
 ) {
+  const generalService = new GeneralService();
   try {
-    const generalService = new GeneralService();
     const body = await req.json();
     return await generalService.updateGeneral(Number(params.id), body);
   } catch (error) {
     console.log(error);
-    throw new Error(ServerMessages[500]);
+    await generalService.createLog({ error }, req.nextUrl.pathname);
+    return cors(
+      req,
+      new Response(null, {
+        status: 204,
+      })
+    );
   }
 }
 
