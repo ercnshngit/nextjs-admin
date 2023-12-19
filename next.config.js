@@ -16,9 +16,21 @@ const nextConfig = {
         source: "/(.*)",
         headers: [
           {
+            key: "Vary",
+            value: "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url",
+          },
+          {
             key: "Access-Control-Allow-Origin",
             value: "*",
-          }, // replace this your actual origin
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
+          },
         ],
       },
     ];
