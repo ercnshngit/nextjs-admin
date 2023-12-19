@@ -18,4 +18,13 @@ export async function GET(
       const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
       return cors(req, res);   
     }
-  }
+}
+
+export async function OPTIONS(request: Request) { 
+  return cors(
+    request,
+    new Response(null, {
+      status: 204,
+    })
+  );
+}

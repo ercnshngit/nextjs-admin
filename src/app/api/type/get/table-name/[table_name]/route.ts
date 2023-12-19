@@ -15,3 +15,12 @@ export async function GET(req: NextRequest, { params }: { params: { table_name: 
         return cors(req, res);
     }
 }
+
+export async function OPTIONS(request: Request) { 
+    return cors(
+      request,
+      new Response(null, {
+        status: 204,
+      })
+    );
+}

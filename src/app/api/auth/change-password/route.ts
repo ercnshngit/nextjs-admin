@@ -19,3 +19,12 @@ export async function POST(request: NextRequest) {
     return cors(request, new Response(JSON.stringify({ status: "error", message: error }), { status: 500 }));
   }
 }
+
+export async function OPTIONS(request: Request) { 
+  return cors(
+    request,
+    new Response(null, {
+      status: 204,
+    })
+  );
+}
