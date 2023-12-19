@@ -1,6 +1,4 @@
 import { GeneralService } from "@/services/general.service";
-import { ServerMessages } from "../../../../constants/messages.constants";
-import { LogService } from "@/services/log.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 

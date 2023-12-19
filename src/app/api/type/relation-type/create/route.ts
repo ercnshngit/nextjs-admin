@@ -1,18 +1,17 @@
-import { LogService } from "@/services/log.service";
 import { TypeService } from "@/services/type.service";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function GET(
-    req: Request,
+    req: NextRequest,
 ) {
-    const service = new TypeService();
+    const typesService = new TypeService();
     try {
-        const res = await service.setRelationTypes()
+        const res = await typesService.setRelationTypes()
         return cors(req, res);
     } catch (error) {
-        const logService = new LogService();
-        await logService.createLog({ error });
         console.log(error)
+        await typesService.createLog({ error }, req.nextUrl.pathname);
         const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         return cors(req, res);
     }

@@ -1,9 +1,9 @@
 import { LanguageService } from "@/services/language.service";
-import { LogService } from "@/services/log.service";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   params: { params: { id: number } }
 ) {
   const id = params.params.id
@@ -13,8 +13,8 @@ export async function POST(
     const res = await languageService.updateLanguage(id, body)
     return cors(req, res);
   } catch (error) {
-    const logService = new LogService();
-    await logService.createLog({ error });
+    console.log(error)
+    await languageService.createLog({ error }, req.nextUrl.pathname);
     const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     return cors(req, res);
   }
