@@ -34,3 +34,12 @@ export async function POST(
         return cors(req, res);
     }
 }
+
+export async function OPTIONS(request: Request) { 
+    return cors(
+      request,
+      new Response(null, {
+        status: 204,
+      })
+    );
+}

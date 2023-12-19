@@ -28,3 +28,12 @@ export async function POST(req: NextRequest) {
         return cors(req, res);
     }
 }
+
+export async function OPTIONS(request: Request) { 
+    return cors(
+      request,
+      new Response(null, {
+        status: 204,
+      })
+    );
+}

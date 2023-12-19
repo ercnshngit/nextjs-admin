@@ -32,3 +32,12 @@ export async function GET(
     return cors(request, response);
   }
 }
+
+export async function OPTIONS(request: Request) { 
+  return cors(
+    request,
+    new Response(null, {
+      status: 204,
+    })
+  );
+}

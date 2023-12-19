@@ -29,11 +29,11 @@ export async function POST(req: NextRequest) {
   }
 }
 
-//export async function OPTIONS(request: Request) {
-//  return cors(
-//    request,
-//    new Response(null, {
-//      status: 204,
-//    })
-//  );
-//}
+export async function OPTIONS(request: Request) { 
+  return cors(
+    request,
+    new Response(null, {
+      status: 204,
+    })
+  );
+}
