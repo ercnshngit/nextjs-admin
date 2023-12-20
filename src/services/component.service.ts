@@ -66,7 +66,7 @@ export class ComponentService extends LogService {
                             prop_id: prop.id,
                         },
                     });
-                    return { key: prop.key, value: propItem.value };
+                    return { key: prop.key };
                 })
             );
             const { tag_id, ...result } = component;
