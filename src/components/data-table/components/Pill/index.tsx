@@ -16,9 +16,13 @@ export default function Pill({
     () =>
       getTable({ tableName: column.column_relations[0].referenced_table.name })
   );
-  const valueItem = joinedTableData.find(
-    (joinedTableItem: any) => joinedTableItem.id === value
-  );
+  const valueItem =
+    joinedTableData.find(
+      (joinedTableItem: any) => joinedTableItem.id === value
+    ) ||
+    joinedTableData.find(
+      (joinedTableItem: any) => joinedTableItem?.code === value
+    );
   return (
     <div>
       {column.input_type?.name === "relation" ? (
@@ -59,6 +63,7 @@ export default function Pill({
                     valueItem?.title ||
                     valueItem?.key ||
                     valueItem?.code ||
+                    JSON.stringify(valueItem) ||
                     "Bulunamadı"}
                 </div>
               )}

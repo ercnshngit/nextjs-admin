@@ -14,22 +14,38 @@ import TextArea from "./components/TextArea";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
-type FormInputFactoryProps = {
-  field: DataBaseTableColumnDto;
-  table: DatabaseTableDto;
-  register: UseFormRegister<any>;
-  errors: FieldErrors;
-  formType: "create_crud_option" | "update_crud_option";
-  defaultValue?: any;
-  id?: number;
-  setValue: any;
-  watch?: any;
-  control: any;
-  customInput?: {
-    for: string;
-    component: React.FC<any>;
-  }[];
-};
+type FormInputFactoryProps =
+  | {
+      field: DataBaseTableColumnDto;
+      table: DatabaseTableDto;
+      register: UseFormRegister<any>;
+      errors: FieldErrors;
+      formType: "create_crud_option" | "update_crud_option";
+      id?: number;
+      setValue: any;
+      watch?: any;
+      control: any;
+      customInput?: {
+        for: string;
+        component: React.FC<any>;
+      }[];
+    }
+  | {
+      field: DataBaseTableColumnDto;
+      table: DatabaseTableDto;
+      register: UseFormRegister<any>;
+      errors: FieldErrors;
+      formType: "update_crud_option";
+      defaultValue: any;
+      id?: number;
+      setValue: any;
+      watch?: any;
+      control: any;
+      customInput?: {
+        for: string;
+        component: React.FC<any>;
+      }[];
+    };
 
 export default function FormInputFactory({
   formType,

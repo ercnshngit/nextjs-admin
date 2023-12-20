@@ -9,7 +9,7 @@ import {
 } from "./dto/block_component.dto";
 import { LogService } from "./log.service";
 
-export class BlockComponentService extends LogService{
+export class BlockComponentService extends LogService {
   async getBlockComponent(block_id: number) {
     try {
       const blockComponent = await prisma.block_component.findMany({
@@ -48,11 +48,9 @@ export class BlockComponentService extends LogService{
         };
       });
 
-      return new Response(JSON.stringify(result));
+      return result;
     } catch (error) {
       const logService = new LogService();
-      await logService.createLog({ error });
-      return new Response(JSON.stringify({ status: "error", message: error }));
     }
   }
 

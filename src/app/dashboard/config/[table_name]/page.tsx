@@ -30,6 +30,7 @@ import {
 import { toast } from "react-toastify";
 import { type } from "@prisma/client";
 import { useTranslate } from "@/langs";
+import { CrudOptionCreateDto } from "@/services/dto/crud-option.dto";
 export default function TableConfig({
   params,
 }: {
@@ -60,16 +61,28 @@ export default function TableConfig({
     }
   );
 
-  const createCrud = useMutation((data: any) => {
-    return createCrudOption(data.column_id, {
-      name: data.name,
-      is_hidden: data.is_hidden,
-      is_required: data.is_required,
-      is_readonly: data.is_readonly,
-      input_type_id: data.input_type_id,
-      crud_type: data.crud_type,
-    });
-  });
+  const createCrud = useMutation(
+    (
+      data: CrudOptionCreateDto & {
+        column_id: number;
+      }
+    ) => {
+      return createCrudOption(data.column_id, {
+        name: data.name,
+        is_hidden: data.is_hidden,
+        is_required: data.is_required,
+        is_readonly: data.is_readonly,
+        input_type_id: data.input_type_id,
+        crud_type: data.crud_type,
+      });
+    },
+    {
+      onSuccess: () => {
+        toast.success("Gösterim opsiyonları güncellendi.");
+        queryClient.invalidateQueries(["configs"]);
+      },
+    }
+  );
 
   const initialValues = {
     name: table?.name,
@@ -120,8 +133,7 @@ export default function TableConfig({
   if (!table) return <div>loading</div>;
 
   const onSubmit: SubmitHandler<typeof initialValues> = (data) => {
-    console.log(data);
-
+    console.log("dwfsdfsdfs", data.columns);
     const tempData = {
       ...data,
       id: table?.id,
@@ -129,15 +141,12 @@ export default function TableConfig({
         ...column,
         id: Number(column.id),
         input_type_id: Number(column.input_type_id),
-        create_crud_option_id: null,
-        read_crud_option_id: null,
-        update_crud_option_id: null,
         create_crud_option: undefined,
         read_crud_option: undefined,
         update_crud_option: undefined,
       })),
     };
-
+    console.log(tempData);
     updateConfig.mutate(tempData);
   };
 
@@ -245,208 +254,34 @@ export default function TableConfig({
             </FormItem>
           )}
         />
-        {fields.map((column, index) => (
-          <div key={column.id} className="p-4 bg-gray-100 rounded">
-            <h1 className="mb-6 text-lg font-bold">
-              {translate("COLUMN_NAME")}:{" "}
-              {translate(table.name + "/" + column.name)}
-            </h1>
-            <hr />
-            <div>
-              <FormField
-                control={form.control}
-                name={`columns.${index}.is_hidden`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>
-                        {translate("CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_TITLE")}
-                      </FormLabel>
-                      <FormDescription>
-                        {translate(
-                          "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_DESCRIPTION"
-                        )}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={(event) => {
-                          field.onChange(event);
-                          update(index, {
-                            ...column,
-                            is_required: !event,
-                          });
-                        }}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.is_filterable`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>
-                        {translate("CONFIG_IS_COLUMN_FILTERABLE_TITLE")}
-                      </FormLabel>
-                      <FormDescription>
-                        {translate("CONFIG_IS_COLUMN_FILTERABLE_DESCRIPTION")}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.is_searchable`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>
-                        {translate("CONFIG_IS_COLUMN_SEARCHABLE_TITLE")}
-                      </FormLabel>
-                      <FormDescription>
-                        {translate("CONFIG_IS_COLUMN_SEARCHABLE_DESCRIPTION")}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.is_sortable`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>
-                        {translate("CONFIG_IS_COLUMN_SORTABLE_TITLE")}
-                      </FormLabel>
-                      <FormDescription>
-                        {translate("CONFIG_IS_COLUMN_SORTABLE_DESCRIPTION")}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.is_unique`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>
-                        {translate("CONFIG_IS_COLUMN_UNIQUE_TITLE")}
-                      </FormLabel>
-                      <FormDescription>
-                        {translate("CONFIG_IS_COLUMN_UNIQUE_DESCRIPTION")}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        // onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.is_required`}
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                    <div className="space-y-0.5">
-                      <FormLabel>
-                        {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
-                      </FormLabel>
-                      <FormDescription>
-                        {translate("CONFIG_IS_COLUMN_REQUIRED_DESCRIPTION")}
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`columns.${index}.input_type_id`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
-                    </FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={String(field.value)}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={translate(
-                              "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
-                            )}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {input_types?.map((input_type) => (
-                          <SelectItem
-                            key={input_type.id}
-                            value={String(input_type.id)}
-                          >
-                            {translate(input_type.name)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormDescription>
-                      {translate("CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
-                <h1 className="mb-6 text-lg">
-                  {translate("CONFIG_COLUMN_CREATE_CRUD_OPTION_ID_TITLE")}
-                </h1>
+        {fields.map((column, index) => {
+          const columnId = table.columns?.find(
+            (c) => c.name === column.name
+          )?.id;
+          return (
+            <div key={column.id} className="p-4 bg-gray-100 rounded">
+              <h1 className="mb-6 text-lg font-bold">
+                {translate("COLUMN_NAME")}:{" "}
+                {translate(table.name + "/" + column.name)}
+              </h1>
+              <hr />
+              <div>
                 <FormField
                   control={form.control}
-                  name={`columns.${index}.create_crud_option.is_hidden`}
+                  name={`columns.${index}.is_hidden`}
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                       <div className="space-y-0.5">
                         <FormLabel>
                           {translate(
-                            "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_CREATE_TITLE"
+                            "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_TITLE"
                           )}
                         </FormLabel>
+                        <FormDescription>
+                          {translate(
+                            "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_DESCRIPTION"
+                          )}
+                        </FormDescription>
                       </div>
                       <FormControl>
                         <Switch
@@ -455,10 +290,7 @@ export default function TableConfig({
                             field.onChange(event);
                             update(index, {
                               ...column,
-                              create_crud_option: {
-                                ...column.create_crud_option,
-                                is_required: !event,
-                              },
+                              is_required: !event,
                             });
                           }}
                         />
@@ -468,15 +300,16 @@ export default function TableConfig({
                 />
                 <FormField
                   control={form.control}
-                  name={`columns.${index}.create_crud_option.is_required`}
+                  name={`columns.${index}.is_filterable`}
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                       <div className="space-y-0.5">
                         <FormLabel>
-                          {translate(
-                            "CONFIG_IS_COLUMN_REQUIRED_IN_CREATE_TITLE"
-                          )}
+                          {translate("CONFIG_IS_COLUMN_FILTERABLE_TITLE")}
                         </FormLabel>
+                        <FormDescription>
+                          {translate("CONFIG_IS_COLUMN_FILTERABLE_DESCRIPTION")}
+                        </FormDescription>
                       </div>
                       <FormControl>
                         <Switch
@@ -489,15 +322,16 @@ export default function TableConfig({
                 />
                 <FormField
                   control={form.control}
-                  name={`columns.${index}.create_crud_option.is_readonly`}
+                  name={`columns.${index}.is_searchable`}
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                       <div className="space-y-0.5">
                         <FormLabel>
-                          {translate(
-                            "CONFIG_IS_COLUMN_READONLY_IN_CREATE_TITLE"
-                          )}
+                          {translate("CONFIG_IS_COLUMN_SEARCHABLE_TITLE")}
                         </FormLabel>
+                        <FormDescription>
+                          {translate("CONFIG_IS_COLUMN_SEARCHABLE_DESCRIPTION")}
+                        </FormDescription>
                       </div>
                       <FormControl>
                         <Switch
@@ -510,7 +344,73 @@ export default function TableConfig({
                 />
                 <FormField
                   control={form.control}
-                  name={`columns.${index}.create_crud_option.input_type_id`}
+                  name={`columns.${index}.is_sortable`}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>
+                          {translate("CONFIG_IS_COLUMN_SORTABLE_TITLE")}
+                        </FormLabel>
+                        <FormDescription>
+                          {translate("CONFIG_IS_COLUMN_SORTABLE_DESCRIPTION")}
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`columns.${index}.is_unique`}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>
+                          {translate("CONFIG_IS_COLUMN_UNIQUE_TITLE")}
+                        </FormLabel>
+                        <FormDescription>
+                          {translate("CONFIG_IS_COLUMN_UNIQUE_DESCRIPTION")}
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          // onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`columns.${index}.is_required`}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>
+                          {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
+                        </FormLabel>
+                        <FormDescription>
+                          {translate("CONFIG_IS_COLUMN_REQUIRED_DESCRIPTION")}
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`columns.${index}.input_type_id`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>
@@ -536,225 +436,6 @@ export default function TableConfig({
                               value={String(input_type.id)}
                             >
                               {translate(input_type.name)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
-                <h1 className="mb-6 text-lg">
-                  {translate("CONFIG_COLUMN_READ_CRUD_OPTION_ID_TITLE")}
-                </h1>
-
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.read_crud_option.is_hidden`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>
-                          {translate(
-                            "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_READ_TITLE"
-                          )}
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={(event) => {
-                            field.onChange(event);
-                            update(index, {
-                              ...column,
-                              read_crud_option: {
-                                ...column.read_crud_option,
-                                is_required: !event,
-                              },
-                            });
-                          }}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.read_crud_option.is_required`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>
-                          {translate("CONFIG_IS_COLUMN_REQUIRED_IN_READ_TITLE")}
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.read_crud_option.is_readonly`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>
-                          {translate("CONFIG_IS_COLUMN_READONLY_IN_READ_TITLE")}
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.read_crud_option.input_type_id`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
-                      </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={String(field.value)}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={translate(
-                                "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
-                              )}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {input_types?.map((input_type) => (
-                            <SelectItem
-                              key={input_type.id}
-                              value={String(input_type.id)}
-                            >
-                              {translate(input_type.name)}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
-                <h1 className="mb-6 text-lg">
-                  {translate("CONFIG_COLUMN_UPDATE_CRUD_OPTION_ID_TITLE")}
-                </h1>
-
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.update_crud_option.is_hidden`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>
-                          {translate(
-                            "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_UPDATE_TITLE"
-                          )}
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.update_crud_option.is_required`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>
-                          {translate(
-                            "CONFIG_IS_COLUMN_REQUIRED_IN_UPDATE_TITLE"
-                          )}
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.update_crud_option.is_readonly`}
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
-                      <div className="space-y-0.5">
-                        <FormLabel>
-                          {translate(
-                            "CONFIG_IS_COLUMN_READONLY_IN_UPDATE_TITLE"
-                          )}
-                        </FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name={`columns.${index}.update_crud_option.input_type_id`}
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
-                      </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={String(field.value)}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={translate(
-                                "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
-                              )}
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {input_types?.map((input_type) => (
-                            <SelectItem
-                              key={input_type.id}
-                              value={String(input_type.id)}
-                            >
-                              {input_type.name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -766,10 +447,406 @@ export default function TableConfig({
                     </FormItem>
                   )}
                 />
+                <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
+                  <h1 className="mb-6 text-lg">
+                    {translate("CONFIG_COLUMN_CREATE_CRUD_OPTION_ID_TITLE")}
+                  </h1>
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.create_crud_option.is_hidden`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_CREATE_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={(event) => {
+                              field.onChange(event);
+                              update(index, {
+                                ...column,
+                                create_crud_option: {
+                                  ...column.create_crud_option,
+                                  is_required: !event,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.create_crud_option.is_required`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_REQUIRED_IN_CREATE_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.create_crud_option.is_readonly`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_READONLY_IN_CREATE_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.create_crud_option.input_type_id`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={String(field.value)}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={translate(
+                                  "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
+                                )}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {input_types?.map((input_type) => (
+                              <SelectItem
+                                key={input_type.id}
+                                value={String(input_type.id)}
+                              >
+                                {translate(input_type.name)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const values = form
+                        .getValues("columns")
+                        ?.find(
+                          (c) => c.name === column.name
+                        )?.create_crud_option;
+                      if (columnId && values) {
+                        createCrud.mutate({
+                          column_id: columnId,
+                          ...values,
+                          input_type_id: Number(values?.input_type_id) || 0,
+                          crud_type: 1,
+                        });
+                      }
+                    }}
+                  >
+                    Oluştur
+                  </Button>
+                </div>
+
+                <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
+                  <h1 className="mb-6 text-lg">
+                    {translate("CONFIG_COLUMN_READ_CRUD_OPTION_ID_TITLE")}
+                  </h1>
+
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.read_crud_option.is_hidden`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_READ_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={(event) => {
+                              field.onChange(event);
+                              update(index, {
+                                ...column,
+                                read_crud_option: {
+                                  ...column.read_crud_option,
+                                  is_required: !event,
+                                },
+                              });
+                            }}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.read_crud_option.is_required`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_REQUIRED_IN_READ_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.read_crud_option.is_readonly`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_READONLY_IN_READ_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.read_crud_option.input_type_id`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={String(field.value)}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={translate(
+                                  "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
+                                )}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {input_types?.map((input_type) => (
+                              <SelectItem
+                                key={input_type.id}
+                                value={String(input_type.id)}
+                              >
+                                {translate(input_type.name)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const values = form
+                        .getValues("columns")
+                        ?.find((c) => c.name === column.name)?.read_crud_option;
+                      if (columnId && values) {
+                        createCrud.mutate({
+                          column_id: columnId,
+                          ...values,
+                          input_type_id: Number(values?.input_type_id) || 0,
+                          crud_type: 3,
+                        });
+                      }
+                    }}
+                  >
+                    Oluştur
+                  </Button>
+                </div>
+
+                <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
+                  <h1 className="mb-6 text-lg">
+                    {translate("CONFIG_COLUMN_UPDATE_CRUD_OPTION_ID_TITLE")}
+                  </h1>
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.update_crud_option.is_hidden`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_UPDATE_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.update_crud_option.is_required`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_REQUIRED_IN_UPDATE_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.update_crud_option.is_readonly`}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                        <div className="space-y-0.5">
+                          <FormLabel>
+                            {translate(
+                              "CONFIG_IS_COLUMN_READONLY_IN_UPDATE_TITLE"
+                            )}
+                          </FormLabel>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name={`columns.${index}.update_crud_option.input_type_id`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={String(field.value)}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={translate(
+                                  "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
+                                )}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {input_types?.map((input_type) => (
+                              <SelectItem
+                                key={input_type.id}
+                                value={String(input_type.id)}
+                              >
+                                {input_type.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          {translate("CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      const values = form
+                        .getValues("columns")
+                        ?.find(
+                          (c) => c.name === column.name
+                        )?.update_crud_option;
+                      if (columnId && values) {
+                        createCrud.mutate({
+                          column_id: columnId,
+                          ...values,
+                          input_type_id: Number(values?.input_type_id) || 0,
+                          crud_type: 2,
+                        });
+                      }
+                    }}
+                  >
+                    Oluştur
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
         <Button type="submit">{translate("CONFIG_TABLE_UPDATE_BUTTON")}</Button>
       </form>

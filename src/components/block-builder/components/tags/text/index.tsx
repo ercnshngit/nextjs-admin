@@ -8,7 +8,7 @@ export function Text({
   value: string;
 }) {
   return (
-    <div className={cn("font-bold", className)}>
+    <div className={cn("font-bold bg-red-500", className)}>
       {value || "Üzerine tıklayarak düzenleyebilirsiniz"}
     </div>
   );

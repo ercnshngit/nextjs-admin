@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function Form({ table }: { table: DatabaseTableDto }) {
+export default function CreateFormBase({ table }: { table: DatabaseTableDto }) {
   const {
     register,
     handleSubmit,

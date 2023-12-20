@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { queryClient } from "@/libs/react-query";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
-export default function Form({
+export default function UpdateFormBase({
   table,
   id,
 }: {
@@ -104,7 +104,7 @@ export default function Form({
       table={table}
       errors={errors}
       register={register}
-      formType="update"
+      formType="update_crud_option"
       id={Number(id)}
       setValue={setValue}
     />

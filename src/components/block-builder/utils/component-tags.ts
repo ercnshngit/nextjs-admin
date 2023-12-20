@@ -7,6 +7,7 @@ import { CardGrid } from "../components/tags/card-grid";
 import { Div } from "../components/tags/div";
 import Image from "../components/tags/image";
 import { RichText } from "../components/tags/richtext";
+import NumberGraphic from "../components/tags/number-graphic";
 
 export const componentTags: ComponentTagsType = {
   Text: Text,
@@ -17,4 +18,5 @@ export const componentTags: ComponentTagsType = {
   CardGrid: CardGrid,
   Div: Div,
   RichText: RichText,
+  NumberGraphic: NumberGraphic,
 };

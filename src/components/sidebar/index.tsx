@@ -28,7 +28,7 @@ export function Sidebar({ className }: { className?: string }) {
           <div className="flex flex-col space-y-1">
             <Button
               asChild
-              variant={pathname === "/block" ? "secondary" : "ghost"}
+              variant={pathname === "/dashboard/block" ? "default" : "ghost"}
               className="justify-start "
             >
               <Link
@@ -44,7 +44,7 @@ export function Sidebar({ className }: { className?: string }) {
             </Button>
             <Button
               asChild
-              variant={pathname === "/dashboard/block" ? "secondary" : "ghost"}
+              variant={pathname === "/dashboard/block" ? "default" : "ghost"}
               className="justify-start "
             >
               <Link
@@ -79,9 +79,7 @@ export function Sidebar({ className }: { className?: string }) {
                   asChild
                   key={item.name}
                   variant={
-                    pathname === "/dashboard/" + item.name
-                      ? "secondary"
-                      : "ghost"
+                    pathname === "/dashboard/" + item.name ? "default" : "ghost"
                   }
                   className="justify-start "
                 >
@@ -95,6 +93,21 @@ export function Sidebar({ className }: { className?: string }) {
                   </Link>
                 </Button>
               ))}
+            <Button
+              asChild
+              variant={pathname === "/dashboard/config" ? "default" : "ghost"}
+              className="justify-start "
+            >
+              <Link
+                href={{
+                  pathname: "/dashboard/config",
+                }}
+              >
+                <List className="w-5 h-5 mr-2" />
+
+                {translate("config")}
+              </Link>
+            </Button>
           </div>
         </div>
       </div>

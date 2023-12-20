@@ -389,6 +389,9 @@ export class TableService extends LogService {
             );
             return {
               ...column,
+              create_crud_option: column.create_crud_option,
+              read_crud_option: column.read_crud_option,
+              update_crud_option: column.update_crud_option,
               read: {
                 inputType: column.read_crud_option?.input_type,
               },

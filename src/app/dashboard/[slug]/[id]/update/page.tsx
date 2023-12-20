@@ -7,7 +7,7 @@ import { useTranslate } from "@/langs";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import React from "react";
-import Form from "./form";
+import UpdateFormBase from "../../../../../components/base-form/update-form-base";
 import { useTable } from "@/hooks/use-database";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 
@@ -56,7 +56,10 @@ export default function Update({
           </CardHeader>
           <CardContent>
             <div className="flex justify-start py-10">
-              <Form id={Number(id)} table={table as DatabaseTableDto} />
+              <UpdateFormBase
+                id={Number(id)}
+                table={table as DatabaseTableDto}
+              />
             </div>
           </CardContent>
         </Card>

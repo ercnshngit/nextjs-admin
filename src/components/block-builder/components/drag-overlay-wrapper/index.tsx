@@ -40,8 +40,9 @@ function DragOverlayWrapper() {
   }
 
   if (draggedItem.data?.current?.isComponent) {
-    const componentCode = draggedItem.data?.current?.code;
+    const componentCode = draggedItem.data?.current?.component.code;
     const component = elements.find((el) => el.code === componentCode);
+    console.log("elements", draggedItem);
     if (!component) {
       node = <div>Element not found!</div>;
     } else {
@@ -96,7 +97,7 @@ function DragOverlayWrapper() {
       };
 
       node = (
-        <div className="flex bg-accent border rounded-md w-full py-2 px-4 opacity-80 pointer pointer-events-none">
+        <div className="flex bg-white border rounded-md w-full py-2 px-4 opacity-90 min-h-[100px] pointer pointer-events-none">
           {getComponent(component)}
         </div>
       );

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import React from "react";
-import Form from "./form";
+import CreateFormBase from "../../../../components/base-form/create-form-base";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
 import { useTranslate } from "@/langs";
@@ -33,7 +33,7 @@ export default function Ekle({ params }: { params: { slug: string } }) {
       <Card className="min-h-[700px]">
         <CardContent>
           <div className="flex justify-center py-10">
-            {table && <Form table={table} />}
+            {table && <CreateFormBase table={table} />}
           </div>
         </CardContent>
       </Card>
