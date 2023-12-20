@@ -1,6 +1,4 @@
 import { GeneralService } from "@/services/general.service";
-import { ServerMessages } from "../../../../constants/messages.constants";
-import { LogService } from "@/services/log.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
@@ -29,4 +27,13 @@ export async function POST(req: NextRequest) {
         const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         return cors(req, res);
     }
+}
+
+export async function OPTIONS(request: Request) { 
+    return cors(
+      request,
+      new Response(null, {
+        status: 204,
+      })
+    );
 }

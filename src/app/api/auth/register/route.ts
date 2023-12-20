@@ -14,3 +14,12 @@ export async function POST(
     return cors(request, new Response(JSON.stringify({ status: "error", message: error })));
   }
 }
+
+export async function OPTIONS(request: Request) { 
+  return cors(
+    request,
+    new Response(null, {
+      status: 204,
+    })
+  );
+}

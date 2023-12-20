@@ -5,7 +5,6 @@ export interface ComponentPropDto {
   prop: {
     id: number;
     key: string;
-    type_id: number;
     type: TypeDto;
   };
   value: string;

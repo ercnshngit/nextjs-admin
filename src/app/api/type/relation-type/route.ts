@@ -1,18 +1,25 @@
-import { prisma } from "@/libs/prisma";
-import { LogService } from "@/services/log.service";
 import { TypeService } from "@/services/type.service";
 import cors from "@/utils/cors";
+import { NextRequest } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
+  const typesService = new TypeService();
   try {
-    const service = new TypeService();
-    const res = await service.getRelationTypes();
+    const res = await typesService.getRelationTypes();
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    const logService = new LogService();
-    await logService.createLog({ error });
+    await typesService.createLog({ error }, req.nextUrl.pathname);
     const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     return cors(req, res);
   }
+}
+
+export async function OPTIONS(request: Request) { 
+  return cors(
+    request,
+    new Response(null, {
+      status: 204,
+    })
+  );
 }

@@ -3,7 +3,7 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 import { ComponentDto, CreateComponentDto } from "./dto/component.dto";
 import { LogService } from "./log.service";
 
-export class ComponentService extends LogService{
+export class ComponentService extends LogService {
     async getComponent(id: number) {
         const component = await prisma.component.findUnique({ where: { id }, include: { type: true, tag: true, component_prop: { include: { prop: { include: { type: true } } } } } })
         if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
@@ -37,11 +37,16 @@ export class ComponentService extends LogService{
 
     async createComponent(data: CreateComponentDto) {
         try {
-            const tag = await prisma.tag.create({ data: data.tag })
+            let tag = await prisma.tag.findFirst({ where: { name: data.tag.name } })
+            if (!tag) {
+                tag = await prisma.tag.create({ data: { name: data.tag.name } })
+            }
+
             const typeCheck = await prisma.type.findUnique({ where: { id: data.type_id } })
             if (!typeCheck) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
-            const component = await prisma.component.create({ data: { name: data.name, tag_id: tag.id, type_id: data.type_id, icon: data.icon } })
-            if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
+            const component = await prisma.component.create({ data: { name: data.name, tag_id: tag.id, type_id: data.type_id, icon: data.icon }, include: { tag: true } })
+            if (!component) { return new Response(JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }), { status: 400 }); }
+
             const props = await Promise.all(
                 data.props.map(async (propItem) => {
                     let prop = await prisma.prop.findFirst({
@@ -51,7 +56,7 @@ export class ComponentService extends LogService{
                         prop = await prisma.prop.create({
                             data: {
                                 key: propItem.prop.key,
-                                type_id: propItem.prop.type_id,
+                                type_id: propItem.prop.type.id,
                             },
                         });
 
@@ -61,13 +66,13 @@ export class ComponentService extends LogService{
                             prop_id: prop.id,
                         },
                     });
-                    return { key: prop.key, value: propItem.value };
+                    return { key: prop.key };
                 })
             );
+            const { tag_id, ...result } = component;
+            const results = { ...result, props };
 
-            const result = { ...component, props };
-
-            return new Response(JSON.stringify(result));
+            return new Response(JSON.stringify(results));
         }
         catch (error) {
             const logService = new LogService();
