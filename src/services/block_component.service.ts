@@ -150,7 +150,7 @@ export class BlockComponentService extends LogService{
               prop = await prisma.prop.create({
                 data: {
                   key: propItem.prop.key,
-                  type_id: propItem.prop.type_id,
+                  type_id: propItem.prop.type.id,
                 },
               });
 
