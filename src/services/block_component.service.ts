@@ -48,7 +48,7 @@ export class BlockComponentService extends LogService {
         };
       });
 
-      return result;
+      return new Response(JSON.stringify(result));
     } catch (error) {
       const logService = new LogService();
     }
