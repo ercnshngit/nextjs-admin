@@ -5,6 +5,7 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: { id: number } }) {
+    
     const typesService = new TypeService();
     try {
         const res = await typesService.getType(Number(params.id));
