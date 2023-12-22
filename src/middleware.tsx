@@ -12,27 +12,25 @@ export async function middleware(request: any) {
 
   // api auth middleware
   if (request.nextUrl.pathname.startsWith("/api")) {
-    const response = await NextResponse.next();
-    if (request.method === "OPTIONS") {
-      response.headers.append("Access-Control-Allow-Credentials", "true");
-      response.headers.append(
-        "Access-Control-Allow-Origin",
-        "https://trakyateknopark.com.tr"
-      );
-      response.headers.append(
-        "Access-Control-Allow-Methods",
-        "GET,POST,OPTIONS"
-      );
-      response.headers.append(
-        "Access-Control-Allow-Headers",
-        "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-      );
-
-      return new Response(null, {
-        status: 204,
-      });
-    }
-
+    // const response = await NextResponse.next();
+    // if (request.method === "OPTIONS") {
+    //   response.headers.append("Access-Control-Allow-Credentials", "true");
+    //   response.headers.append(
+    //     "Access-Control-Allow-Origin",
+    //     "https://trakyateknopark.com.tr"
+    //   );
+    //   response.headers.append(
+    //     "Access-Control-Allow-Methods",
+    //     "GET,POST,OPTIONS"
+    //   );
+    //   response.headers.append(
+    //     "Access-Control-Allow-Headers",
+    //     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    //   );
+    //   return new Response(null, {
+    //     status: 204,
+    //   });
+    // }
     // if (authPassPaths.includes(path)) {
     //   // Auth'tan muaf olan apiler kontrol ediliyor.
     //   return response;
@@ -44,11 +42,9 @@ export async function middleware(request: any) {
     //   });
     // } else {
     //   response.headers.set("user_id", isAuth.user?.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
-
     //   return response;
     // }
-
-    return response;
+    // return response;
   }
   // front auth middleware
   else {
