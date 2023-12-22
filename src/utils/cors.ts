@@ -132,6 +132,11 @@ export default async function cors(
       headers.set("Access-Control-Allow-Methods", methods);
     }
 
+    headers.set(
+      "Access-Control-Allow-Headers",
+      "https://trakyateknopark.com.tr"
+    );
+
     getAllowedHeaders(req, opts.allowedHeaders).forEach(mergeHeaders);
 
     if (typeof opts.maxAge === "number") {
