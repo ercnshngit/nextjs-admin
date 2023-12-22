@@ -1,6 +1,4 @@
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
-import { LogService } from "@/services/log.service";
-import { PageComponent } from "@/types/page-component";
 
 export function createChildrenTree(
   component: BlockComponentDto,
@@ -39,8 +37,6 @@ export function createTree(
       });
       return { ...component, children: componentChildren };
     } catch (e) {
-      const logService = new LogService();
-      logService.createLog({ e });
       console.log(e);
       return;
     }
@@ -64,10 +60,11 @@ export function createStringFromElements(elements: BlockComponentDto[]) {
         console.log("dsfds", element.children);
         return `<${element.component.tag.name} ${Object.entries(props)
           .map(([key, value]) => `${key}="${value}"`)
-          .join(" ")}>${element.children && element.children.length > 0
+          .join(" ")}>${
+          element.children && element.children.length > 0
             ? createStringFromElements(element.children)
             : ""
-          }</${element.component.tag.name}>`;
+        }</${element.component.tag.name}>`;
       } else {
         return `<${element.component.tag.name} ${Object.entries(props)
           .map(([key, value]) => `${key}="${value}"`)
@@ -93,10 +90,11 @@ export function createStringFromTree(tree: BlockComponentDto[]) {
       return `<${element.component.tag.name} ${Object.entries(props)
         .map(([key, value]) => `${key}="${value}"`)
         .join(" ")
-        .trimEnd()}>\n${element.children && element.children.length > 0
+        .trimEnd()}>\n${
+        element.children && element.children.length > 0
           ? createStringFromTree(element.children)
           : ""
-        }\n</${element.component.tag.name}>`;
+      }\n</${element.component.tag.name}>`;
     } else {
       return `<${element.component.tag.name} ${Object.entries(props)
         .map(([key, value]) => `${key}="${value}"`)
