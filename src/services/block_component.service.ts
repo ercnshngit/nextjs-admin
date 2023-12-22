@@ -54,6 +54,50 @@ export class BlockComponentService extends LogService {
     }
   }
 
+  async getBlockComponentBySlug(block_slug: string) {
+    try {
+      const blockComponent = await prisma.block_component.findMany({
+        where: { block: { slug: block_slug } },
+        include: {
+          component: {
+            include: {
+              tag: true,
+              type: true,
+            },
+          },
+          block: true,
+          block_component_prop: {
+            include: {
+              prop: { include: { type: true } },
+            },
+          },
+        },
+      });
+
+      const result = blockComponent.map((item) => {
+        const block_component_prop = item.block_component_prop.map(
+          (propItem) => {
+            return { prop: propItem.prop, value: propItem.value };
+          }
+        );
+        return {
+          component: item.component,
+          block: item.block,
+          belong_block_component_code: item.belong_block_component_code,
+          depth: item.depth,
+          order: item.order,
+          code: item.code,
+          hasChildren: item.hasChildren,
+          props: block_component_prop,
+        };
+      });
+
+      return new Response(JSON.stringify(result));
+    } catch (error) {
+      const logService = new LogService();
+    }
+  }
+
   async getBlockComponents() {
     try {
       let components: any = [];

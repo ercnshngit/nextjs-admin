@@ -156,9 +156,16 @@ model general {
 }
 
 model block {
-  id      Int    @id @default(autoincrement())
-  title   String
-  type_id Int
+  id                   Int       @id @default(autoincrement())
+  title                String
+  type_id              Int
+  slug                 String    @default("todo")
+  status               Int       @default(0)
+  background_image_url String?   @db.Text
+  image_url            String?   @db.Text
+  created_at           DateTime  @default(now())
+  updated_at           DateTime? @default(now()) @updatedAt
+  description          String?   @db.Text
 
   type type? @relation("fk_bk_type_id", fields: [type_id], references: [id], map: "fk_bk_type_id") //many to one
 

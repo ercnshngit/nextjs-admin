@@ -23,13 +23,13 @@ export default function Designer() {
 
   const [tree, setTree] = useState<BlockComponentDto[]>([]);
   const [hoveredElement, setHoveredElement] = useState<string[]>([]);
-  const [jsx, setJsx] = useState<string>("");
+  // const [jsx, setJsx] = useState<string>("");
 
   useEffect(() => {
     const elementTree = createTree(elements);
     if (!elementTree) return;
     setTree(elementTree);
-    setJsx(createStringFromTree(elementTree));
+    // setJsx(createStringFromTree(elementTree));
   }, [elements]);
 
   const droppable = useDroppable({
@@ -128,43 +128,43 @@ export default function Designer() {
           if (selectedElement) setSelectedElement(null);
         }}
       >
-        {mode === "html" ? (
-          <ElementsHtml setElements={setElements} jsx={jsx} setJsx={setJsx} />
-        ) : (
-          <div
-            ref={droppable.setNodeRef}
-            className={cn(
-              "bg-background h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
-              droppable.isOver && "ring-4 ring-primary ring-inset"
-            )}
-          >
-            {!droppable.isOver && elements.length === 0 && (
-              <p className="flex items-center flex-grow text-3xl font-bold text-muted-foreground">
-                Buraya bırakın
-              </p>
-            )}
+        {/* {mode === "html" ? (
+          // <ElementsHtml setElements={setElements} jsx={jsx} setJsx={setJsx} />
+        ) : ( */}
+        <div
+          ref={droppable.setNodeRef}
+          className={cn(
+            "bg-background h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
+            droppable.isOver && "ring-4 ring-primary ring-inset"
+          )}
+        >
+          {!droppable.isOver && elements.length === 0 && (
+            <p className="flex items-center flex-grow text-3xl font-bold text-muted-foreground">
+              Buraya bırakın
+            </p>
+          )}
 
-            {droppable.isOver && elements.length === 0 && (
-              <div className="w-full p-4">
-                <div className="h-[120px] rounded-md bg-primary/20"></div>
-              </div>
-            )}
-            {elements.length > 0 && (
-              <div className="flex flex-col w-full gap-2 p-4">
-                {tree.map((component) => {
-                  if (component.component.tag.name in componentTags) {
-                    return mode === "preview"
-                      ? renderPreview(component)
-                      : mode === "ui"
-                      ? renderComponentWrapper(component)
-                      : null;
-                  }
-                  return renderUnsupported(component);
-                })}
-              </div>
-            )}
-          </div>
-        )}
+          {droppable.isOver && elements.length === 0 && (
+            <div className="w-full p-4">
+              <div className="h-[120px] rounded-md bg-primary/20"></div>
+            </div>
+          )}
+          {elements.length > 0 && (
+            <div className="flex flex-col w-full gap-2 p-4">
+              {tree.map((component) => {
+                if (component.component.tag.name in componentTags) {
+                  return mode === "preview"
+                    ? renderPreview(component)
+                    : mode === "ui"
+                    ? renderComponentWrapper(component)
+                    : null;
+                }
+                return renderUnsupported(component);
+              })}
+            </div>
+          )}
+        </div>
+        {/* )} */}
       </div>
     </div>
   );

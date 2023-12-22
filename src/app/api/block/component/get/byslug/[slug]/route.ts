@@ -1,15 +1,15 @@
+import { NextRequest } from "next/server";
 import { BlockComponentService } from "@/services/block_component.service";
 import cors from "@/utils/cors";
-import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: number } }
+  { params }: { params: { slug: string } }
 ) {
   const blockComponentService = new BlockComponentService();
   try {
-    const res = await blockComponentService.getBlockComponent(
-      Number(params.id)
+    const res = await blockComponentService.getBlockComponentBySlug(
+      params.slug
     );
     if (!res)
       return new Response(
