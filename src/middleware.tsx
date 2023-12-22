@@ -8,7 +8,6 @@ const isAuthPages = (url: string) =>
 const authPassPaths = ["/api/auth/login", "/api/auth/register"];
 
 export async function middleware(request: any) {
-  console.log(request.nextUrl.pathname);
   const path = request.nextUrl.pathname;
 
   // api auth middleware
@@ -34,8 +33,7 @@ export async function middleware(request: any) {
         status: 401,
       });
     } else {
-      request.headers.user_id = isAuth.user.id; // request'e user_id ekleniyor. headers'a eklenmesinin sebebi, request'in her yerinde kullanılabilmesi.
-      response.headers.set("user_id", isAuth.user.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
+      response.headers.set("user_id", isAuth.user?.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
 
       return response;
     }
