@@ -5,39 +5,42 @@ import { isAuthenticated } from "./services/auth/authenticator";
 const isAuthPages = (url: string) =>
   url === "/" || url.startsWith("/?") || url.startsWith("/register");
 
-const authPassPaths = [
-  "/api/auth/login",
-  "/api/auth/register",
-];
+const authPassPaths = ["/api/auth/login", "/api/auth/register"];
 
 export async function middleware(request: any) {
-  console.log(request.nextUrl.pathname)
+  console.log(request.nextUrl.pathname);
   const path = request.nextUrl.pathname;
 
   // api auth middleware
-  if (request.nextUrl.pathname.startsWith('/api')) {
+  if (request.nextUrl.pathname.startsWith("/api")) {
     const response = await NextResponse.next();
-    response.headers.append('Access-Control-Allow-Credentials', "true")
-    response.headers.append('Access-Control-Allow-Origin', '*')
-    response.headers.append('Access-Control-Allow-Methods', 'GET,POST')
+    response.headers.append("Access-Control-Allow-Credentials", "true");
     response.headers.append(
-      'Access-Control-Allow-Headers',
-      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    )
-    if (authPassPaths.includes(path)) { // Auth'tan muaf olan apiler kontrol ediliyor.
+      "Access-Control-Allow-Origin",
+      "https://trakyateknopark.com.tr"
+    );
+    response.headers.append("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    response.headers.append(
+      "Access-Control-Allow-Headers",
+      "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    );
+    if (authPassPaths.includes(path)) {
+      // Auth'tan muaf olan apiler kontrol ediliyor.
       return response;
     }
     const isAuth = await isAuthenticated(request);
     if (!isAuth.status) {
-      return new Response(JSON.stringify({ error: isAuth.message }), { status: 401 });
+      return new Response(JSON.stringify({ error: isAuth.message }), {
+        status: 401,
+      });
     } else {
-      request.headers.user_id = isAuth.user.id;  // request'e user_id ekleniyor. headers'a eklenmesinin sebebi, request'in her yerinde kullanılabilmesi.
-      response.headers.set('user_id', isAuth.user.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
+      request.headers.user_id = isAuth.user.id; // request'e user_id ekleniyor. headers'a eklenmesinin sebebi, request'in her yerinde kullanılabilmesi.
+      response.headers.set("user_id", isAuth.user.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
 
       return response;
     }
   }
-  // front auth middleware 
+  // front auth middleware
   else {
     const { url, nextUrl, cookies } = request;
     const { value: token } = cookies.get("token") ?? { value: null };
