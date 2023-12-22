@@ -1,50 +1,50 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyJwtToken } from "@/libs/jose";
 import { isAuthenticated } from "./services/auth/authenticator";
+import cors from "./utils/cors";
 
 const isAuthPages = (url: string) =>
   url === "/" || url.startsWith("/?") || url.startsWith("/register");
 
-const authPassPaths = ["/api/auth/login", "/api/auth/register"];
+const authPassPaths = [
+  "/api/auth/login",
+  "/api/auth/register",
+  "/api/block",
+  "/api/menu",
+  "/api/generals",
+];
 
 export async function middleware(request: any) {
   const path = request.nextUrl.pathname;
 
   // api auth middleware
   if (request.nextUrl.pathname.startsWith("/api")) {
-    // const response = await NextResponse.next();
-    // if (request.method === "OPTIONS") {
-    //   response.headers.append("Access-Control-Allow-Credentials", "true");
-    //   response.headers.append(
-    //     "Access-Control-Allow-Origin",
-    //     "https://trakyateknopark.com.tr"
-    //   );
-    //   response.headers.append(
-    //     "Access-Control-Allow-Methods",
-    //     "GET,POST,OPTIONS"
-    //   );
-    //   response.headers.append(
-    //     "Access-Control-Allow-Headers",
-    //     "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
-    //   );
-    //   return new Response(null, {
-    //     status: 204,
-    //   });
-    // }
-    // if (authPassPaths.includes(path)) {
-    //   // Auth'tan muaf olan apiler kontrol ediliyor.
-    //   return response;
-    // }
-    // const isAuth = await isAuthenticated(request);
-    // if (!isAuth.status) {
-    //   return new Response(JSON.stringify({ error: isAuth.message }), {
-    //     status: 401,
-    //   });
-    // } else {
-    //   response.headers.set("user_id", isAuth.user?.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
-    //   return response;
-    // }
-    // return response;
+    const response = await NextResponse.next();
+    if (request.method === "OPTIONS") {
+      return cors(
+        request,
+        new Response(null, {
+          status: 204,
+        })
+      );
+    }
+    if (authPassPaths.includes("/api/" + path.split("/")[2])) {
+      //Geçici koruma, önyüzde getleri alabilmem lazım tabi auth patlamış olabilir
+      if (request.method === "GET") {
+        // Auth'tan muaf olan apiler kontrol ediliyor.
+        return response;
+      }
+    }
+    const isAuth = await isAuthenticated(request);
+    if (!isAuth.status) {
+      return new Response(JSON.stringify({ error: isAuth.message }), {
+        status: 401,
+      });
+    } else {
+      response.headers.set("user_id", isAuth.user?.id); // response'a user_id ekleniyor. headers'a eklenmesinin sebebi, response'un her yerinde kullanılabilmesi.
+      return response;
+    }
+    return response;
   }
   // front auth middleware
   else {

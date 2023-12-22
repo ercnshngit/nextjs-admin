@@ -3,26 +3,23 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(
-    req: NextRequest,
-    { params }: { params: { type_id: string, id: number } }
+  req: NextRequest,
+  { params }: { params: { type_id: string; id: number } }
 ) {
-    const menuService = new MenuService()
-    try {
-        const res = await menuService.getMenuByTypeAndId(Number(params.type_id), Number(params.id))
-        return cors(req, res);
-    } catch (error) {
-        console.log(error)
-        await menuService.createLog({ error }, req.nextUrl.pathname);
-        const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-        return cors(req, res);
-    }
-}
-
-export async function OPTIONS(request: Request) { 
-    return cors(
-      request,
-      new Response(null, {
-        status: 204,
-      })
+  const menuService = new MenuService();
+  try {
+    const res = await menuService.getMenuByTypeAndId(
+      Number(params.type_id),
+      Number(params.id)
     );
+    return cors(req, res);
+  } catch (error) {
+    console.log(error);
+    await menuService.createLog({ error }, req.nextUrl.pathname);
+    const res = new Response(
+      JSON.stringify({ status: "error", message: error }),
+      { status: 500 }
+    );
+    return cors(req, res);
+  }
 }
