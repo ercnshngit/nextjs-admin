@@ -52,7 +52,7 @@ export default function IconSelect({
           <CommandEmpty>No framework found.</CommandEmpty>
           <CommandGroup className="h-60 overflow-y-auto">
             {iconNames.map((icon) => {
-              const Icon = icons[icon];
+              const Icon = icons[icon as keyof typeof icons];
 
               return (
                 <CommandItem
