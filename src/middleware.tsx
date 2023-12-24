@@ -28,12 +28,10 @@ export async function middleware(request: any) {
         })
       );
     }
-    if (authPassPaths.includes("/api/" + path.split("/")[2])) {
+    if (true) {
       //Geçici koruma, önyüzde getleri alabilmem lazım tabi auth patlamış olabilir
-      if (request.method === "GET") {
-        // Auth'tan muaf olan apiler kontrol ediliyor.
-        return response;
-      }
+      // Auth'tan muaf olan apiler kontrol ediliyor.
+      return response;
     }
     const isAuth = await isAuthenticated(request);
     if (!isAuth.status) {

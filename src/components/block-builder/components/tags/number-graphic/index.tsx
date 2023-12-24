@@ -8,10 +8,7 @@ export default function NumberGraphic({
 }: {
   preTitle: string;
   title: string;
-  numbers: {
-    title: string;
-    value: string;
-  }[];
+  numbers: string;
 }) {
   return (
     <div className="w-full bg-red-500 py-20 lg:py-2">
@@ -24,24 +21,26 @@ export default function NumberGraphic({
 
       <div className="grid grid-cols-2 items-start gap-2 lg:grid-cols-4 lg:gap-24">
         {numbers && Array.isArray(JSON.parse(numbers)) ? (
-          JSON.parse(numbers).map((number) => {
-            return (
-              <div
-                key={number.title}
-                className="flex flex-col justify-center text-white lg:items-center lg:gap-2"
-              >
-                <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-medium lg:text-5xl">
-                    {number.value}
+          JSON.parse(numbers).map(
+            (number: { title: string; value: string }) => {
+              return (
+                <div
+                  key={number.title}
+                  className="flex flex-col justify-center text-white lg:items-center lg:gap-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-2xl font-medium lg:text-5xl">
+                      {number.value}
+                    </h1>
+                    <NumbersPlus color="#A1C1FA" />
+                  </div>
+                  <h1 className="whitespace-nowrap text-[10px] font-light lg:text-base">
+                    {number.title}
                   </h1>
-                  <NumbersPlus color="#A1C1FA" />
                 </div>
-                <h1 className="whitespace-nowrap text-[10px] font-light lg:text-base">
-                  {number.title}
-                </h1>
-              </div>
-            );
-          })
+              );
+            }
+          )
         ) : (
           <div>{JSON.stringify(numbers)}</div>
         )}

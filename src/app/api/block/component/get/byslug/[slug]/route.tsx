@@ -1,7 +1,8 @@
+"use client";
 import { NextRequest } from "next/server";
 import { BlockComponentService } from "@/services/block_component.service";
 import cors from "@/utils/cors";
-
+import { renderToString } from "react-dom/server";
 export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
@@ -11,6 +12,11 @@ export async function GET(
     const res = await blockComponentService.getBlockComponentBySlug(
       params.slug
     );
+    const html = renderToString(<div>selam</div>);
+    return new Response(html, {
+      headers: { "content-type": "text/html" },
+      status: 200,
+    });
     if (!res)
       return new Response(
         JSON.stringify({ status: "error", message: "Not found" }),
