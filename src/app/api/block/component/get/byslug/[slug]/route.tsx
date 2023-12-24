@@ -12,11 +12,7 @@ export async function GET(
     const res = await blockComponentService.getBlockComponentBySlug(
       params.slug
     );
-    const html = renderToString(<div>selam</div>);
-    return new Response(html, {
-      headers: { "content-type": "text/html" },
-      status: 200,
-    });
+
     if (!res)
       return new Response(
         JSON.stringify({ status: "error", message: "Not found" }),
