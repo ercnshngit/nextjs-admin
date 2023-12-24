@@ -6,17 +6,60 @@ import cors from "./utils/cors";
 const isAuthPages = (url: string) =>
   url === "/" || url.startsWith("/?") || url.startsWith("/register");
 
+const PARAM = "param"; // tek bir yerden tanımlanıp kontrol edilmesi amacıyla yapıldı. Eğer path içerisinde parametre varsa, bu değişken ile kontrol edilecek.
 const authPassPaths = [
-  "/api/auth/login",
-  "/api/auth/register",
-  "/api/block",
-  "/api/menu",
-  "/api/generals",
+  { path: "/api/auth/login", method: "POST", hasParams: false },
+  { path: "/api/auth/register", method: "POST", hasParams: false },
+  { path: "/api/block", method: "GET", hasParams: false },
+  { path: "/api/menu", method: "GET", hasParams: false },
+  { path: "/api/generals", method: "GET", hasParams: false },
+  { path: `/api/block/component/get/${PARAM}`, method: "GET", hasParams: true },
+  {
+    path: `/api/table/${PARAM}/update/${PARAM}`,
+    method: "GET",
+    hasParams: true,
+  },
 ];
+
+function isPathHasAuthPass(path: string, request: any): boolean {
+  let isTrue = false;
+  authPassPaths.forEach((authPassPath) => {
+    if (authPassPath.hasParams) {
+      const pathSplit = path.split("/");
+      const authPassPathSplit = authPassPath.path.split("/");
+      if (pathSplit.length === authPassPathSplit.length) {
+        // pathlerin parçalanmıs hallerının eleman mıtkarı kontrol edılıyor
+        let isSame = true;
+        for (let i = 0; i < pathSplit.length; i++) {
+          // pathlerin her bir elemanı kontrol ediliyor
+          if (authPassPathSplit[i] === PARAM) {
+            // eğer parametreyse kontrol edilmiyor VE BU SEKILDE o / x / arasındakı parametre degerıde pass gecılıyor
+            continue;
+          }
+          if (pathSplit[i] !== authPassPathSplit[i]) {
+            // eğer parametre değilse ve pathlerin elemanları eşit değilse false dönüyor
+            isSame = false;
+            break;
+          }
+        }
+        if (isSame && authPassPath.method === request.method) {
+          // eğer pathlerin elemanları eşitse ve parametre değilse true dönüyor
+          isTrue = true;
+        }
+      }
+    }
+    if (path.includes(authPassPath.path)) {
+      // eğer pathlerin parçalanmıs hallerının eleman mıtkarı eşit değilse ve pathlerin içerisinde authPassPath varsa true dönüyor
+      if (authPassPath.method === request.method) {
+        isTrue = true;
+      }
+    }
+  });
+  return isTrue;
+}
 
 export async function middleware(request: any) {
   const path = request.nextUrl.pathname;
-
   // api auth middleware
   if (request.nextUrl.pathname.startsWith("/api")) {
     const response = await NextResponse.next();
@@ -28,9 +71,8 @@ export async function middleware(request: any) {
         })
       );
     }
-    if (true) {
-      //Geçici koruma, önyüzde getleri alabilmem lazım tabi auth patlamış olabilir
-      // Auth'tan muaf olan apiler kontrol ediliyor.
+    if (isPathHasAuthPass(path, request)) {
+      console.log("auth pass başarılı");
       return response;
     }
     const isAuth = await isAuthenticated(request);
