@@ -458,9 +458,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_CREATE_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_NOT_VISIBLE_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -488,9 +486,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_REQUIRED_IN_CREATE_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -509,9 +505,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_READONLY_IN_CREATE_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_READONLY_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -594,9 +588,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_READ_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_NOT_VISIBLE_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -624,9 +616,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_REQUIRED_IN_READ_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -645,9 +635,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_READONLY_IN_READ_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_READONLY_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -727,9 +715,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_UPDATE_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_NOT_VISIBLE_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -748,9 +734,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_REQUIRED_IN_UPDATE_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>
@@ -769,9 +753,7 @@ export default function TableConfig({
                       <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
                         <div className="space-y-0.5">
                           <FormLabel>
-                            {translate(
-                              "CONFIG_IS_COLUMN_READONLY_IN_UPDATE_TITLE"
-                            )}
+                            {translate("CONFIG_IS_COLUMN_READONLY_TITLE")}
                           </FormLabel>
                         </div>
                         <FormControl>

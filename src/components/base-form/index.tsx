@@ -65,7 +65,6 @@ export default function BaseForm(props: {
                   setValue={setValue}
                   customInput={customInput}
                   control={control}
-                  defaultValue={""}
                 />
               ))}
 
@@ -122,36 +121,38 @@ export default function BaseForm(props: {
       getTableItem({ tableName: table.name, id: Number(id) })
     );
 
-    console.log("default values in updatefdorm", data);
     return (
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-wrap w-full gap-4"
       >
-        {table?.columns &&
-          data &&
-          table.columns
-            .filter((field) =>
+        {data &&
+          table?.columns
+            ?.filter((field) =>
               field.update_crud_option?.is_hidden || field.is_hidden
                 ? false
                 : true
             )
-            .map((field) => (
-              <FormInputFactory
-                key={field.name}
-                formType={formType}
-                errors={errors}
-                field={field}
-                register={register}
-                table={table}
-                id={id}
-                setValue={setValue}
-                defaultValue={data[field.name] || ""}
-                customInput={customInput}
-                watch={watch}
-                control={control}
-              />
-            ))}
+            .map((field) => {
+              console.log("data", data);
+
+              return (
+                <FormInputFactory
+                  key={field.name}
+                  formType={formType}
+                  errors={errors}
+                  field={field}
+                  register={register}
+                  table={table}
+                  id={id}
+                  setValue={setValue}
+                  defaultValue={data[0][field.name] || field.name}
+                  customInput={customInput}
+                  watch={watch}
+                  control={control}
+                />
+              );
+            })}
 
         <button
           type="submit"

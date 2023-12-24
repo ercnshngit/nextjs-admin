@@ -58,7 +58,7 @@ export default function Pill({
               )
             : column.column_relations[0].relation_type.name ===
                 "one-to-many" && (
-                <div>
+                <div className="px-2 py-1 text-xs bg-red-300 rounded-full">
                   {valueItem?.name ||
                     valueItem?.title ||
                     valueItem?.key ||

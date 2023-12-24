@@ -138,13 +138,11 @@ const COLORS = [
 ];
 
 export default function RichTextEditor({
-  blockComponent,
-  blockComponentProp,
+  key,
   value,
   setValue,
 }: {
-  blockComponent: BlockComponentDto;
-  blockComponentProp: ComponentPropDto;
+  key: string;
   value: any;
   setValue: any;
 }) {

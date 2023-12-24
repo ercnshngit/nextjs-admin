@@ -9,11 +9,11 @@ import React from "react";
 import { toast } from "react-toastify";
 
 export default function ImagePickerInput({
-  blockComponentProp,
+  key,
   value,
   setValue,
 }: {
-  blockComponentProp: ComponentPropDto;
+  key: string;
   value: any;
   setValue: any;
 }) {
@@ -50,11 +50,11 @@ export default function ImagePickerInput({
     <>
       <input
         className="px-2 py-1 border border-gray-200 rounded-md "
-        id={blockComponentProp.prop.key}
+        id={key}
         value={value}
       />
       <Button
-        className="w-fit"
+        className="w-fit ml-2"
         type={"button"}
         onClick={() => setMediaPickerOpen(true)}
         variant={"secondary"}

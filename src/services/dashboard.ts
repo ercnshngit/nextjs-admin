@@ -28,6 +28,11 @@ export const createComponentsInBlock = async ({ data }: any) => {
   return res;
 };
 
+export const createComponent = async ({ data }: any) => {
+  const res = await axiosClient.post("/component", data);
+  return res;
+};
+
 export const createTableConfig = async ({
   table_name,
 }: {
@@ -167,6 +172,14 @@ export const deleteTableItem = async ({
 export const createCrudOption = async (column_id: number, data: any) => {
   const { data: responseData } = await axiosClient.post(
     "/crud-option/create/" + column_id,
+    data
+  );
+  return responseData;
+};
+
+export const updateBlock = async (id: number, data: any) => {
+  const { data: responseData } = await axiosClient.post(
+    "/block/get/" + id,
     data
   );
   return responseData;

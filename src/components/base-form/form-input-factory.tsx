@@ -20,7 +20,7 @@ type FormInputFactoryProps =
       table: DatabaseTableDto;
       register: UseFormRegister<any>;
       errors: FieldErrors;
-      formType: "create_crud_option" | "update_crud_option";
+      formType: "create_crud_option";
       id?: number;
       setValue: any;
       watch?: any;

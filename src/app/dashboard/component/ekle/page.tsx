@@ -21,13 +21,19 @@ import {
 } from "@/components/ui/select";
 import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
-import { getTable, getTypes } from "@/services/dashboard";
+import {
+  createComponent,
+  createComponentsInBlock,
+  getTable,
+  getTypes,
+} from "@/services/dashboard";
 import { TypeDto } from "@/services/dto/type.dto";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@tanstack/react-query";
-import { PlusCircle } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { PlusCircle, Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function AddComponentPage() {
   const { table } = useTable("component");
@@ -39,6 +45,19 @@ export default function AddComponentPage() {
   );
   const { data: propTypes } = useQuery<TypeDto[]>(["propTypes"], () =>
     getTypes("prop")
+  );
+
+  const componentMutation = useMutation(
+    (data: any) => {
+      return createComponent({
+        data: data,
+      });
+    },
+    {
+      onSuccess: () => {
+        toast.success("Bileşen oluşturuldu");
+      },
+    }
   );
 
   const initialValues = {
@@ -78,7 +97,26 @@ export default function AddComponentPage() {
     }[];
   };
 
-  const onSubmit = (data: DefaultValues) => console.log("data", data);
+  const onSubmit = (data: DefaultValues) => {
+    componentMutation.mutate({
+      name: data.name,
+      tag: {
+        name: data.tag.name,
+      },
+      type_id: Number(data.type_id),
+      icon: data.icon,
+      props: data.props.map((prop) => ({
+        prop: {
+          key: prop.key,
+          type_id: Number(prop.type_id),
+          type: {
+            id: Number(prop.type_id),
+          },
+          value: "",
+        },
+      })),
+    });
+  };
 
   return (
     <div className="container py-10 mx-auto">
@@ -134,12 +172,10 @@ export default function AddComponentPage() {
                   control={form.control}
                   name={"icon"}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex-col flex ">
                       <FormLabel>Icon</FormLabel>
 
-                      <FormControl>
-                        <IconSelect form={form} field={field} />
-                      </FormControl>
+                      <IconSelect form={form} field={field} />
                       <FormMessage />
                     </FormItem>
                   )}
@@ -181,7 +217,7 @@ export default function AddComponentPage() {
                           control={form.control}
                           name={`props.${index}.key`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <FormControl>
                                 <Input placeholder="" {...field} />
                               </FormControl>
@@ -193,7 +229,7 @@ export default function AddComponentPage() {
                           control={form.control}
                           name={`props.${index}.type_id`}
                           render={({ field }) => (
-                            <FormItem>
+                            <FormItem className="w-full">
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={String(field.value)}
@@ -221,23 +257,27 @@ export default function AddComponentPage() {
 
                         <Button
                           type="button"
-                          variant={"secondary"}
+                          variant={"destructive"}
                           onClick={() => remove(index)}
                         >
-                          Delete
+                          <Trash2Icon className="w-4 h-4" />
                         </Button>
                       </li>
                     );
                   })}
                 </ul>
                 <Button
-                  className="mt-2 flex items-center"
+                  className="mt-2 flex items-center bg-green-500 hover:bg-green-600"
                   variant={"default"}
                   type="button"
                   onClick={() => append({ key: "", type_id: 0 })}
                 >
                   <PlusCircle className="w-4 h-4 mr-2" />
                   Append
+                </Button>
+
+                <Button className="mt-10" variant={"default"}>
+                  Create
                 </Button>
               </form>
             </Form>

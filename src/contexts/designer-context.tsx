@@ -1,6 +1,6 @@
 "use client";
+import { BlockDto } from "@/services/dto/block.dto";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
-import { PageComponent } from "@/types/page-component";
 import {
   Dispatch,
   ReactNode,
@@ -19,8 +19,11 @@ type DesignerContextType = {
   setMode: Dispatch<SetStateAction<"ui" | "html" | "preview">>;
   selectedElement: BlockComponentDto | null;
   setSelectedElement: Dispatch<SetStateAction<BlockComponentDto | null>>;
-
+  block: BlockDto | null;
+  setBlock: Dispatch<SetStateAction<BlockDto | null>>;
   updateElement: (code: string, element: BlockComponentDto) => void;
+  updateBlockData: Partial<BlockDto> | null;
+  setUpdateBlockData: Dispatch<SetStateAction<Partial<BlockDto> | null>>;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
@@ -30,6 +33,9 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [selectedElement, setSelectedElement] =
     useState<BlockComponentDto | null>(null);
   const [mode, setMode] = useState<"html" | "preview" | "ui">("ui");
+  const [block, setBlock] = useState<BlockDto | null>(null);
+  const [updateBlockData, setUpdateBlockData] =
+    useState<Partial<BlockDto> | null>(null);
 
   const addElement = (index: number, element: BlockComponentDto) => {
     setElements((prev) => {
@@ -57,6 +63,8 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
   return (
     <DesignerContext.Provider
       value={{
+        updateBlockData,
+        setUpdateBlockData,
         elements,
         setElements,
         addElement,
@@ -65,7 +73,8 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
         setMode,
         selectedElement,
         setSelectedElement,
-
+        block,
+        setBlock,
         updateElement,
       }}
     >

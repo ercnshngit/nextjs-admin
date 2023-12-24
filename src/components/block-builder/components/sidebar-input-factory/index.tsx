@@ -22,13 +22,14 @@ type SidebarInputFactoryProps = {
 
 export default function SidebarInputFactory({
   customInput,
+  blockComponentProp,
   ...props
 }: SidebarInputFactoryProps) {
   const { translate } = useTranslate();
 
   if (customInput) {
     const CustomInputItem = customInput.find(
-      (item) => item.for === props.blockComponentProp.prop.key
+      (item) => item.for === blockComponentProp.prop.key
     )?.component;
     if (CustomInputItem) {
       return <CustomInputItem {...props} />;
@@ -36,26 +37,26 @@ export default function SidebarInputFactory({
   }
 
   const getInputComponent = () => {
-    switch (props.blockComponentProp.prop.type.name) {
+    switch (blockComponentProp.prop.type.name) {
       case "text":
-        return <TextInput {...props} />;
+        return <TextInput key={blockComponentProp.prop.key} {...props} />;
       case "image":
-        return <ImagePickerInput {...props} />;
+        return (
+          <ImagePickerInput key={blockComponentProp.prop.key} {...props} />
+        );
       case "richtext":
-        return <RichTextEditor {...props} />;
+        return <RichTextEditor key={blockComponentProp.prop.key} {...props} />;
       default:
-        return <TextInput {...props} />;
+        return <TextInput key={blockComponentProp.prop.key} {...props} />;
     }
   };
 
   return (
     <div className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200">
-      <Label htmlFor={props.blockComponentProp.prop.key}>
-        {translate(props.blockComponentProp.prop.key)}
+      <Label htmlFor={blockComponentProp.prop.key}>
+        {translate(blockComponentProp.prop.key)}
       </Label>
-      <p className="text-xs text-gray-400">
-        {props.blockComponentProp.prop.key}
-      </p>
+      <p className="text-xs text-gray-400">{blockComponentProp.prop.key}</p>
       {getInputComponent()}
     </div>
   );

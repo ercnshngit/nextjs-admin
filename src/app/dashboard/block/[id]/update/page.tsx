@@ -11,7 +11,9 @@ import {
   getBlock,
   getBlockComponents,
   getComponents,
+  updateBlock,
 } from "@/services/dashboard";
+import { BlockDto } from "@/services/dto/block.dto";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
@@ -26,7 +28,7 @@ export default function BuilderPage({
     id: string;
   };
 }) {
-  const { elements, setElements } = useDesigner();
+  const { elements, setElements, setBlock, updateBlockData } = useDesigner();
   const router = useRouter();
   const { data: block_components } = useQuery(
     ["block_components", params.id],
@@ -48,6 +50,17 @@ export default function BuilderPage({
         console.log(JSON.stringify(data));
         toast.success("Blok başarıyla güncellendi");
         await queryClient.invalidateQueries(["block_components", params.id]);
+      },
+    }
+  );
+
+  const updateBlockMutation = useMutation(
+    () => updateBlock(Number(params.id), updateBlockData),
+    {
+      onSuccess: async (data) => {
+        console.log(JSON.stringify(data));
+        toast.success("Blok başarıyla güncellendi");
+        await queryClient.invalidateQueries(["block", params.id]);
       },
     }
   );
@@ -87,7 +100,13 @@ export default function BuilderPage({
     };
 
     await createBlocks.mutate(data);
+    await updateBlockMutation.mutate();
   };
+
+  useEffect(() => {
+    const newBlock = block || null;
+    setBlock(newBlock);
+  }, [block]);
 
   return (
     <div
@@ -103,11 +122,9 @@ export default function BuilderPage({
               <ArrowLeftCircleIcon className="w-5 h-5" />
             </Button>
             <div className="">
-              <input
-                value={blockName}
-                onChange={(e) => setBlockName(e.target.value)}
-                className="text-lg font-bold text-white bg-transparent border-none"
-              />
+              <h1 className="text-lg font-bold text-white bg-transparent border-none">
+                {blockName}
+              </h1>
             </div>
           </div>
           <div className="flex items-center space-x-2">

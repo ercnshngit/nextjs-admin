@@ -19,6 +19,7 @@ export default function Designer() {
     removeElement,
     setElements,
     mode,
+    setBlock,
   } = useDesigner();
 
   const [tree, setTree] = useState<BlockComponentDto[]>([]);

@@ -8,12 +8,19 @@ import Link from "next/link";
 import { useConfigs, useDatabase } from "@/hooks/use-database";
 import { useQuery } from "@tanstack/react-query";
 import { getTable, getTypes } from "@/services/dashboard";
+import { TypeDto } from "@/services/dto/type.dto";
+import useSearchParams from "@/hooks/use-search-params";
 
 export function Sidebar({ className }: { className?: string }) {
   const { translate } = useTranslate();
 
   const pathname = usePathname();
+  const { getQueryString } = useSearchParams();
   const { configs, error } = useConfigs();
+
+  const { data: blockTypes } = useQuery<TypeDto[]>(["block_types"], () =>
+    getTypes("block")
+  );
 
   return (
     <div className={cn("pb-12", className)}>
@@ -26,38 +33,30 @@ export function Sidebar({ className }: { className?: string }) {
             Tablolar
           </h2>
           <div className="flex flex-col space-y-1">
-            <Button
-              asChild
-              variant={pathname === "/dashboard/block" ? "default" : "ghost"}
-              className="justify-start "
-            >
-              <Link
-                href={{
-                  pathname: "/dashboard/block",
-                  query: { filterBy: "type_id", filterValue: 10 },
-                }}
+            {blockTypes?.map((item) => (
+              <Button
+                key={item.id}
+                asChild
+                variant={
+                  getQueryString("filterValue") === String(item.id)
+                    ? "default"
+                    : "ghost"
+                }
+                className="justify-start "
               >
-                <List className="w-5 h-5 mr-2" />
+                <Link
+                  href={{
+                    pathname: "/dashboard/block",
+                    query: { filterBy: "type_id", filterValue: item.id },
+                  }}
+                >
+                  <List className="w-5 h-5 mr-2" />
 
-                {translate("page")}
-              </Link>
-            </Button>
-            <Button
-              asChild
-              variant={pathname === "/dashboard/block" ? "default" : "ghost"}
-              className="justify-start "
-            >
-              <Link
-                href={{
-                  pathname: "/dashboard/block",
-                  query: { filterBy: "type_id", filterValue: 3 },
-                }}
-              >
-                <List className="w-5 h-5 mr-2" />
+                  {translate(item.name)}
+                </Link>
+              </Button>
+            ))}
 
-                {translate("slider")}
-              </Link>
-            </Button>
             <Button
               asChild
               variant={

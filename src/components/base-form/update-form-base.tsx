@@ -33,7 +33,11 @@ export default function UpdateFormBase({
   const router = useRouter();
   const updateMutation = useMutation(
     (data: UPDATE_TABLE_ITEM) =>
-      updateTableItem({ tableName: table.name!, id: id, data: data }),
+      updateTableItem({
+        tableName: table.name!,
+        id: id,
+        data: Object.entries(data).map(([key, value]) => ({ key, value })),
+      }),
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries({
@@ -50,7 +54,7 @@ export default function UpdateFormBase({
       updateTableItem({
         tableName: data.tableName,
         id: data.id,
-        data: data.data,
+        data: Object.entries(data).map(([key, value]) => ({ key, value })),
       }),
     {
       onSuccess: async () => {
@@ -71,17 +75,17 @@ export default function UpdateFormBase({
         (key: any) => key.split("/")[0] === "relation"
       );
 
-      relationData.forEach((relation) => {
-        const relationTableName = relation.split("/")[1];
-        const relationTableItemId = Number(relation.split("/")[2]);
-        const relationTableData = data[relation];
-        const relationTableColumnName = relation.split("/")[3];
-        updateRelationMutation.mutate({
-          tableName: relationTableName,
-          id: relationTableItemId,
-          data: { [relationTableColumnName]: relationTableData },
-        });
-      });
+      // relationData.forEach((relation) => {
+      //   const relationTableName = relation.split("/")[1];
+      //   const relationTableItemId = Number(relation.split("/")[2]);
+      //   const relationTableData = data[relation];
+      //   const relationTableColumnName = relation.split("/")[3];
+      //   updateRelationMutation.mutate({
+      //     tableName: relationTableName,
+      //     id: relationTableItemId,
+      //     data: { [relationTableColumnName]: relationTableData },
+      //   });
+      // });
       const otherData = Object.keys(data).filter(
         (key) => key.split("/")[0] !== "relation"
       );

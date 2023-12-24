@@ -25,8 +25,6 @@ export default function IconSelect({
   form: any;
   field: RegisterOptions;
 }) {
-  console.log(iconNames);
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -35,18 +33,18 @@ export default function IconSelect({
             variant="outline"
             role="combobox"
             className={cn(
-              "w-[200px] justify-between",
+              "w-full justify-between",
               !field.value && "text-muted-foreground"
             )}
           >
             {field.value
               ? iconNames.find((icon) => icon === field.value)
               : "Select Icon"}
-            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0" />
           </Button>
         </FormControl>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder="Search framework..." className="h-9" />
           <CommandEmpty>No framework found.</CommandEmpty>

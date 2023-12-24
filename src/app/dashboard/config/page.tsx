@@ -17,6 +17,9 @@ export default function Config() {
             <h2>{table.name}</h2>
             {tablesHasConfigs?.includes(table.name) ? (
               <div className="flex gap-2">
+                <Button onClick={() => createConfig.mutate(table.name)}>
+                  tekrar oluştur
+                </Button>
                 <Button asChild>
                   <Link href={`/dashboard/config/${table.name}`}>edit</Link>
                 </Button>

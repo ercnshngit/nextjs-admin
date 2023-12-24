@@ -76,6 +76,30 @@ export class TableService extends LogService {
       });
     }
   }
+  async updateTableWithId(table_name: string, id: number, data: any) {
+    try {
+      let set: string = "";
+      data.forEach((element: { key: string; value: string }) => {
+        set += table_name + "." + element.key + " = '" + element.value + "' , ";
+      });
+      set = set.substring(0, set.length - 2);
+
+      const query = SqlConstants.UPDATE_QUERRY_WITH_ID(table_name, set, id);
+      const result = await prisma.$queryRawUnsafe(`${query}`);
+      return new Response(
+        JSON.stringify({
+          message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM(),
+        }),
+        { status: 200 }
+      );
+    } catch (error) {
+      const logService = new LogService();
+      await logService.createLog({ error });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
+    }
+  }
 
   async createTable(table_name: string, data: any) {
     try {
@@ -134,31 +158,6 @@ export class TableService extends LogService {
         );
       }
       return new Response(JSON.stringify(table), { status: 200 });
-    } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
-      return new Response(JSON.stringify({ status: "error", message: error }), {
-        status: 500,
-      });
-    }
-  }
-
-  async updateTableWithId(table_name: string, id: number, data: any) {
-    try {
-      let set: string = "";
-      data.forEach((element: { key: string; value: string }) => {
-        set += element.key + " = '" + element.value + "' , ";
-      });
-      set = set.substring(0, set.length - 2);
-
-      const query = SqlConstants.UPDATE_QUERRY_WITH_ID(table_name, set, id);
-      const result = await prisma.$queryRaw`${query}`;
-      return new Response(
-        JSON.stringify({
-          message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM(),
-        }),
-        { status: 200 }
-      );
     } catch (error) {
       const logService = new LogService();
       await logService.createLog({ error });
