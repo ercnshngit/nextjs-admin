@@ -3,12 +3,12 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const tableService = new TableService();
+  const tableService = new TableService(req.nextUrl.pathname);
   try {
     const res = await tableService.createTableConfig();
     return cors(req, res);
   } catch (error) {
-    await tableService.createLog({ error }, req.nextUrl.pathname);
+    await tableService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

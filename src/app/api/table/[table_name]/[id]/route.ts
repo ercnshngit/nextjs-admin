@@ -9,12 +9,12 @@ export async function GET(
   ) {
     const table_name = params.table_name
     const id = params.id 
-    const tableService = new TableService()
+    const tableService = new TableService(req.nextUrl.pathname)
     try {
       const res = await tableService.getTableById(table_name , id)
       return cors(req, res); 
     } catch (error) {
-      await tableService.createLog({ error }, req.nextUrl.pathname);
+      await tableService.createLog({ error });
       const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
       return cors(req, res);   
     }

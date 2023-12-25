@@ -13,6 +13,7 @@ import { LogService } from "./log.service";
 
 config();
 export class TableService extends LogService {
+
   async getTableNames() {
     try {
       const tableNames = await prisma.$queryRawUnsafe(
@@ -20,8 +21,7 @@ export class TableService extends LogService {
       );
       return tableNames;
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return;
     }
@@ -41,8 +41,7 @@ export class TableService extends LogService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -69,8 +68,7 @@ export class TableService extends LogService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -93,8 +91,7 @@ export class TableService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -130,8 +127,7 @@ export class TableService extends LogService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -159,8 +155,7 @@ export class TableService extends LogService {
       }
       return new Response(JSON.stringify(table), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -186,8 +181,7 @@ export class TableService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -225,8 +219,7 @@ export class TableService extends LogService {
       });
       return new Response(JSON.stringify(new_result), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -273,8 +266,7 @@ export class TableService extends LogService {
       });
       return new_result;
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -326,8 +318,7 @@ export class TableService extends LogService {
       }
       return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -418,8 +409,7 @@ export class TableService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -588,8 +578,7 @@ export class TableService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }));
     }
@@ -657,8 +646,7 @@ export class TableService extends LogService {
       });
       return new Response(JSON.stringify({ result }), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -701,8 +689,7 @@ export class TableService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -756,8 +743,7 @@ export class TableService extends LogService {
         status: 200,
       });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -816,8 +802,7 @@ export class TableService extends LogService {
         { status: 200 }
       );
     } catch (error: any) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -840,8 +825,7 @@ export class TableService extends LogService {
       });
       return new Response(JSON.stringify({ result }), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
@@ -871,9 +855,21 @@ export class TableService extends LogService {
       }
       return new Response(JSON.stringify({ relations }), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
+    }
+  }
+  async migrateTableConfig(table_name : any){
+    try {
+      const result = await this.getTableWithDatas(table_name);
+      const tableDataArray = Object.values(result);
+      console.log(tableDataArray[0].columns);
+      return new Response(JSON.stringify({ result }), { status: 200 });
+    } catch (error) {
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });

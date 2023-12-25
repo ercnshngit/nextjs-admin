@@ -8,13 +8,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const componentPropService = new ComponentPropService();
+  const componentPropService = new ComponentPropService(req.nextUrl.pathname);
   try {
     const res = await componentPropService.getComponentProp(Number(params.id));
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await componentPropService.createLog({ error }, req.nextUrl.pathname);
+    await componentPropService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }
@@ -27,7 +27,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const componentPropService = new ComponentPropService();
+  const componentPropService = new ComponentPropService(req.nextUrl.pathname);
   try {
     const body = await req.json();
     const res = await componentPropService.updateComponentProp(
@@ -37,7 +37,7 @@ export async function POST(
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await componentPropService.createLog({ error }, req.nextUrl.pathname);
+    await componentPropService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

@@ -6,13 +6,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const propService = new PropService();
+  const propService = new PropService(req.nextUrl.pathname);
   try {
     const res = await propService.deleteProp(Number(params.id));
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await propService.createLog({ error }, req.nextUrl.pathname);
+    await propService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

@@ -13,6 +13,7 @@ const authPassPaths = [
   { path: "/api/block", method: "GET", hasParams: false },
   { path: "/api/menu", method: "GET", hasParams: false },
   { path: "/api/generals", method: "GET", hasParams: false },
+  { path: "/api/translation/create", method: "POST", hasParams: false },
   { path: `/api/block/component/get/${PARAM}`, method: "GET", hasParams: true },
   {
     path: `/api/table/${PARAM}/update/${PARAM}`,

@@ -6,7 +6,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { type_id: string; id: number } }
 ) {
-  const menuService = new MenuService();
+  const menuService = new MenuService(req.nextUrl.pathname);
   try {
     const res = await menuService.getMenuByTypeAndId(
       Number(params.type_id),
@@ -15,7 +15,7 @@ export async function GET(
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await menuService.createLog({ error }, req.nextUrl.pathname);
+    await menuService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

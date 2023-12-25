@@ -8,13 +8,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const typesService = new TypeService();
+  const typesService = new TypeService(req.nextUrl.pathname);
   try {
     const res = await typesService.getType(Number(params.id));
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await typesService.createLog({ error }, req.nextUrl.pathname);
+    await typesService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }
@@ -27,14 +27,14 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const typesService = new TypeService();
+  const typesService = new TypeService(req.nextUrl.pathname);
   try {
     const body = await req.json();
     const res = await typesService.updateType(Number(params.id), body);
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await typesService.createLog({ error }, req.nextUrl.pathname);
+    await typesService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

@@ -3,13 +3,13 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const typesService = new TypeService();
+  const typesService = new TypeService(req.nextUrl.pathname);
   try {
     const res = await typesService.setRelationTypes();
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await typesService.createLog({ error }, req.nextUrl.pathname);
+    await typesService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

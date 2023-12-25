@@ -6,12 +6,12 @@ export async function GET(
   req: NextRequest,
   { params = { id: 0 } }: { params?: { id: number } }
 ) {
-  const componentService = new ComponentService();
+  const componentService = new ComponentService(req.nextUrl.pathname);
   try {
     const res = await componentService.getComponent(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    await componentService.createLog({ error }, req.nextUrl.pathname);
+    await componentService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
@@ -25,13 +25,13 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const componentService = new ComponentService();
+  const componentService = new ComponentService(req.nextUrl.pathname);
   try {
     const body = await req.json();
     const res = await componentService.updateComponent(Number(params.id), body);
     return cors(req, res);
   } catch (error) {
-    await componentService.createLog({ error }, req.nextUrl.pathname);
+    await componentService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
