@@ -508,10 +508,18 @@ export class TableService extends LogService {
                   },
                 },
                 options: {
-                  create: column.options?.map((option) => ({
-                    label: option.label,
-                    value: option.value,
-                    icon: option.icon,
+                  upsert: column.options?.map((option) => ({
+                    where: { id: option.id },
+                    update: {
+                      label: option.label,
+                      value: option.value,
+                      icon: option.icon,
+                    },
+                    create: {
+                      label: option.label,
+                      value: option.value,
+                      icon: option.icon,
+                    },
                   })),
                 },
                 create_crud_option:

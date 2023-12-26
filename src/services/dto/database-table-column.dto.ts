@@ -25,6 +25,7 @@ export interface DataBaseTableColumnDto {
 }
 
 export interface OptionDto {
+  id?: number;
   label: string;
   value: string;
   icon?: string;
