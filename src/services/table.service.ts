@@ -298,6 +298,7 @@ export class TableService extends LogService {
                   relation_type: true,
                 },
               },
+              options: true,
               input_type: true,
               create_crud_option: {
                 include: {
@@ -343,6 +344,7 @@ export class TableService extends LogService {
         include: {
           columns: {
             include: {
+              options: true,
               column_relations: {
                 include: {
                   table: true,
@@ -450,6 +452,7 @@ export class TableService extends LogService {
               create_crud_option: true,
               read_crud_option: true,
               update_crud_option: true,
+              options: true,
             },
           },
         },
@@ -504,6 +507,13 @@ export class TableService extends LogService {
                     id: column.input_type_id,
                   },
                 },
+                options: {
+                  create: column.options?.map((option) => ({
+                    label: option.label,
+                    value: option.value,
+                    icon: option.icon,
+                  })),
+                },
                 create_crud_option:
                   column.create_crud_option == undefined
                     ? undefined
@@ -553,6 +563,7 @@ export class TableService extends LogService {
         include: {
           columns: {
             include: {
+              options: true,
               input_type: true,
               create_crud_option: {
                 include: {

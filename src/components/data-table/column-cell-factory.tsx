@@ -1,16 +1,16 @@
-import { Column } from "@/types/config";
 import ListImageComponent from "./components/ListImageComponent";
 import Pill from "./components/Pill";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 
 type ColumnCellFactoryProps = {
   value: any;
-  column: Column;
+  column: DataBaseTableColumnDto;
 };
 
 export default function ColumnCellFactory(props: ColumnCellFactoryProps) {
   const inputType = props.column?.read_crud_option?.input_type?.name
     ? props.column.read_crud_option.input_type.name
-    : props.column.input_type.name;
+    : props.column.input_type?.name;
 
   switch (inputType) {
     case "image":

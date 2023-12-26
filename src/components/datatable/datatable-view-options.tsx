@@ -12,6 +12,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "../ui/dropdown-menu";
+import { useState } from "react";
+import { Checkbox } from "../ui/checkbox";
+import { Label } from "../ui/label";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
@@ -20,13 +23,16 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={() => setOpen((p) => !p)}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           size="sm"
           className="hidden h-8 ml-auto bg-white lg:flex"
+          type="button"
         >
           <MixerHorizontalIcon className="w-4 h-4 mr-2" />
           Görünüm
@@ -35,27 +41,31 @@ export function DataTableViewOptions<TData>({
       <DropdownMenuContent align="end" className="w-[150px]">
         <DropdownMenuLabel>Sütun aç/kapa</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        {table
-          .getAllColumns()
-          .filter(
-            (column) =>
-              typeof column.accessorFn !== "undefined" && column.getCanHide()
-          )
-          .map((column) => {
-            return (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                className="capitalize"
-                checked={column.getIsVisible()}
-                onCheckedChange={(value) => column.toggleVisibility(!!value)}
-              >
-                {
-                  // @ts-ignore
-                  column.columnDef.name
-                }
-              </DropdownMenuCheckboxItem>
-            );
-          })}
+        <div className="flex flex-col gap-2">
+          {table
+            .getAllColumns()
+            .filter(
+              (column) =>
+                typeof column.accessorFn !== "undefined" && column.getCanHide()
+            )
+            .map((column) => {
+              return (
+                <Label
+                  className="w-full flex gap-2 items-center"
+                  key={column.id}
+                >
+                  <Checkbox
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  />
+                  {column.id}
+                </Label>
+              );
+            })}
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

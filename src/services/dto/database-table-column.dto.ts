@@ -21,4 +21,11 @@ export interface DataBaseTableColumnDto {
   create_crud_option: CrudOptionDto;
   update_crud_option: CrudOptionDto;
   read_crud_option: CrudOptionDto;
+  options?: OptionDto[];
+}
+
+export interface OptionDto {
+  label: string;
+  value: string;
+  icon?: string;
 }
