@@ -44,10 +44,7 @@ export const columns: (
       id: tableColumn.name,
       accessorKey: tableColumn.name,
       header: ({ column }: { column: any }) => (
-        <DataTableColumnHeader
-          column={column}
-          title={tableColumn.name + "/" + tableColumn.name}
-        />
+        <DataTableColumnHeader column={column} title={tableColumn.name} />
       ),
       cell: ({ row }: { row: any }) => {
         return (

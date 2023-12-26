@@ -60,7 +60,9 @@ export function Sidebar({ className }: { className?: string }) {
             <Button
               asChild
               variant={
-                pathname === "/dashboard/type/menu" ? "secondary" : "ghost"
+                pathname === "/dashboard/type/table/menu"
+                  ? "secondary"
+                  : "ghost"
               }
               className="justify-start "
             >

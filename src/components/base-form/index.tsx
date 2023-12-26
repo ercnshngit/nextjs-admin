@@ -134,8 +134,6 @@ export default function BaseForm(props: {
                 : true
             )
             .map((field) => {
-              console.log("data", data);
-
               return (
                 <FormInputFactory
                   key={field.name}

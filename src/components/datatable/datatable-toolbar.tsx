@@ -37,9 +37,7 @@ export function DataTableToolbar<TData>({
         {searchables?.map((searchable) => (
           <Input
             key={searchable.name}
-            placeholder={
-              translate(tableName + "/" + searchable.name) + " göre ara"
-            }
+            placeholder={translate(searchable.name) + " göre ara"}
             value={
               (table.getColumn(searchable.name)?.getFilterValue() as string) ??
               ""
@@ -60,10 +58,7 @@ export function DataTableToolbar<TData>({
                 <DataTableFacetedFilter
                   key={filterable.name}
                   column={table.getColumn(filterable.name)}
-                  title={
-                    translate(tableName + "/" + filterable.name) +
-                    " göre filtrele"
-                  }
+                  title={translate(filterable.name) + " göre filtrele"}
                   options={filterable.options}
                 />
               );

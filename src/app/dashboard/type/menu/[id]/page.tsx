@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
 import { useRouter } from "next/navigation";
-import MenuList from "../menu-list";
+import MenuList from "../../menu-list";
 import {
   getMenu,
   getMenuByTypeId,

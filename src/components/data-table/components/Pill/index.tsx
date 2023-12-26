@@ -11,6 +11,28 @@ export default function Pill({
   value: any;
   column: DataBaseTableColumnDto;
 }) {
+  if (column.options && column.options?.length > 0) {
+    return (
+      <div className="px-2 py-1 text-xs bg-red-300 rounded-full">
+        {
+          column.options?.find(
+            (option) => String(option.value) === String(value)
+          )?.label
+        }
+      </div>
+    );
+  } else {
+    return <RelationPill value={value} column={column} />;
+  }
+}
+
+function RelationPill({
+  value,
+  column,
+}: {
+  value: any;
+  column: DataBaseTableColumnDto;
+}) {
   const { data: joinedTableData, error } = useQuery(
     [column.column_relations[0].referenced_table.name],
     () =>

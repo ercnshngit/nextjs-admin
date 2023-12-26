@@ -40,9 +40,6 @@ export const createTableItem = async ({
   tableName: string;
   data: any;
 }) => {
-  console.log("dsfdsfdsfsdfdsfs");
-  console.log("gelen data", data);
-
   const { data: responseData } = await axiosClient.post(
     "/table/" + tableName,
     data

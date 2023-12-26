@@ -13,6 +13,7 @@ import String from "./components/String";
 import TextArea from "./components/TextArea";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import IconSelect from "./components/IconSelect";
 
 type FormInputFactoryProps =
   | {
@@ -81,9 +82,13 @@ export default function FormInputFactory({
     case "number":
       return <Number {...props} />;
     case "relation":
+      return <Select {...props} />;
+      //TODO: relation input type should be updated
       return <Relation formType={formType} id={id} {...props} />;
     case "select":
       return <Select {...props} />;
+    case "icon-select":
+      return <IconSelect {...props} />;
     case "textarea":
       return (
         <>

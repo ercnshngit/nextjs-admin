@@ -43,7 +43,7 @@ export default function MasrafContent({
         {table?.can_update !== false && (
           <div>
             <Button asChild>
-              <Link href={"/" + tableName + "/" + id + "/update"}>
+              <Link href={"/dashboard/" + tableName + "/" + id + "/update"}>
                 <PlusCircledIcon className="w-4 h-4 md:mr-2" />
                 <span className="hidden md:inline">
                   {" "}
@@ -65,7 +65,7 @@ export default function MasrafContent({
                     className="flex gap-2 py-2 border-b border-gray-200"
                   >
                     <h1 className="items-center font-medium">
-                      {translate(tableName + "/" + column.name)}:{" "}
+                      {translate(column.name)}:{" "}
                     </h1>
                     <ColumnCellFactory
                       column={column}

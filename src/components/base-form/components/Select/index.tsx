@@ -25,7 +25,6 @@ export default function Select({
       className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200"
     >
       <Label field={field} table={table} />
-      {defaultValue}
       <select
         className="px-2 py-1 border border-gray-200 rounded-md "
         {...register(field.name, {
@@ -33,16 +32,17 @@ export default function Select({
         })}
         defaultValue={defaultValue}
       >
-        <RelationOptions field={field} />
-
-        {/* field.options?.map((option) => {
+        {field.options && field.options.length > 0 ? (
+          field.options?.map((option) => {
             return (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             );
           })
-         */}
+        ) : (
+          <RelationOptions field={field} />
+        )}
       </select>
       {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>

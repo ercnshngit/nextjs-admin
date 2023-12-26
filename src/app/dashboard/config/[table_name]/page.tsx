@@ -145,7 +145,6 @@ export default function TableConfig({
   if (!table) return <div>loading</div>;
 
   const onSubmit: SubmitHandler<typeof initialValues> = (data) => {
-    console.log("dwfsdfsdfs", data.columns);
     const tempData = {
       ...data,
       id: table?.id,
@@ -158,7 +157,6 @@ export default function TableConfig({
         update_crud_option: undefined,
       })),
     };
-    console.log(tempData);
     updateConfig.mutate(tempData);
   };
 
@@ -276,8 +274,7 @@ export default function TableConfig({
                 <div className="bg-gray-100 rounded px-4 ">
                   <AccordionTrigger className="flex items-center ">
                     <h1 className=" text-lg font-bold">
-                      {translate("COLUMN_NAME")}:{" "}
-                      {translate(table.name + "/" + column.name)}
+                      {translate("COLUMN_NAME")}: {translate(column.name)}
                     </h1>
                   </AccordionTrigger>
                   <AccordionContent>
@@ -469,10 +466,20 @@ export default function TableConfig({
                               )}
                             </FormDescription>
                             <FormMessage />
+
+                            {input_types?.find((input_type) => {
+                              return (
+                                String(input_type.id) === String(field.value)
+                              );
+                            })?.name === "select" && (
+                              <div className="flex flex-col gap-2">
+                                <h2>{translate("SELECT_OPTIONS")}</h2>
+                                <Options index={index} form={form} />
+                              </div>
+                            )}
                           </FormItem>
                         )}
                       />
-                      <Options index={index} form={form} />
 
                       <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
                         <h1 className="mb-6 text-lg">
@@ -890,11 +897,15 @@ function Options({ index, form }: { index: number; form: any }) {
             >
               <input
                 className="rounded-md border w-full border-gray-300 p-2"
-                {...form.register(`array.${index}.entries.${k}.label` as const)}
+                {...form.register(
+                  `columns.${index}.options.${k}.label` as const
+                )}
               />
               <input
                 className="rounded-md border w-full border-gray-300 p-2"
-                {...form.register(`array.${index}.entries.${k}.value` as const)}
+                {...form.register(
+                  `columns.${index}.options.${k}.value` as const
+                )}
               />
               <button
                 type="button"
@@ -913,7 +924,7 @@ function Options({ index, form }: { index: number; form: any }) {
         type="button"
         onClick={() =>
           append({
-            key: "item",
+            label: "item",
             value: "sdfdsfs",
           })
         }

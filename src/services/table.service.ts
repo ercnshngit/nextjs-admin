@@ -13,7 +13,6 @@ import { LogService } from "./log.service";
 
 config();
 export class TableService extends LogService {
-
   async getTableNames() {
     try {
       const tableNames = await prisma.$queryRawUnsafe(
@@ -483,6 +482,13 @@ export class TableService extends LogService {
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
                 options: {
+                  deleteMany: {
+                    // Sütunun seçeneklerini sil
+                    column_id: column.id,
+                    NOT: column.options
+                      ?.map(({ id }) => ({ id }))
+                      .filter((item) => item != undefined),
+                  },
                   upsert: column.options?.map((option) => ({
                     where: { id: option.id },
                     update: {
@@ -516,29 +522,29 @@ export class TableService extends LogService {
                   column.options == undefined
                     ? undefined
                     : {
-                      connectOrCreate: column.options?.map((option) => ({
-                        where: { id: option.id },
-                        create: {
-                          label: option.label,
-                          value: option.value,
-                          icon: option.icon,
-                        },
-                      })),
+                        connectOrCreate: column.options?.map((option) => ({
+                          where: { id: option.id },
+                          create: {
+                            label: option.label,
+                            value: option.value,
+                            icon: option.icon,
+                          },
+                        })),
                       },
                 create_crud_option:
                   column.create_crud_option == undefined
                     ? undefined
                     : {
-                      connectOrCreate: {
-                        where: { id: column.read_crud_option_id },
-                        create: {
-                          name: column.create_crud_option?.name,
-                          is_hidden: column.create_crud_option?.is_hidden,
-                          is_required: column.create_crud_option?.is_required,
-                          is_readonly: column.create_crud_option?.is_readonly,
-                          type_id: column.create_crud_option?.input_type?.id,
+                        connectOrCreate: {
+                          where: { id: column.read_crud_option_id },
+                          create: {
+                            name: column.create_crud_option?.name,
+                            is_hidden: column.create_crud_option?.is_hidden,
+                            is_required: column.create_crud_option?.is_required,
+                            is_readonly: column.create_crud_option?.is_readonly,
+                            type_id: column.create_crud_option?.input_type?.id,
+                          },
                         },
-                      },
                       },
                 read_crud_option:
                   column.read_crud_option == undefined
@@ -897,7 +903,7 @@ export class TableService extends LogService {
       });
     }
   }
-  async migrateTableConfig(table_name : any){
+  async migrateTableConfig(table_name: any) {
     try {
       const result = await this.getTableWithDatas(table_name);
       const tableDataArray = Object.values(result);

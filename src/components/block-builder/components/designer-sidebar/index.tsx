@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import SidebarComponent from "../sidebar-component";
 import { useQuery } from "@tanstack/react-query";
 import { getComponents, getTypes } from "@/services/dashboard";
-import FormInputFactory from "@/components/base-form/form-input-factory";
 import SidebarInputFactory from "../sidebar-input-factory";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";

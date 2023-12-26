@@ -67,7 +67,6 @@ function UpdateRelation({
       className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200"
     >
       <Label field={field} table={table} />
-
       <div className="w-full p-4 bg-gray-200 rounded-md">
         {joinedTable?.columns &&
           joinedTable.columns
@@ -89,6 +88,11 @@ function UpdateRelation({
                     field={joinedField}
                     register={register}
                     table={joinedTable}
+                    defaultValue={
+                      joinedTableData.data?.find(
+                        (item: any) => item.id === id
+                      )?.[joinedField.name]
+                    }
                   />
                 </div>
               );
@@ -130,9 +134,7 @@ function CreateRelation({
       key={field.name}
       className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200"
     >
-      <label htmlFor={field.name}>
-        {translate(table.name + "/" + field.name)}
-      </label>
+      <label htmlFor={field.name}>{translate(field.name)}</label>
       <div className="flex gap-4">
         <div className="flex flex-col gap-2 p-4 bg-gray-200 rounded-md">
           {joinedTableData.data &&
@@ -166,6 +168,11 @@ function CreateRelation({
                     field={field}
                     register={register}
                     table={joinedTable}
+                    defaultValue={
+                      joinedTableData.data?.find(
+                        (item: any) => item.id === id
+                      )?.[field.name]
+                    }
                   />
                 );
               })}
@@ -219,9 +226,7 @@ function RelationWithPivot({
       key={field.name}
       className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200"
     >
-      <label htmlFor={field.name}>
-        {translate(table.name + "/" + field.name)}
-      </label>
+      <label htmlFor={field.name}>{translate(field.name)}</label>
       <div className="w-full p-4 bg-gray-200 rounded-md">
         {pivotTableData.data &&
           pivotTableData.data

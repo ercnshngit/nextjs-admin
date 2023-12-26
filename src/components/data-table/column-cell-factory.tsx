@@ -19,6 +19,8 @@ export default function ColumnCellFactory(props: ColumnCellFactoryProps) {
       return <Pill {...props} />;
     case "select":
       return <Pill {...props} />;
+    case "relation":
+      return <Pill {...props} />;
     default:
       return props.value;
   }
