@@ -4,11 +4,11 @@ import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
 import { createStringFromTree, createTree } from "../../utils/tree-operations";
 import { handleDragEnd } from "../../utils/drag-helpers";
-import { componentTags } from "../../utils/component-tags";
 import ElementsHtml from "../elements-html";
 import { cn } from "@/libs/utils";
 import ComponentWrapper from "../component-wrapper";
 import { Button } from "@/components/ui/button";
+import { componentTags } from "../../block-renderer/utils/component-tags";
 
 export default function Designer() {
   const {

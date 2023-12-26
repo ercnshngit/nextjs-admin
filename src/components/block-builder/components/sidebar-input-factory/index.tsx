@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useTranslate } from "@/langs";
 import RichTextEditor from "./components/rich-text";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
+import JSONInput from "./components/json-input";
 
 type SidebarInputFactoryProps = {
   blockComponentProp: ComponentPropDto;
@@ -40,6 +41,8 @@ export default function SidebarInputFactory({
     switch (blockComponentProp.prop.type.name) {
       case "text":
         return <TextInput key={blockComponentProp.prop.key} {...props} />;
+      case "json":
+        return <JSONInput key={blockComponentProp.prop.key} {...props} />;
       case "image":
         return (
           <ImagePickerInput key={blockComponentProp.prop.key} {...props} />

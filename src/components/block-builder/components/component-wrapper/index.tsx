@@ -10,8 +10,8 @@ import {
   TrashIcon,
 } from "@radix-ui/react-icons";
 import React, { useCallback } from "react";
-import { componentTags } from "../../utils/component-tags";
 import { PlusIcon } from "lucide-react";
+import { componentTags } from "../../block-renderer/utils/component-tags";
 export default function ComponentWrapper({
   hoveredElement,
   setHoveredElement,

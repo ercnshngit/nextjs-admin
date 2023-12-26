@@ -33,6 +33,7 @@ import { slugify } from "@/utils/slugify";
 import RichTextEditor from "../sidebar-input-factory/components/rich-text";
 import ImagePickerInput from "../sidebar-input-factory/components/image-picker-input";
 import { TypeDto } from "@/services/dto/type.dto";
+import JSONEditInput from "../json-edit-input";
 export default function DesignerSidebar() {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
     ["components"],
@@ -82,6 +83,8 @@ export default function DesignerSidebar() {
     });
   };
 
+  const title = form.watch("title");
+
   useEffect(() => {
     const subscription = form.watch(() => form.handleSubmit(onSubmit)());
     return () => subscription.unsubscribe();
@@ -99,6 +102,7 @@ export default function DesignerSidebar() {
         />
         <Label htmlFor="preview-mode">Preview Mode</Label>
       </div>
+
       <Tabs defaultValue="components" className="w-full">
         <TabsList>
           <TabsTrigger value="components">Component</TabsTrigger>
@@ -188,7 +192,9 @@ export default function DesignerSidebar() {
                       <FormControl>
                         <TextInput
                           key={field.name}
-                          value={slugify(field.value || "")}
+                          value={slugify(
+                            field.value ? field.value : title || ""
+                          )}
                           setValue={field.onChange}
                         />
                       </FormControl>
@@ -317,10 +323,6 @@ export default function DesignerSidebar() {
                     </FormItem>
                   )}
                 />
-
-                <Button className="mt-10" variant={"default"}>
-                  Update
-                </Button>
               </form>
             </Form>
           </div>
