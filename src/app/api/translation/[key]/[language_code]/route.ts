@@ -8,13 +8,13 @@ export async function GET(
 ) {
   const key = params.key
   const lang_code = params.language_code
-  const translationService = new TranslationService()
+  const translationService = new TranslationService(req.nextUrl.pathname)
   try {
     const res = await translationService.getTranslationWithKeyAndLangId(key, lang_code);
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await translationService.createLog({ error }, req.nextUrl.pathname);
+    await translationService.createLog({ error });
     const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     return cors(req, res);
   }

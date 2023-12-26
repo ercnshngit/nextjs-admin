@@ -8,14 +8,14 @@ export async function POST(
 ) {
   const table_name = params.table_name;
   const id = params.id;
-  const tableService = new TableService();
+  const tableService = new TableService(req.nextUrl.pathname);
   try {
     const body = await req.json();
     const res = await tableService.updateTableWithId(table_name, id, body);
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await tableService.createLog({ error }, req.nextUrl.pathname);
+    await tableService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }

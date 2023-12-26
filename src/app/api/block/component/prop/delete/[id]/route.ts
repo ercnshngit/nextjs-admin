@@ -6,14 +6,14 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const blockComponentPropService = new BlockComponentPropService();
+  const blockComponentPropService = new BlockComponentPropService(req.nextUrl.pathname);
   try {
     const res = await blockComponentPropService.deleteBlockComponentProp(
       Number(params.id)
     );
     return cors(req, res);
   } catch (error) {
-    await blockComponentPropService.createLog({ error }, req.nextUrl.pathname);
+    await blockComponentPropService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),

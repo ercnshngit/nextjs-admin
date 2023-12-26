@@ -7,14 +7,14 @@ export async function POST(
   params: { params: { id: number } }
 ) {
   const id = params.params.id
-  const translationService = new TranslationService()
+  const translationService = new TranslationService(req.nextUrl.pathname)
   try {
     const body = await req.json()
     const res = await translationService.updateTranslation(id, body);
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await translationService.createLog({ error }, req.nextUrl.pathname);
+    await translationService.createLog({ error });
     const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
     return cors(req, res);
   }

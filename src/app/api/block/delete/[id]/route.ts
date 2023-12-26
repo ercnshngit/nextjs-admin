@@ -6,12 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const blockService = new BlockService();
+  const blockService = new BlockService(req.nextUrl.pathname);
   try {
     const res = await blockService.deleteBlock(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    await blockService.createLog({ error }, req.nextUrl.pathname);
+    await blockService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),

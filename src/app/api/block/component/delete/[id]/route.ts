@@ -6,12 +6,12 @@ export async function GET(
     req: NextRequest,
     { params }: { params: { id: number } }
 ) {
-    const blockComponentService = new BlockComponentService()
+    const blockComponentService = new BlockComponentService(req.nextUrl.pathname)
     try {
         const res = await blockComponentService.deleteBlockComponent(Number(params.id))
         return cors(req, res);
     } catch (error) {
-        await blockComponentService.createLog({ error }, req.nextUrl.pathname);
+        await blockComponentService.createLog({ error });
         console.log(error)
         const res = new Response(JSON.stringify({ status: "error", message: error }),{status: 500}); 
         return cors(req, res);

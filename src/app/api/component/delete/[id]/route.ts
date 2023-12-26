@@ -6,12 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const componentService = new ComponentService();
+  const componentService = new ComponentService(req.nextUrl.pathname);
   try {
     const res = await componentService.deleteComponent(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    await componentService.createLog({ error }, req.nextUrl.pathname);
+    await componentService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),

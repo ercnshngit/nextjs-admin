@@ -1,16 +1,20 @@
 import { prisma } from "@/libs/prisma";
 import { TranslationDto } from "./dto/translation.dto";
 import { LogService } from "./log.service";
+import { getErrorMessage } from "@/utils/error-resolver";
 
 export class TranslationService extends LogService{
+
+    constructor(path : string) {
+        super(path);
+    }
 
     async getTranslationsWithKey(key: string) {
         try {
             const translations = await prisma.translation.findFirst({ where: { key } });
             return new Response(JSON.stringify(translations), { status: 200 });
-        } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+        } catch (error : any) {
+            await this.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -20,8 +24,7 @@ export class TranslationService extends LogService{
             const translations = await prisma.translation.findFirst({ where: { key, language_code } });
             return new Response(JSON.stringify(translations), { status: 200 });
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -36,9 +39,9 @@ export class TranslationService extends LogService{
                 }
             });
             return new Response(JSON.stringify(translation), { status: 200 });
-        } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+        } catch (error : any) {
+            console.log("error message : ",getErrorMessage(error));
+            await this.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -48,8 +51,7 @@ export class TranslationService extends LogService{
             const translation = await prisma.translation.delete({ where: { id } });
             return new Response(JSON.stringify(translation), { status: 200 });
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
@@ -66,8 +68,7 @@ export class TranslationService extends LogService{
             });
             return new Response(JSON.stringify(translation), { status: 200 });
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }

@@ -6,7 +6,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const blockComponentService = new BlockComponentService();
+  const blockComponentService = new BlockComponentService(req.nextUrl.pathname);
   try {
     const res = await blockComponentService.getBlockComponent(
       Number(params.id)
@@ -18,7 +18,7 @@ export async function GET(
       );
     return cors(req, res);
   } catch (error) {
-    await blockComponentService.createLog({ error }, req.nextUrl.pathname);
+    await blockComponentService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
@@ -32,7 +32,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const blockComponentService = new BlockComponentService();
+  const blockComponentService = new BlockComponentService(req.nextUrl.pathname);
   try {
     const body = await req.json();
     const res = await blockComponentService.updateBlockComponent(
@@ -41,7 +41,7 @@ export async function POST(
     );
     return cors(req, res);
   } catch (error) {
-    await blockComponentService.createLog({ error }, req.nextUrl.pathname);
+    await blockComponentService.createLog({ error });
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),

@@ -5,7 +5,7 @@ import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
   const authentication = isAuthenticated(request);
-  const authService = new AuthService();
+  const authService = new AuthService(request.nextUrl.pathname);
   try {
     const body = await request.json();
     if (body == null) {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     }
     return cors(request, await authService.login(body, false));
   } catch (error: any) {
-    await authService.createLog({ error }, request.nextUrl.pathname);
+    await authService.createLog({ error });
     return cors(request, new Response(JSON.stringify(error), { status: 500 }));
   }
 }

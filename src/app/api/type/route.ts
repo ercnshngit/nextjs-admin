@@ -3,13 +3,13 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const typesService = new TypeService();
+  const typesService = new TypeService(req.nextUrl.pathname);
   try {
     const res = await typesService.getTypes();
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await typesService.createLog({ error }, req.nextUrl.pathname);
+    await typesService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }
@@ -19,14 +19,14 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const typesService = new TypeService();
+  const typesService = new TypeService(req.nextUrl.pathname);
   try {
     const body = await req.json();
     const res = await typesService.createType(body);
     return cors(req, res);
   } catch (error) {
     console.log(error);
-    await typesService.createLog({ error }, req.nextUrl.pathname);
+    await typesService.createLog({ error });
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
       { status: 500 }
