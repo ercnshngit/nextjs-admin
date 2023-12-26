@@ -482,21 +482,6 @@ export class TableService extends LogService {
                 create_crud_option_id: column.create_crud_option_id,
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
-              },
-              create: {
-                name: column.name,
-                is_filterable: column.is_filterable,
-                is_hidden: column.is_hidden,
-                is_unique: column.is_unique,
-                is_required: column.is_required,
-                is_searchable: column.is_searchable,
-                is_sortable: column.is_sortable,
-                is_primary: column.is_primary,
-                input_type: {
-                  connect: {
-                    id: column.input_type_id,
-                  },
-                },
                 options: {
                   upsert: column.options?.map((option) => ({
                     where: { id: option.id },
@@ -512,10 +497,40 @@ export class TableService extends LogService {
                     },
                   })),
                 },
+              },
+              create: {
+                name: column.name,
+                is_filterable: column.is_filterable,
+                is_hidden: column.is_hidden,
+                is_unique: column.is_unique,
+                is_required: column.is_required,
+                is_searchable: column.is_searchable,
+                is_sortable: column.is_sortable,
+                is_primary: column.is_primary,
+                input_type: {
+                  connect: {
+                    id: column.input_type_id,
+                  },
+                },
+                options:
+                  column.options == undefined
+                    ? undefined
+                    : {
+                      connectOrCreate: column.options?.map((option) => ({
+                        where: { id: option.id },
+                        create: {
+                          label: option.label,
+                          value: option.value,
+                          icon: option.icon,
+                        },
+                      })),
+                      },
                 create_crud_option:
                   column.create_crud_option == undefined
                     ? undefined
                     : {
+                      connectOrCreate: {
+                        where: { id: column.read_crud_option_id },
                         create: {
                           name: column.create_crud_option?.name,
                           is_hidden: column.create_crud_option?.is_hidden,
@@ -523,6 +538,7 @@ export class TableService extends LogService {
                           is_readonly: column.create_crud_option?.is_readonly,
                           type_id: column.create_crud_option?.input_type?.id,
                         },
+                      },
                       },
                 read_crud_option:
                   column.read_crud_option == undefined
