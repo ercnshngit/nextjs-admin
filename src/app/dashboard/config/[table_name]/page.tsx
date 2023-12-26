@@ -37,6 +37,7 @@ import { toast } from "react-toastify";
 import { type } from "@prisma/client";
 import { useTranslate } from "@/langs";
 import { CrudOptionCreateDto } from "@/services/dto/crud-option.dto";
+import { PlusCircle } from "lucide-react";
 export default function TableConfig({
   params,
 }: {
@@ -107,6 +108,11 @@ export default function TableConfig({
       is_sortable: column.is_sortable || false,
       is_primary: column.is_primary || false,
       input_type_id: column.input_type?.id || 0,
+      options: column.options?.map((option) => ({
+        id: option.id,
+        label: option.label,
+        value: option.value,
+      })),
       create_crud_option: {
         name: column.create_crud_option?.name || "",
         is_hidden: column.create_crud_option?.is_hidden || false,
@@ -466,6 +472,8 @@ export default function TableConfig({
                           </FormItem>
                         )}
                       />
+                      <Options index={index} form={form} />
+
                       <div className="flex flex-col gap-1 p-5 rounded bg-gray-50">
                         <h1 className="mb-6 text-lg">
                           {translate(
@@ -858,5 +866,63 @@ export default function TableConfig({
         <Button type="submit">{translate("CONFIG_TABLE_UPDATE_BUTTON")}</Button>
       </form>
     </Form>
+  );
+}
+
+function Options({ index, form }: { index: number; form: any }) {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: `columns.${index}.options`,
+  });
+
+  return (
+    <div>
+      <div style={{ marginLeft: 10, borderLeft: "2px solid red" }}>
+        {fields.map((item, k) => {
+          return (
+            <div
+              key={item.id}
+              style={{
+                height: "50px",
+                display: "flex",
+                marginLeft: 10,
+              }}
+            >
+              <input
+                className="rounded-md border w-full border-gray-300 p-2"
+                {...form.register(`array.${index}.entries.${k}.label` as const)}
+              />
+              <input
+                className="rounded-md border w-full border-gray-300 p-2"
+                {...form.register(`array.${index}.entries.${k}.value` as const)}
+              />
+              <button
+                type="button"
+                onClick={() => remove(k)}
+                style={{ height: "40px", marginTop: 0 }}
+              >
+                Delete
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      <Button
+        className="mt-2 flex items-center bg-green-500 hover:bg-green-600"
+        variant={"default"}
+        type="button"
+        onClick={() =>
+          append({
+            key: "item",
+            value: "sdfdsfs",
+          })
+        }
+      >
+        <PlusCircle className="w-4 h-4 mr-2" />
+        Append
+      </Button>
+
+      <hr />
+    </div>
   );
 }
