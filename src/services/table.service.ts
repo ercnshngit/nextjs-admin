@@ -456,6 +456,7 @@ export class TableService extends LogService {
         return new Response(JSON.stringify({ message: "Data boş geldi." }));
       }
       //upserte cevir.
+      console.log("columns options :", data.columns);
       Object.assign(tableData, data);
       const result = await prisma.database_table.update({
         where: { id: tableData.id },
@@ -481,28 +482,31 @@ export class TableService extends LogService {
                 create_crud_option_id: column.create_crud_option_id,
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
-                options: {
-                  deleteMany: {
-                    // Sütunun seçeneklerini sil
-                    column_id: column.id,
-                    NOT: column.options
-                      ?.map(({ id }) => ({ id }))
-                      .filter((item) => item != undefined),
-                  },
-                  upsert: column.options?.map((option) => ({
-                    where: { id: option.id },
-                    update: {
-                      label: option.label,
-                      value: option.value,
-                      icon: option.icon,
-                    },
-                    create: {
-                      label: option.label,
-                      value: option.value,
-                      icon: option.icon,
-                    },
-                  })),
-                },
+                options:
+                  column.options == undefined
+                    ? undefined
+                    : {
+                        deleteMany: {
+                          // Sütunun seçeneklerini sil
+                          column_id: column.id,
+                          NOT: column.options
+                            ?.map(({ id }) => ({ id }))
+                            .filter((item) => item != undefined),
+                        },
+                        upsert: column.options?.map((option) => ({
+                          where: { id: option.id == undefined ? 0 : option.id },
+                          update: {
+                            label: option.label,
+                            value: option.value,
+                            icon: option.icon,
+                          },
+                          create: {
+                            label: option.label,
+                            value: option.value,
+                            icon: option.icon,
+                          },
+                        })),
+                      },
               },
               create: {
                 name: column.name,
@@ -523,7 +527,7 @@ export class TableService extends LogService {
                     ? undefined
                     : {
                         connectOrCreate: column.options?.map((option) => ({
-                          where: { id: option.id },
+                          where: { id: option.id == undefined ? 0 : option.id },
                           create: {
                             label: option.label,
                             value: option.value,
