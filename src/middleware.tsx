@@ -16,6 +16,8 @@ const authPassPaths = [
   { path: "/api/component-render", method: "GET", hasParams: false },
   { path: "/api/translation/create", method: "POST", hasParams: false },
   { path: `/api/block/component/get/${PARAM}`, method: "GET", hasParams: true },
+  { path: `/api/mail/send-contact-mail`, method: "POST", hasParams: false },
+  { path: `/api/table/post`, method: "GET", hasParams: false },
   {
     path: `/api/table/${PARAM}/update/${PARAM}`,
     method: "GET",

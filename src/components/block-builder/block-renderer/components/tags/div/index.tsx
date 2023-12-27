@@ -1,11 +1,13 @@
 import { cn } from "@/libs/utils";
+import { z } from "zod";
 
-export default function Div({
-  className,
-  children,
-}: {
-  className: string;
-  children: React.ReactNode;
-}) {
+type DivProps = z.infer<typeof propsSchema>;
+
+export default function Div({ className, children }: DivProps) {
   return <div className={cn(className)}>{children}</div>;
 }
+
+export const propsSchema = z.object({
+  className: z.string(),
+  children: z.any(),
+});

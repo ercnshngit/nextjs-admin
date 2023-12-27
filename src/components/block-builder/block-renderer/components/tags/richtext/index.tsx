@@ -1,10 +1,8 @@
-export default function RichText({
-  className,
-  content,
-}: {
-  className: string;
-  content: string;
-}) {
+import { z } from "zod";
+
+type RichTextProps = z.infer<typeof propsSchema>;
+
+export default function RichText({ className, content }: RichTextProps) {
   return (
     <div className="">
       <div
@@ -14,3 +12,8 @@ export default function RichText({
     </div>
   );
 }
+
+export const propsSchema = z.object({
+  className: z.string(),
+  content: z.string(),
+});

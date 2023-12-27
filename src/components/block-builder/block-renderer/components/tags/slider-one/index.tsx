@@ -1,19 +1,22 @@
 import { ArrowRightIcon } from "lucide-react";
-import { motion } from "framer-motion";
+import dynamic from "next/dynamic";
+import { z } from "zod";
+
+const MotionDiv = dynamic(() => import("@/libs/motion"), {
+  ssr: false,
+});
+
+type SliderOneProps = z.infer<typeof propsSchema>;
+
 export default function SliderOne({
   title,
   description,
   buttonTitle,
   buttonUrl,
-}: {
-  title: string;
-  description: string;
-  buttonTitle: string;
-  buttonUrl: string;
-}) {
+}: SliderOneProps) {
   return (
     <div className="relative min-h-full w-full bg-[#293779]/90">
-      <motion.div
+      <MotionDiv
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -27,9 +30,9 @@ export default function SliderOne({
         >
           <source src="/backgrounds/slider/teknopark-landing-2.webm" />
         </video>
-      </motion.div>
+      </MotionDiv>
       <div className="flex min-h-full w-full flex-col items-end justify-end bg-primary-blue/90 px-12 pb-4 mix-blend-hard-light lg:min-h-screen lg:px-24">
-        <motion.div
+        <MotionDiv
           initial={{ x: 1000, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -1000, opacity: 0 }}
@@ -51,8 +54,15 @@ export default function SliderOne({
             Bize Katılın
             <ArrowRightIcon />
           </button>
-        </motion.div>
+        </MotionDiv>
       </div>
     </div>
   );
 }
+
+export const propsSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  buttonTitle: z.string(),
+  buttonUrl: z.string(),
+});

@@ -1,12 +1,9 @@
 import React from "react";
+import { z } from "zod";
 
-export default function Image({
-  className,
-  src,
-}: {
-  className: string;
-  src: string;
-}) {
+type ImageProps = z.infer<typeof propsSchema>;
+
+export default function Image({ className, src }: ImageProps) {
   return (
     <img
       className={className}
@@ -15,3 +12,8 @@ export default function Image({
     />
   );
 }
+
+export const propsSchema = z.object({
+  className: z.string(),
+  src: z.string(),
+});

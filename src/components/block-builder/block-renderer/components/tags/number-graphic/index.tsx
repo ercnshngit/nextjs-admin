@@ -1,16 +1,15 @@
 import React from "react";
 import NumbersPlus from "./components/number-plus-icon";
 import { jsonParse } from "../../../utils/json-parse";
+import { z } from "zod";
+
+type NumberGraphicProps = z.infer<typeof propsSchema>;
 
 export default function NumberGraphic({
   preTitle,
   title,
   numbers,
-}: {
-  preTitle: string;
-  title: string;
-  numbers: string;
-}) {
+}: NumberGraphicProps) {
   return (
     <div className="w-full bg-red-500 py-20 lg:py-2">
       <div className="mb-8 flex items-center">
@@ -52,3 +51,23 @@ export default function NumberGraphic({
     </div>
   );
 }
+
+const jsonObjectSchema = z.string().refine(
+  (value) => {
+    try {
+      JSON.parse(value);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  {
+    message: "Must be a JSON-parsable string",
+  }
+);
+
+export const propsSchema = z.object({
+  numbers: jsonObjectSchema,
+  preTitle: z.string(),
+  title: z.string(),
+});
