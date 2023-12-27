@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function HStack({
+export default function HStack({
   className,
   children,
 }: {

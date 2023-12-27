@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function Text({
+export default function Text({
   className,
   value,
 }: {

@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function VStack({
+export default function VStack({
   className,
   children,
 }: {

@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function CardGrid({
+export default function CardGrid({
   className,
   items,
 }: {

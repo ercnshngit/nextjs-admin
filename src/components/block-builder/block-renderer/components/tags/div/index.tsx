@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function Div({
+export default function Div({
   className,
   children,
 }: {

@@ -1,14 +1,12 @@
-import { HStack } from "../components/tags/h-stack";
-import { Text } from "../components/tags/text";
-import { VStack } from "../components/tags/v-stack";
-import { Title } from "../components/tags/title";
-import { CardGrid } from "../components/tags/card-grid";
-import { Div } from "../components/tags/div";
-import Image from "../components/tags/image";
-import { RichText } from "../components/tags/richtext";
+import CardGrid from "../components/tags/card-grid";
+import Div from "../components/tags/div";
+import HStack from "../components/tags/h-stack";
 import NumberGraphic from "../components/tags/number-graphic";
+import RichText from "../components/tags/richtext";
+import SliderOne from "../components/tags/slider-one";
+import Title from "../components/tags/title";
+import VStack from "../components/tags/v-stack";
 import { ComponentTagsType } from "../types";
-import { SliderOne } from "../components/tags/slider-one";
 
 export const componentTags: ComponentTagsType = {
   Text: Text,

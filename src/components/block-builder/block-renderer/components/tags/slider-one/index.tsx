@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
-export function SliderOne({
+export default function SliderOne({
   title,
   description,
   buttonTitle,

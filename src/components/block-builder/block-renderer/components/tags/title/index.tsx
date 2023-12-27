@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function Title({
+export default function Title({
   className,
   value,
 }: {

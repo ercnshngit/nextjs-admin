@@ -184,3 +184,8 @@ export const updateBlock = async (id: number, data: any) => {
   );
   return responseData;
 };
+
+export const getDashboard = async () => {
+  const { data: responseData } = await axiosClient.get("/dashboard");
+  return responseData;
+};

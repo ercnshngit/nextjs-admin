@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils";
 
-export function HTMLText({
+export default function HTMLText({
   className,
   children,
 }: {

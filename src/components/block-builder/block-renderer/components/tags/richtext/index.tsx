@@ -1,4 +1,4 @@
-export function RichText({
+export default function RichText({
   className,
   content,
 }: {
