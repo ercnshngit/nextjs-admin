@@ -343,6 +343,12 @@ export class ErrorMessages {
          en: "Column relation not found."
       }
    }
+   static TABLE_CONFIG_UPDATE_FAILED_ERROR(){
+      return {
+         tr: "Table config güncellenemedi.",
+         en: "Table config cannot update."
+      }
+   }
 }
 
 export class ConfirmMessages {
