@@ -42,8 +42,7 @@ export class TypeService extends LogService{
             }
             return new Response(JSON.stringify({ status: "success", message: "Input types created successfully", data: input_types }), { status: 200 })
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
@@ -81,8 +80,7 @@ export class TypeService extends LogService{
             }
             return new Response(JSON.stringify({ status: "success", message: "Relation types created successfully", data: relation_types }), { status: 200 })
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
@@ -102,8 +100,7 @@ export class TypeService extends LogService{
             }
             return new Response(JSON.stringify(result), { status: 200 })
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
@@ -123,8 +120,7 @@ export class TypeService extends LogService{
             }
             return new Response(JSON.stringify(result), { status: 200 })
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
@@ -152,8 +148,7 @@ export class TypeService extends LogService{
             }
             return new Response(JSON.stringify(result), { status: 200 })
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
@@ -169,8 +164,7 @@ export class TypeService extends LogService{
             const tableNameAndIds = Object.values(result);
             return new Response(JSON.stringify(tableNameAndIds), { status: 200 })
         } catch (error) {
-            const logService = new LogService();
-            await logService.createLog({ error });
+            await this.createLog({ error });
             console.log(error)
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 400 })
         }
