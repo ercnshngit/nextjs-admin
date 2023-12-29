@@ -73,6 +73,32 @@ export class TableService extends LogService {
       });
     }
   }
+
+  async getTableByColumn(table_name: string, value: string, column: string) {
+    try {
+      console.log(value);
+
+      const query = SqlConstants.SELECT_ALL_WITH_COLUMN_NAME_QUERY(
+        table_name,
+        value,
+        column
+      );
+      const table = await prisma.$queryRawUnsafe(`${query}`);
+      if (!table) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      return new Response(JSON.stringify(table), { status: 200 });
+    } catch (error) {
+      await this.createLog({ error });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
+    }
+  }
+
   async updateTableWithId(table_name: string, id: number, data: any) {
     try {
       let set: string = "";
@@ -365,6 +391,7 @@ export class TableService extends LogService {
           },
         },
       });
+
       if (!result) {
         return new Response(
           JSON.stringify({ message: ErrorMessages.TABLE_NOT_FOUND_ERROR() }),

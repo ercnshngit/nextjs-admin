@@ -69,7 +69,7 @@ export function Sidebar({ className }: { className?: string }) {
               <Link href={"/dashboard/type/table/menu"}>
                 <List className="w-5 h-5 mr-2" />
 
-                {translate("Menü")}
+                {translate("MENU_TYPES")}
               </Link>
             </Button>
 

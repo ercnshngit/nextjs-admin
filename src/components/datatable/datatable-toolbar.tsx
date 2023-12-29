@@ -60,6 +60,7 @@ export function DataTableToolbar<TData>({
                   column={table.getColumn(filterable.name)}
                   title={translate(filterable.name) + " göre filtrele"}
                   options={filterable.options}
+                  filterable={filterable}
                 />
               );
             }

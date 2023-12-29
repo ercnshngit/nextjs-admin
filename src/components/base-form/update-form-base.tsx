@@ -44,7 +44,7 @@ export default function UpdateFormBase({
           queryKey: [table.name, table.name + "/" + id],
         });
         toast.success("Kayıt başarıyla güncellendi");
-        router.push("/" + table.name);
+        router.push("/dashboard/" + table.name);
       },
     }
   );

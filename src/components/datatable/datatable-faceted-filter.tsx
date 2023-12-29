@@ -16,6 +16,9 @@ import {
   CommandList,
   CommandSeparator,
 } from "../ui/command";
+import { useQuery } from "@tanstack/react-query";
+import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
+import { getTable } from "@/services/dashboard";
 interface DataTableFacetedFilter<TData, TValue> {
   column?: Column<TData, TValue>;
   title?: string;
@@ -24,13 +27,23 @@ interface DataTableFacetedFilter<TData, TValue> {
     value: string;
     icon?: React.ComponentType<{ className?: string }>;
   }[];
+  filterable: DataBaseTableColumnDto;
 }
 
 export function DataTableFacetedFilter<TData, TValue>({
   column,
   title,
   options,
+  filterable,
 }: DataTableFacetedFilter<TData, TValue>) {
+  const { data, error } = useQuery(
+    ["relation_column", filterable.column_relations[0].referenced_table_id],
+    () =>
+      getTable({
+        tableName: filterable.column_relations[0].referenced_table.name,
+      })
+  );
+
   const facets = column?.getFacetedUniqueValues();
   const selectedValues = new Set(column?.getFilterValue() as string[]);
 
@@ -60,15 +73,31 @@ export function DataTableFacetedFilter<TData, TValue>({
                 ) : (
                   options
                     .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
-                      <Badge
-                        variant="secondary"
-                        key={option.value}
-                        className="px-1 font-normal rounded-sm"
-                      >
-                        {option.label}
-                      </Badge>
-                    ))
+                    .map((option) => {
+                      const labelData = data?.find(
+                        (item: any) => Number(item.id) === Number(option.value)
+                      );
+
+                      console.log(labelData);
+                      //TODO: Display column
+                      const label =
+                        labelData?.name ||
+                        labelData?.title ||
+                        labelData?.key ||
+                        labelData?.code ||
+                        option.label ||
+                        "Kategorisiz";
+
+                      return (
+                        <Badge
+                          key={option.value}
+                          variant="secondary"
+                          className="px-1 font-normal rounded-sm"
+                        >
+                          {label}
+                        </Badge>
+                      );
+                    })
                 )}
               </div>
             </>
@@ -83,6 +112,18 @@ export function DataTableFacetedFilter<TData, TValue>({
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
+                const labelData = data?.find(
+                  (item: any) => Number(item.id) === Number(option.value)
+                );
+
+                //TODO: Display column
+                const label =
+                  labelData?.name ||
+                  labelData?.title ||
+                  labelData?.key ||
+                  labelData?.code ||
+                  option.label ||
+                  "Yok";
                 return (
                   <CommandItem
                     key={option.value}
@@ -111,7 +152,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     {option.icon && (
                       <option.icon className="w-4 h-4 mr-2 text-muted-foreground" />
                     )}
-                    <span>{option.label}</span>
+                    <span>{label}</span>
                     {facets?.get(option.value) && (
                       <span className="flex items-center justify-center w-4 h-4 ml-auto font-mono text-xs">
                         {facets.get(option.value)}

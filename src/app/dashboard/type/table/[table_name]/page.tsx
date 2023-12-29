@@ -9,5 +9,6 @@ export default function Type({ params }: { params: { table_name: string } }) {
   const { data: types } = useQuery(["types", table_name], () =>
     getTypes(table_name)
   );
+
   return <ListPage slug={"type"} data={types} />;
 }

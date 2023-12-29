@@ -20,6 +20,7 @@ export default function ListPage({ slug, data }: { slug: string; data: any }) {
   const filterValue = searchParams.get("filterValue");
 
   const { table, filterables, searchables } = useTable(slug);
+
   const tableName = table?.name || "";
   const tableColumns = columns(slug, table?.columns || []);
   const { translate } = useTranslate();
@@ -40,7 +41,7 @@ export default function ListPage({ slug, data }: { slug: string; data: any }) {
           return {
             label: option,
             value: option,
-            icon: CircleIcon,
+            icon: null,
           };
         }),
       };

@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 
 import ListPage from "@/components/list-page";
 import { getTable } from "@/services/panel";
+import { useTable } from "@/hooks/use-database";
+import { useEffect } from "react";
 
 export default function DynamicListPage({
   params,

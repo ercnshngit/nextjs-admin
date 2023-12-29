@@ -20,7 +20,9 @@ export function useTable(table_name: string) {
       table_name,
     })
   );
+
   const filterables = table?.columns?.filter((table) => table.is_filterable);
+
   const searchables = table?.columns?.filter((table) => table.is_searchable);
   const sortables = table?.columns?.filter((table) => table.is_sortable);
 
