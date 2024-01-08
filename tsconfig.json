@@ -28,6 +28,14 @@
       ]
     }
   },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+  "paths": {
+    "@/*": [
+      "./src/*"
+    ]
+  },
   "include": [
     "next-env.d.ts",
     "**/*.ts",

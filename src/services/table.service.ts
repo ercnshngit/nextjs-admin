@@ -823,7 +823,7 @@ export class TableService extends LogService {
       const inputTypesArray = Object.values(input_type_ids);
       tableNamesArray.forEach(async (element) => {
         const result = this.createTableConfigWithTableName(
-          element,
+          element.table_name,
           inputTypesArray
         );
         if (result) {
