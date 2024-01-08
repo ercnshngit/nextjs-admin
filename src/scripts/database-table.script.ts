@@ -25,7 +25,7 @@ async function createTableConfig() {
     console.log("Config successfully created.");
   } catch (error) {
     console.log("error :", error);
-    service.createLog(error);
+    await service.createLog(error);
   }
 }
 
