@@ -1,8 +1,7 @@
-"use client";
 import { NextRequest } from "next/server";
 import { BlockComponentService } from "@/services/block_component.service";
 import cors from "@/utils/cors";
-import { renderToString } from "react-dom/server";
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
@@ -24,7 +23,7 @@ export async function GET(
     console.log(error);
     const res = new Response(
       JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
+      { status: 400 }
     );
     return cors(req, res);
   }

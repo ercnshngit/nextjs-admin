@@ -50,7 +50,7 @@ export class BlockComponentService extends LogService {
 
       return new Response(JSON.stringify(result));
     } catch (error) {
-      const logService = new LogService();
+      await this.createLog({ error });
     }
   }
 
@@ -94,7 +94,9 @@ export class BlockComponentService extends LogService {
 
       return new Response(JSON.stringify(result));
     } catch (error) {
-      const logService = new LogService();
+      await this.createLog({ error });
+
+      console.log(error);
     }
   }
 
@@ -145,8 +147,7 @@ export class BlockComponentService extends LogService {
 
       return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
@@ -225,8 +226,8 @@ export class BlockComponentService extends LogService {
 
       return new Response(JSON.stringify({ results }), { status: 200 });
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
+
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),
@@ -358,8 +359,8 @@ export class BlockComponentService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
+
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),
@@ -408,8 +409,8 @@ export class BlockComponentService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
+
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),
@@ -456,8 +457,7 @@ export class BlockComponentService extends LogService {
         { status: 200 }
       );
     } catch (error) {
-      const logService = new LogService();
-      await logService.createLog({ error });
+      await this.createLog({ error });
       console.log(error);
       return new Response(
         JSON.stringify({ status: "error", error_message: error }),

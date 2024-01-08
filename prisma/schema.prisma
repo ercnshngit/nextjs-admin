@@ -164,7 +164,7 @@ model block {
   background_image_url String?   @db.Text
   image_url            String?   @db.Text
   created_at           DateTime  @default(now())
-  updated_at           DateTime? @default(now()) @updatedAt
+  updated_at           DateTime? @updatedAt
   description          String?   @db.Text
 
   type type? @relation("fk_bk_type_id", fields: [type_id], references: [id], map: "fk_bk_type_id") //many to one
@@ -302,7 +302,7 @@ model sector {
 model post {
   id         Int      @id @default(autoincrement())
   title      String
-  content    String
+  content    String   @db.Text
   image_url  String?  @db.Text
   type_id    Int
   created_at DateTime @default(now())

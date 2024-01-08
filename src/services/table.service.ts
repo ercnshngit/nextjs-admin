@@ -10,7 +10,6 @@ import { DatabaseTableDto } from "./dto/database-table.dto";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
 import { LogService } from "./log.service";
-import { table } from "console";
 
 config();
 export class TableService extends LogService {
@@ -664,7 +663,8 @@ export class TableService extends LogService {
     try {
       const tableDatas = await this.getTableWithDatas(table_name);
       const tableDataArray = Object.values(tableDatas);
-      const input_type_ids = input_types == undefined ? await this.getInputDataTypes() : input_types;
+      const input_type_ids =
+        input_types == undefined ? await this.getInputDataTypes() : input_types;
       if (!input_type_ids) {
         return new Response(
           JSON.stringify({ message: "Input type mevcut değil." }),
@@ -905,40 +905,50 @@ export class TableService extends LogService {
       let deletedColumns = [] as any[];
       const result = await this.getTableWithDatas(table_name);
       const result2 = await prisma.database_table.findFirst({
-        include : {
-          columns : true
+        include: {
+          columns: true,
         },
-        where : {
-          name : table_name
-        }
-      })
-      if(!result){
-        return new Response(JSON.stringify(ErrorMessages.TABLE_NOT_FOUND_ERROR()), { status: 404 });
+        where: {
+          name: table_name,
+        },
+      });
+      if (!result) {
+        return new Response(
+          JSON.stringify(ErrorMessages.TABLE_NOT_FOUND_ERROR()),
+          { status: 404 }
+        );
       }
-      if(!result2){
-        return new Response(JSON.stringify(ErrorMessages.TABLE_NOT_FOUND_ERROR()), { status: 404 });
+      if (!result2) {
+        return new Response(
+          JSON.stringify(ErrorMessages.TABLE_NOT_FOUND_ERROR()),
+          { status: 404 }
+        );
       }
       const tableDataArray = Object.values(result);
       const tableSaltColumns = tableDataArray[0].columns;
       const tableConfigColumns = result2.columns;
       // eksik columnlar bulunuyor.
       tableSaltColumns.forEach((element: any) => {
-        const saltColumn = tableConfigColumns.find((column: any) => column.name == element.name);
-        if(!saltColumn){
+        const saltColumn = tableConfigColumns.find(
+          (column: any) => column.name == element.name
+        );
+        if (!saltColumn) {
           missingColumns.push(element);
         }
       });
       console.log("missing columns ::", missingColumns);
       // silinmiş columnlar bulunuyor.
       tableConfigColumns.forEach((element: any) => {
-        const saltColumn = tableSaltColumns.find((column: any) => column.name == element.name);
-        if(!saltColumn){
+        const saltColumn = tableSaltColumns.find(
+          (column: any) => column.name == element.name
+        );
+        if (!saltColumn) {
           deletedColumns.push(element);
         }
       });
       console.log("deleted columns ::", deletedColumns);
 
-      const input_type_ids = await this.getInputDataTypes()
+      const input_type_ids = await this.getInputDataTypes();
       if (!input_type_ids) {
         return new Response(
           JSON.stringify({ message: "Input type mevcut değil." }),
@@ -948,47 +958,52 @@ export class TableService extends LogService {
       const inputTypesArray = Object.values(input_type_ids);
 
       const result3 = await prisma.database_table.update({
-        include:{
-          columns : {
-            include : {
-              input_type : true
-            }
-          }
+        include: {
+          columns: {
+            include: {
+              input_type: true,
+            },
+          },
         },
         where: { id: result2.id },
         data: {
           columns: {
             create: missingColumns.map((column: any) => ({
-                  name: column.name,
-                  input_type: {
-                    connect: {
-                      id: inputTypesArray.filter(
-                        (input_type) =>
-                          input_type.name == column.type &&
-                          input_type.table?.name == TypeCategories.INPUT_TYPE
-                      )[0].id,
-                    },
-                  },
+              name: column.name,
+              input_type: {
+                connect: {
+                  id: inputTypesArray.filter(
+                    (input_type) =>
+                      input_type.name == column.type &&
+                      input_type.table?.name == TypeCategories.INPUT_TYPE
+                  )[0].id,
+                },
+              },
             })),
-            delete: deletedColumns.map != undefined ? deletedColumns?.map((column: any) => ({
-              id : column.id
-            })) : { id : 0}
-          }
-        }
+            delete:
+              deletedColumns.map != undefined
+                ? deletedColumns?.map((column: any) => ({
+                    id: column.id,
+                  }))
+                : { id: 0 },
+          },
+        },
       });
-      if(!result3){
-        return new Response(JSON.stringify(ErrorMessages.TABLE_CONFIG_UPDATE_FAILED_ERROR()), { status: 400 });
+      if (!result3) {
+        return new Response(
+          JSON.stringify(ErrorMessages.TABLE_CONFIG_UPDATE_FAILED_ERROR()),
+          { status: 400 }
+        );
       }
       return new Response(JSON.stringify({ result3 }), { status: 200 });
     } catch (error) {
       console.log(error);
-      await this.createLog( error );
+      await this.createLog(error);
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
     }
   }
-
 
   async getInputDataTypes() {
     const input_types = await prisma.type.findMany({
@@ -1010,5 +1025,4 @@ export class TableService extends LogService {
     });
     return input_types;
   }
-
 }
