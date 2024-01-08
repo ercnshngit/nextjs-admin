@@ -4,8 +4,8 @@ export class LogService {
 
     path : string = "";
 
-    constructor(path: string) {
-        this.path = path;
+    constructor(path?: string) {
+        this.path = path ? path : "";
     }
 
     async createLog(error: any) {

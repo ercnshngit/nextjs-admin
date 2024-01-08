@@ -351,6 +351,49 @@ export class TableService extends LogService {
     }
   }
 
+  async getTables(){
+    try {
+      const result = await prisma.database_table.findMany({
+        include: {
+          columns: {
+            include: {
+              column_relations: {
+                include: {
+                  table: true,
+                  referenced_table: true,
+                  pivot_table: true,
+                  column: true,
+                  referenced_column: true,
+                  relation_type: true,
+                },
+              },
+              options: true,
+              input_type: true,
+              create_crud_option: {
+                include: {
+                  input_type: true,
+                },
+              },
+              read_crud_option: {
+                include: {
+                  input_type: true,
+                },
+              },
+              update_crud_option: {
+                include: {
+                  input_type: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return result;
+    } catch (error) {
+      throw new Error(String(error));
+    }
+  }
+
   async getTableConfig(table_name: string) {
     try {
       const result = await prisma.database_table.findFirst({
@@ -897,6 +940,29 @@ export class TableService extends LogService {
       return new Response(JSON.stringify({ status: "error", message: error }), {
         status: 500,
       });
+    }
+  }
+
+  async createTableConfigOnlyTableNames() {
+    try {
+      const tableNames = await this.getTableNames();
+      if (!tableNames) {
+        return null;
+      }
+      const tableNamesArray = Object.values(tableNames);
+      const result = await prisma.database_table.createMany({
+        data: tableNamesArray.map((table) => ({
+          name: table.table_name,
+        })),
+      });
+      if (!result) {
+        return null;
+      }
+      return result;
+    } catch (error) {
+      await this.createLog({ error });
+      console.log(error);
+      return null;
     }
   }
   async migrateTableConfig(table_name: any) {

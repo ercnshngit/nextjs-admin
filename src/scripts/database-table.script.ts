@@ -6,21 +6,27 @@ const typesService = new TypeService("");
 const service = new TableService("");
 
 async function createTableConfig() {
-  const res = await prisma.database_table.findFirst({
-    where: {
-      name: "database_table_column",
-    },
-  });
-  if (!res) {
-    await prisma.database_table.create({
-      data: {
-        name: "database_table_column",
-      },
+  try {
+    const tables = await service.createTableConfigOnlyTableNames();
+    if (tables == null) {
+      console.log("tables cannot created.");
+      return;
+    }
+    const databaseTables = await service.getTables();
+    if (databaseTables == null) {
+      console.log("databaseTables cannot found.");
+      return;
+    }
+    await typesService.setInputDataTypes();
+    const tablesArray = Object.values(databaseTables);
+    tablesArray.forEach(async element => {
+      await service.migrateTableConfig(element.name);
     });
+    console.log("Config successfully created.");
+  } catch (error) {
+    console.log("error :", error);
+    service.createLog(error);
   }
-  console.log("resasdasd", res);
-  await typesService.setInputDataTypes();
-  await service.createTableConfig();
 }
 
 createTableConfig();
