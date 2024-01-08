@@ -10,6 +10,7 @@ import { DatabaseTableDto } from "./dto/database-table.dto";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
 import { LogService } from "./log.service";
+import { table } from "console";
 
 config();
 export class TableService extends LogService {
@@ -19,6 +20,28 @@ export class TableService extends LogService {
         `SELECT table_name FROM information_schema.tables WHERE table_schema = '${process.env.DB_NAME}'`
       );
       return tableNames;
+    } catch (error) {
+      await this.createLog({ error });
+      console.log(error);
+      return;
+    }
+  }
+
+  async getTableRelations() {
+    try {
+      const tableRelations = await prisma.$queryRawUnsafe(
+        `SELECT 
+        TABLE_NAME,                         
+        COLUMN_NAME,                         
+        REFERENCED_TABLE_NAME,               
+        REFERENCED_COLUMN_NAME                
+      FROM
+        INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+      WHERE
+        TABLE_SCHEMA ='${process.env.DB_NAME}'              
+        AND REFERENCED_TABLE_NAME IS NOT NULL;`
+      );
+      return tableRelations;
     } catch (error) {
       await this.createLog({ error });
       console.log(error);
@@ -351,7 +374,7 @@ export class TableService extends LogService {
     }
   }
 
-  async getTables(){
+  async getTables() {
     try {
       const result = await prisma.database_table.findMany({
         include: {
@@ -950,11 +973,13 @@ export class TableService extends LogService {
         return null;
       }
       const tableNamesArray = Object.values(tableNames);
+
       const result = await prisma.database_table.createMany({
         data: tableNamesArray.map((table) => ({
           name: table.table_name,
         })),
       });
+
       if (!result) {
         return null;
       }
@@ -965,6 +990,73 @@ export class TableService extends LogService {
       return null;
     }
   }
+
+  async createTableRelations() {
+    const tableRelations = (await this.getTableRelations()) as {
+      TABLE_NAME: string;
+      COLUMN_NAME: string;
+      REFERENCED_TABLE_NAME: string;
+      REFERENCED_COLUMN_NAME: string;
+    }[];
+    await tableRelations.forEach(async (element: any) => {
+      const tableNameId = await prisma.database_table.findFirst({
+        where: {
+          name: element.TABLE_NAME,
+        },
+      });
+      const referencedTableNameId = await prisma.database_table.findFirst({
+        where: {
+          name: element.REFERENCED_TABLE_NAME,
+        },
+      });
+      const columnNameId = await prisma.database_table_column.findFirst({
+        where: {
+          name: element.COLUMN_NAME,
+        },
+      });
+      const referencedColumnNameId =
+        await prisma.database_table_column.findFirst({
+          where: {
+            name: element.REFERENCED_COLUMN_NAME,
+          },
+        });
+      console.log(
+        "var mııı?",
+        tableNameId,
+        columnNameId,
+        referencedTableNameId,
+        referencedColumnNameId
+      );
+      if (
+        tableNameId &&
+        columnNameId &&
+        referencedTableNameId &&
+        referencedColumnNameId
+      ) {
+        console.log("girdi mi?");
+        await prisma.column_relation.create({
+          data: {
+            table_id: tableNameId.id,
+            column_id: columnNameId.id,
+            referenced_table_id: referencedTableNameId.id,
+            referenced_column_id: referencedColumnNameId.id,
+            relation_type_id: 1,
+            foreign_key_name:
+              tableNameId?.name +
+              "_id_" +
+              referencedColumnNameId?.name +
+              "_" +
+              columnNameId?.name +
+              "_" +
+              referencedTableNameId?.name,
+          },
+        });
+      }
+    });
+
+    console.log(tableRelations);
+  }
+
   async migrateTableConfig(table_name: any) {
     try {
       let missingColumns = [] as any[];
