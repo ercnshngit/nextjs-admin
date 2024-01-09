@@ -1,29 +1,30 @@
 import { prisma } from "@/libs/prisma";
 import { Encryptor } from "@/services/functions/encryptor";
 import { TableService } from "@/services/table.service";
+import { TranslationService } from "@/services/translation.service";
 import { TypeService } from "@/services/type.service";
-import { Console } from "console";
 
-const typesService = new TypeService("");
-const service = new TableService("");
+const typesService = new TypeService("table-config-script");
+const tableService = new TableService("table-config-script");
+const translationService = new TranslationService("table-config-script");
 
 async function createTableConfig() {
   try {
-    const tables = await service.createTableConfigOnlyTableNames();
+    const tables = await tableService.createTableConfigOnlyTableNames();
     if (tables == null) {
       console.log("tables cannot created.");
     }
-    const databaseTables = await service.getTables();
+    const databaseTables = await tableService.getTables();
     if (databaseTables == null) {
       console.log("databaseTables cannot found.");
     }
     await typesService.setInputDataTypes();
     const tablesArray = Object.values(databaseTables);
     tablesArray.forEach(async (element) => {
-      await service.migrateTableConfig(element.name);
+      await tableService.migrateTableConfig(element.name);
     });
     console.log("Tables successfully created.");
-    await service.createTableRelations();
+    await tableService.createTableRelations();
     console.log("Relations successfully created.");
 
     let adminRoleId = null;
@@ -39,7 +40,6 @@ async function createTableConfig() {
         },
       });
     }
-    console.log("adminRoleId :", adminRoleId);
 
     const userExist = await prisma.user.findFirst({
       where: {
@@ -64,9 +64,10 @@ async function createTableConfig() {
         },
       },
     });
+    await translationService.createAllBasicTranslations();
   } catch (error) {
     console.log("error :", error);
-    await service.createLog(error);
+    await tableService.createLog(error);
   }
 }
 

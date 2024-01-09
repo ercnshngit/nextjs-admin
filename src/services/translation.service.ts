@@ -2,6 +2,8 @@ import { prisma } from "@/libs/prisma";
 import { TranslationDto } from "./dto/translation.dto";
 import { LogService } from "./log.service";
 import { getErrorMessage } from "@/utils/error-resolver";
+import { TranslationConstants } from "../../constants/translation.constants";
+import { stringify } from "querystring";
 
 export class TranslationService extends LogService{
 
@@ -72,4 +74,16 @@ export class TranslationService extends LogService{
             return new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
         }
     }
+
+    async createAllBasicTranslations() {
+        try {
+            const resultLanguage = await prisma.$queryRawUnsafe(TranslationConstants.LANGUAGE_QUERY);
+            const resultTranslation = await prisma.$queryRawUnsafe(TranslationConstants.TRANSLATION_QUERY);
+            return true;
+        } catch (error) {
+            await this.createLog({ error });
+            throw new Error(String(error));
+        }
+    }
+
 }
