@@ -98,12 +98,12 @@ export default function TableConfig({
   const initialValues = {
     name: table?.name,
     icon: table?.icon || "",
-    display_column_id: table?.display_column_id || 0,
+    display_column_id: Number(table?.display_column_id || 0),
     is_hidden: table?.is_hidden || false,
     can_create: table?.can_create || false,
     can_update: table?.can_update || false,
     columns: tableColumnsOrdered.map((column) => ({
-      order: column.order || 0,
+      order: Number(column.order) || 0,
       id: column.id || 0,
       name: column.name,
       is_filterable: column.is_filterable || false,
