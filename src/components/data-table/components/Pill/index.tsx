@@ -1,7 +1,9 @@
+import { Badge } from "@/components/ui/badge";
 import { getTable } from "@/services/dashboard";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { checkError } from "@/utils/error-handling";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import React from "react";
 
 export default function Pill({
@@ -49,19 +51,27 @@ function RelationPill({
     <div>
       {column.input_type?.name === "relation" ? (
         <div className="flex flex-wrap gap-1">
-          {column.column_relations[0].relation_type.name === "one" && (
-            <div className="px-2 py-1 text-xs bg-red-300 rounded-full">
+          <Link
+            href={`/dashboard/${column.column_relations[0].referenced_table.name}/${valueItem?.id}`}
+          >
+            <Badge variant={"secondary"}>
               {column.column_relations[0].referenced_table.display_column
                 ? valueItem?.[
                     column.column_relations[0].referenced_table.display_column
                       .name
                   ]
-                : JSON.stringify(valueItem) || "Bulunamadı"}
-            </div>
-          )}
+                : valueItem?.name ||
+                  valueItem?.title ||
+                  valueItem?.slug ||
+                  valueItem?.key ||
+                  valueItem?.code ||
+                  JSON.stringify(valueItem) ||
+                  "Bulunamadı"}
+            </Badge>
+          </Link>
         </div>
       ) : (
-        <div className="px-2 py-1 text-xs bg-red-300 rounded-full">{value}</div>
+        <Badge>{value}</Badge>
       )}
     </div>
   );

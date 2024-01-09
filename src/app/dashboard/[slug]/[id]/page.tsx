@@ -69,7 +69,7 @@ export default function MasrafContent({
                     </h1>
                     <ColumnCellFactory
                       column={column}
-                      value={data[column.name]}
+                      value={data[0][column.name]}
                     />
                   </div>
                 );
