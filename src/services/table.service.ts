@@ -560,14 +560,7 @@ export class TableService extends LogService {
           is_hidden: tableData.is_hidden,
           can_create: tableData.can_create,
           can_update: tableData.can_update,
-          display_column: {
-            connect: {
-              id:
-                tableData.display_column_id == undefined
-                  ? 0
-                  : tableData.display_column_id,
-            },
-          },
+          display_column_id : tableData.display_column_id,
           columns: {
             upsert: data.columns?.map((column) => ({
               where: { id: column.id }, // Sütunun ID'sine göre kontrol et
