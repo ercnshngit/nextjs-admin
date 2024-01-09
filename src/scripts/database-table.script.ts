@@ -12,12 +12,10 @@ async function createTableConfig() {
     const tables = await service.createTableConfigOnlyTableNames();
     if (tables == null) {
       console.log("tables cannot created.");
-      return;
     }
     const databaseTables = await service.getTables();
     if (databaseTables == null) {
       console.log("databaseTables cannot found.");
-      return;
     }
     await typesService.setInputDataTypes();
     const tablesArray = Object.values(databaseTables);
@@ -41,7 +39,7 @@ async function createTableConfig() {
         },
       });
     }
-    console.log("adminRoleId :", adminRoleId)
+    console.log("adminRoleId :", adminRoleId);
 
     const userExist = await prisma.user.findFirst({
       where: {
@@ -66,7 +64,6 @@ async function createTableConfig() {
         },
       },
     });
-    
   } catch (error) {
     console.log("error :", error);
     await service.createLog(error);

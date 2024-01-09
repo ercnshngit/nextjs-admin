@@ -987,6 +987,8 @@ export class TableService extends LogService {
       const result = await prisma.database_table.createMany({
         data: tableNamesArray.map((table) => ({
           name: table.table_name,
+          can_create: true,
+          can_update: true,
         })),
       });
 
@@ -1031,12 +1033,14 @@ export class TableService extends LogService {
         });
         const columnNameId = await prisma.database_table_column.findFirst({
           where: {
+            table_id: tableNameId?.id,
             name: element.COLUMN_NAME,
           },
         });
         const referencedColumnNameId =
           await prisma.database_table_column.findFirst({
             where: {
+              table_id: referencedTableNameId?.id,
               name: element.REFERENCED_COLUMN_NAME,
             },
           });
@@ -1046,23 +1050,17 @@ export class TableService extends LogService {
           referencedTableNameId &&
           referencedColumnNameId
         ) {
-          await prisma.database_table_column.update({
+          const result2 = await prisma.database_table_column.update({
             where: {
-              table_id: tableNameId.id,
               id: columnNameId.id,
             },
             data: {
-              input_type: {
-                connect: {
-                  id: relationType?.id,
-                },
-              },
+              input_type_id: relationType?.id,
             },
           });
 
-          await prisma.database_table_column.update({
+          const result = await prisma.database_table_column.update({
             where: {
-              table_id: referencedTableNameId.id,
               id: referencedColumnNameId.id,
             },
             data: {
@@ -1073,6 +1071,16 @@ export class TableService extends LogService {
               },
             },
           });
+          console.log(
+            tableNameId.name,
+            "-",
+            tableNameId.id,
+            columnNameId.name,
+            " - ",
+            columnNameId.id
+          );
+
+          console.log(result2);
 
           await prisma.column_relation.create({
             data: {

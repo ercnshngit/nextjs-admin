@@ -41,6 +41,16 @@ export const createTableConfig = async ({
   const { data } = await axiosClient.get(`/config/create/${table_name}`);
   return data;
 };
+
+export const recreateTableConfig = async ({
+  table_name,
+}: {
+  table_name: string;
+}) => {
+  const { data } = await axiosClient.get(`/config/migrate/${table_name}`);
+  return data;
+};
+
 export const deleteTableConfig = async ({
   table_name,
 }: {

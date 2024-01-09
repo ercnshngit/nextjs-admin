@@ -5,6 +5,7 @@ import {
   getTableConfig,
   getTablesConfigs,
   getTablesStructure,
+  recreateTableConfig,
 } from "@/services/dashboard";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -70,6 +71,19 @@ export const useDatabase = (table_name?: string) => {
       },
     }
   );
+
+  const updateConfig = useMutation(
+    (table_name: string) => {
+      return recreateTableConfig({ table_name });
+    },
+    {
+      onSuccess: () => {
+        toast.success("Tablo güncellendi");
+        queryClient.invalidateQueries(["configs"]);
+      },
+    }
+  );
+
   const deleteConfig = useMutation(
     (table_name: string) => {
       return deleteTableConfig({ table_name });
@@ -84,6 +98,7 @@ export const useDatabase = (table_name?: string) => {
 
   if (!table_name)
     return {
+      updateConfig,
       tables,
       createConfig,
       deleteConfig,
@@ -101,6 +116,7 @@ export const useDatabase = (table_name?: string) => {
   const searchables = table?.columns?.filter((table) => table.is_searchable);
   const sortables = table?.columns?.filter((table) => table.is_sortable);
   return {
+    updateConfig,
     tables,
     configs,
     createConfig,

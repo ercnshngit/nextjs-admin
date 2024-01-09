@@ -5,7 +5,8 @@ import Link from "next/link";
 import React from "react";
 
 export default function Config() {
-  const { tables, configs, createConfig, deleteConfig } = useDatabase();
+  const { tables, configs, createConfig, deleteConfig, updateConfig } =
+    useDatabase();
 
   const tablesHasConfigs = configs?.map((config) => config.name);
 
@@ -17,7 +18,7 @@ export default function Config() {
             <h2>{table.name}</h2>
             {tablesHasConfigs?.includes(table.name) ? (
               <div className="flex gap-2">
-                <Button onClick={() => createConfig.mutate(table.name)}>
+                <Button onClick={() => updateConfig.mutate(table.name)}>
                   tekrar oluştur
                 </Button>
                 <Button asChild>
