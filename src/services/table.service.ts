@@ -1069,6 +1069,19 @@ export class TableService extends LogService {
               input_type_id: relationType?.id,
             },
           });
+
+          const isExist = await prisma.column_relation.findFirst({
+            where: {
+              table_id: tableNameId.id,
+              column_id: columnNameId.id,
+              referenced_table_id: referencedTableNameId.id,
+              referenced_column_id: referencedColumnNameId.id,
+            },
+          });
+          if (isExist) {
+            return;
+          }
+
           await prisma.column_relation.create({
             data: {
               table_id: tableNameId.id,
@@ -1078,12 +1091,12 @@ export class TableService extends LogService {
               relation_type_id: 1,
               foreign_key_name:
                 tableNameId?.name +
-                "_id_" +
-                referencedColumnNameId?.name +
-                "_" +
+                "." +
                 columnNameId?.name +
-                "_" +
-                referencedTableNameId?.name,
+                "-" +
+                referencedTableNameId?.name +
+                "." +
+                referencedColumnNameId?.name,
             },
           });
         }
@@ -1122,6 +1135,7 @@ export class TableService extends LogService {
       }
       const tableDataArray = Object.values(result);
       const tableSaltColumns = tableDataArray[0].columns;
+
       const tableConfigColumns = result2.columns;
       // eksik columnlar bulunuyor.
       tableSaltColumns.forEach((element: any) => {
@@ -1151,7 +1165,7 @@ export class TableService extends LogService {
           { status: 404 }
         );
       }
-      const inputTypesArray = Object.values(input_type_ids);
+      const inputTypesArray = input_type_ids;
 
       const result3 = await prisma.database_table.update({
         include: {
