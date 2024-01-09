@@ -17,7 +17,7 @@
     "run-mig": "npx prisma migrate deploy",
     "full-start": "npm run set-project && npm run portkillstart",
     "full-start-dev": "npm run set-project && npm run portkillstart-dev",
-    "first-start": "npm install && npm run run-mig && npm run set-table-configs && npm run gen-prisma && npm run build && npm run portkillstart-dev"
+    "first-start": "npm install && npm run run-mig && npm run gen-prisma && npm run set-table-configs  && npm run build && npm run portkillstart-dev"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.1.0",

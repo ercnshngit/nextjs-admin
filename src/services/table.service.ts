@@ -261,7 +261,7 @@ export class TableService extends LogService {
             } else if (["text", "long"].includes(type)) {
               table_element.type = "string";
               table_element["inputType"] = "textarea";
-            } else{
+            } else {
               table_element.type = "string";
             }
             // ------------------------------
@@ -565,7 +565,7 @@ export class TableService extends LogService {
           is_hidden: tableData.is_hidden,
           can_create: tableData.can_create,
           can_update: tableData.can_update,
-          display_column_id : tableData.display_column_id,
+          display_column_id: tableData.display_column_id,
           columns: {
             upsert: data.columns?.map((column) => ({
               where: { id: column.id }, // Sütunun ID'sine göre kontrol et
@@ -1009,6 +1009,15 @@ export class TableService extends LogService {
         REFERENCED_TABLE_NAME: string;
         REFERENCED_COLUMN_NAME: string;
       }[];
+
+      const relationType = await prisma.type.findFirst({
+        where: {
+          name: InputTypes[
+            InputTypes.RELATION as keyof typeof InputTypes
+          ] as string,
+        },
+      });
+
       tableRelations.forEach(async (element: any) => {
         const tableNameId = await prisma.database_table.findFirst({
           where: {
@@ -1037,6 +1046,34 @@ export class TableService extends LogService {
           referencedTableNameId &&
           referencedColumnNameId
         ) {
+          await prisma.database_table_column.update({
+            where: {
+              table_id: tableNameId.id,
+              id: columnNameId.id,
+            },
+            data: {
+              input_type: {
+                connect: {
+                  id: relationType?.id,
+                },
+              },
+            },
+          });
+
+          await prisma.database_table_column.update({
+            where: {
+              table_id: referencedTableNameId.id,
+              id: referencedColumnNameId.id,
+            },
+            data: {
+              input_type: {
+                connect: {
+                  id: relationType?.id,
+                },
+              },
+            },
+          });
+
           await prisma.column_relation.create({
             data: {
               table_id: tableNameId.id,
@@ -1136,15 +1173,18 @@ export class TableService extends LogService {
               name: column.name,
               input_type: {
                 connect: {
-                  id: inputTypesArray.filter(
-                    (input_type) =>
-                      input_type.name == column.type &&
-                      input_type.table?.name == TypeCategories.INPUT_TYPE
-                  )[0] == undefined ? undefined : inputTypesArray.filter(
-                    (input_type) =>
-                      input_type.name == column.type &&
-                      input_type.table?.name == TypeCategories.INPUT_TYPE
-                  )[0].id,
+                  id:
+                    inputTypesArray.filter(
+                      (input_type) =>
+                        input_type.name == column.type &&
+                        input_type.table?.name == TypeCategories.INPUT_TYPE
+                    )[0] == undefined
+                      ? undefined
+                      : inputTypesArray.filter(
+                          (input_type) =>
+                            input_type.name == column.type &&
+                            input_type.table?.name == TypeCategories.INPUT_TYPE
+                        )[0].id,
                 },
               },
             })),
