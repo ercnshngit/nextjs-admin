@@ -5,6 +5,7 @@ export interface DatabaseTableDto {
   id?: number;
   name: string;
   display_column_id?: number;
+  display_column?: DataBaseTableColumnDto;
   icon?: string;
   is_hidden?: boolean;
   can_create?: boolean;

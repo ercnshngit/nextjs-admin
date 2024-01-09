@@ -436,7 +436,11 @@ export class TableService extends LogService {
               column_relations: {
                 include: {
                   table: true,
-                  referenced_table: true,
+                  referenced_table: {
+                    include: {
+                      display_column: true,
+                    },
+                  },
                   pivot_table: true,
                   column: true,
                   referenced_column: true,
