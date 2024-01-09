@@ -261,6 +261,8 @@ export class TableService extends LogService {
             } else if (["text", "long"].includes(type)) {
               table_element.type = "string";
               table_element["inputType"] = "textarea";
+            } else{
+              table_element.type = "string";
             }
             // ------------------------------
           }
@@ -299,7 +301,7 @@ export class TableService extends LogService {
             } else if (["varchar", "datetime"].includes(type)) {
               table_element.type = "text";
               table_element["input_type_id"] = InputTypes.TEXT.toString();
-            } else if (["text", "long"].includes(type)) {
+            } else if (["text", "long", "longtext"].includes(type)) {
               table_element.type = "textarea";
               table_element["input_type_id"] = InputTypes.TEXTAREA.toString();
             } else if (["date"].includes(type)) {
@@ -308,6 +310,9 @@ export class TableService extends LogService {
             } else if (["boolean"].includes(type)) {
               table_element.type = "checkbox";
               table_element["input_type_id"] = InputTypes.CHECKBOX.toString();
+            } else {
+              table_element.type = "text";
+              table_element["input_type_id"] = InputTypes.TEXT.toString();
             }
             // ------------------------------
           }
@@ -1132,6 +1137,10 @@ export class TableService extends LogService {
               input_type: {
                 connect: {
                   id: inputTypesArray.filter(
+                    (input_type) =>
+                      input_type.name == column.type &&
+                      input_type.table?.name == TypeCategories.INPUT_TYPE
+                  )[0] == undefined ? undefined : inputTypesArray.filter(
                     (input_type) =>
                       input_type.name == column.type &&
                       input_type.table?.name == TypeCategories.INPUT_TYPE
