@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/libs/utils";
 import { Button } from "../ui/button";
-import { List } from "lucide-react";
+import { List, icons } from "lucide-react";
 import { useTranslate } from "@/langs";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -75,25 +75,31 @@ export function Sidebar({ className }: { className?: string }) {
 
             {configs
               ?.filter((item) => !item.is_hidden)
-              .map((item) => (
-                <Button
-                  asChild
-                  key={item.name}
-                  variant={
-                    pathname === "/dashboard/" + item.name ? "default" : "ghost"
-                  }
-                  className="justify-start "
-                >
-                  <Link href={"/dashboard/" + item.name}>
-                    {item.icon ? (
-                      <div>{item.icon}</div>
-                    ) : (
-                      <List className="w-5 h-5 mr-2" />
-                    )}
-                    {translate(item.name)}
-                  </Link>
-                </Button>
-              ))}
+              .map((item) => {
+                const Icon = icons[item.icon as keyof typeof icons];
+
+                return (
+                  <Button
+                    asChild
+                    key={item.name}
+                    variant={
+                      pathname === "/dashboard/" + item.name
+                        ? "default"
+                        : "ghost"
+                    }
+                    className="justify-start "
+                  >
+                    <Link href={"/dashboard/" + item.name}>
+                      {item.icon ? (
+                        <Icon className="w-5 h-5 mr-2" />
+                      ) : (
+                        <List className="w-5 h-5 mr-2" />
+                      )}
+                      {translate(item.name)}
+                    </Link>
+                  </Button>
+                );
+              })}
             <Button
               asChild
               variant={pathname === "/dashboard/config" ? "default" : "ghost"}
