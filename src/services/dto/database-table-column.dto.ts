@@ -22,6 +22,7 @@ export interface DataBaseTableColumnDto {
   update_crud_option: CrudOptionDto;
   read_crud_option: CrudOptionDto;
   options?: OptionDto[];
+  order: number;
 }
 
 export interface OptionDto {

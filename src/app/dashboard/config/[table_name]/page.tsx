@@ -91,13 +91,17 @@ export default function TableConfig({
     }
   );
 
+  const tableColumnsOrdered =
+    table?.columns?.sort((a, b) => a.order - b.order) || [];
+
   const initialValues = {
     name: table?.name,
     icon: table?.icon || "",
     is_hidden: table?.is_hidden || false,
     can_create: table?.can_create || false,
     can_update: table?.can_update || false,
-    columns: table?.columns?.map((column) => ({
+    columns: tableColumnsOrdered.map((column) => ({
+      order: column.order || 0,
       id: column.id || 0,
       name: column.name,
       is_filterable: column.is_filterable || false,
@@ -162,7 +166,7 @@ export default function TableConfig({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
         <FormField
           control={form.control}
           name="name"
@@ -266,7 +270,8 @@ export default function TableConfig({
         />
         <Accordion type="single" collapsible className="w-full">
           {fields.map((column, index) => {
-            const columnId = table.columns?.find(
+            //column relation
+            const columnId = tableColumnsOrdered?.find(
               (c) => c.name === column.name
             )?.id;
             return (
@@ -278,8 +283,8 @@ export default function TableConfig({
                     </h1>
                   </AccordionTrigger>
                   <AccordionContent>
-                    <hr />
-                    <div>
+                    <hr className="mb-4" />
+                    <div className="grid grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
                         name={`columns.${index}.is_hidden`}
@@ -432,10 +437,18 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.input_type_id`}
                         render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>
-                              {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
-                            </FormLabel>
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                            <div className="space-y-0.5">
+                              <FormLabel>
+                                {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
+                              </FormLabel>
+                              <FormDescription>
+                                {translate(
+                                  "CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION"
+                                )}
+                              </FormDescription>
+                            </div>
+
                             <Select
                               onValueChange={field.onChange}
                               defaultValue={String(field.value)}
@@ -460,11 +473,7 @@ export default function TableConfig({
                                 ))}
                               </SelectContent>
                             </Select>
-                            <FormDescription>
-                              {translate(
-                                "CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION"
-                              )}
-                            </FormDescription>
+
                             <FormMessage />
 
                             {input_types?.find((input_type) => {
@@ -477,6 +486,27 @@ export default function TableConfig({
                                 <Options index={index} form={form} />
                               </div>
                             )}
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`columns.${index}.order`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                            <div className="space-y-0.5">
+                              <FormLabel>
+                                {translate("CONFIG_COLUMN_ORDER")}
+                              </FormLabel>
+                              <FormDescription>
+                                {translate("CONFIG_COLUMN_ORDER_DESCRIPTION")}
+                              </FormDescription>
+                            </div>
+
+                            <Input {...field} />
+
+                            <FormMessage />
                           </FormItem>
                         )}
                       />

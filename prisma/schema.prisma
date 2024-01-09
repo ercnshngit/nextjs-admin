@@ -40,6 +40,7 @@ model database_table_column {
   create_crud_option_id Int?
   update_crud_option_id Int?
   read_crud_option_id   Int?
+  order                 Int      @default(0)
 
   database_table     database_table? @relation("fk_dbtc_table_id", fields: [table_id], references: [id], map: "fk_dbtc_table_id", onDelete: Cascade, onUpdate: Cascade)
   input_type         type?           @relation("fk_dbtc_input_type_id", fields: [input_type_id], references: [id], map: "fk_dbtc_input_type_id")
