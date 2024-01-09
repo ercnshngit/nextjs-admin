@@ -64,7 +64,7 @@ async function createTableConfig() {
     });
   } catch (error) {
     console.log("error :", error);
-    service.createLog(error);
+    await service.createLog(error);
   }
 }
 
