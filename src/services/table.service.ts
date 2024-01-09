@@ -431,6 +431,9 @@ export class TableService extends LogService {
         },
         include: {
           columns: {
+            orderBy: {
+              order: "asc",
+            },
             include: {
               options: true,
               column_relations: {
@@ -763,18 +766,22 @@ export class TableService extends LogService {
         data: {
           name: table_name,
           columns: {
-            create: tableDataArray[0].columns.map((column: any) => ({
-              name: column.name,
-              input_type: {
-                connect: {
-                  id: inputTypesArray.filter(
-                    (input_type) =>
-                      input_type.name == column.type &&
-                      input_type.table?.name == TypeCategories.INPUT_TYPE
-                  )[0].id,
+            create: tableDataArray[0].columns.map(
+              (column: any, index: number) => ({
+                name: column.name,
+                order: index,
+                is_hidden: column.name === "id" ? true : false,
+                input_type: {
+                  connect: {
+                    id: inputTypesArray.filter(
+                      (input_type) =>
+                        input_type.name == column.type &&
+                        input_type.table?.name == TypeCategories.INPUT_TYPE
+                    )[0].id,
+                  },
                 },
-              },
-            })),
+              })
+            ),
           },
         },
       });
@@ -1062,18 +1069,6 @@ export class TableService extends LogService {
               input_type_id: relationType?.id,
             },
           });
-
-          console.log(
-            tableNameId.name,
-            "-",
-            tableNameId.id,
-            columnNameId.name,
-            " - ",
-            columnNameId.id
-          );
-
-          console.log(result2);
-
           await prisma.column_relation.create({
             data: {
               table_id: tableNameId.id,
@@ -1169,8 +1164,10 @@ export class TableService extends LogService {
         where: { id: result2.id },
         data: {
           columns: {
-            create: missingColumns.map((column: any) => ({
+            create: missingColumns.map((column: any, index: number) => ({
               name: column.name,
+              order: index,
+              is_hidden: column.name === "id" ? true : false,
               input_type: {
                 connect: {
                   id:

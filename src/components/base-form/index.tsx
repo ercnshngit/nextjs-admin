@@ -39,8 +39,12 @@ export default function BaseForm(props: {
     control,
   } = props;
 
-  const { data, error } = useQuery([table.name + "/" + id], () =>
-    getTableItem({ tableName: table.name, id: Number(id) })
+  const { data, error } = useQuery(
+    [table.name + "/" + id],
+    () => getTableItem({ tableName: table.name, id: Number(id) }),
+    {
+      enabled: formType === "update_crud_option" && !!id,
+    }
   );
 
   return (
@@ -64,7 +68,7 @@ export default function BaseForm(props: {
               setValue={setValue}
               customInput={customInput}
               control={control}
-              {...(formType === "create_crud_option" && {
+              {...(formType === "update_crud_option" && {
                 defaultValue: data[0][field.name] || field.name,
               })}
             />
