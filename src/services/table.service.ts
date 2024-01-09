@@ -1059,18 +1059,6 @@ export class TableService extends LogService {
             },
           });
 
-          const result = await prisma.database_table_column.update({
-            where: {
-              id: referencedColumnNameId.id,
-            },
-            data: {
-              input_type: {
-                connect: {
-                  id: relationType?.id,
-                },
-              },
-            },
-          });
           console.log(
             tableNameId.name,
             "-",
