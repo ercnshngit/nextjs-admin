@@ -716,7 +716,7 @@ export class TableService extends LogService {
           JSON.stringify({
             message: ErrorMessages.TABLE_UPDATE_FAILED_ERROR(),
           }),
-          { status: 500 }
+          { status: 400 }
         );
       }
       return new Response(
@@ -728,7 +728,9 @@ export class TableService extends LogService {
     } catch (error) {
       await this.createLog({ error });
       console.log(error);
-      return new Response(JSON.stringify({ status: "error", message: error }));
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 400,
+      });
     }
   }
 
