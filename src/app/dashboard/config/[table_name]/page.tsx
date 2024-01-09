@@ -38,6 +38,7 @@ import { type } from "@prisma/client";
 import { useTranslate } from "@/langs";
 import { CrudOptionCreateDto } from "@/services/dto/crud-option.dto";
 import { PlusCircle } from "lucide-react";
+import IconSelect from "@/components/icon-select";
 export default function TableConfig({
   params,
 }: {
@@ -97,6 +98,7 @@ export default function TableConfig({
   const initialValues = {
     name: table?.name,
     icon: table?.icon || "",
+    display_column_id: table?.display_column_id || 0,
     is_hidden: table?.is_hidden || false,
     can_create: table?.can_create || false,
     can_update: table?.can_update || false,
@@ -190,10 +192,44 @@ export default function TableConfig({
             <FormItem>
               <FormLabel>{translate("CONFIG_ICON_TITLE")}</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <IconSelect form={form} field={field} />
               </FormControl>
               <FormDescription>
                 {translate("CONFIG_ICON_DESCRIPTION")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="display_column_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{translate("CONFIG_DISPLAY_COLUMN_TITLE")}</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={String(field.value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={translate(
+                        "CONFIG_DISPLAY_COLUMN_PLACEHOLDER"
+                      )}
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {tableColumnsOrdered?.map((column) => (
+                    <SelectItem key={column.id} value={String(column.id)}>
+                      {translate(column.name)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                {translate("CONFIG_DISPLAY_COLUMN_DESCRIPTION")}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -437,7 +473,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.input_type_id`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center gap-4 justify-between p-3 border rounded-lg shadow-sm">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
@@ -494,7 +530,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.order`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row gap-4 items-center justify-between p-3 border rounded-lg shadow-sm">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_COLUMN_ORDER")}

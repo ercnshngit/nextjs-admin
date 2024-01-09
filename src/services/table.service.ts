@@ -560,10 +560,13 @@ export class TableService extends LogService {
           is_hidden: tableData.is_hidden,
           can_create: tableData.can_create,
           can_update: tableData.can_update,
-          display_column:{
-            connect:{
-              id : tableData.display_column_id == undefined ? 0 : tableData.display_column_id
-            }
+          display_column: {
+            connect: {
+              id:
+                tableData.display_column_id == undefined
+                  ? 0
+                  : tableData.display_column_id,
+            },
           },
           columns: {
             upsert: data.columns?.map((column) => ({
@@ -581,6 +584,7 @@ export class TableService extends LogService {
                 create_crud_option_id: column.create_crud_option_id,
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
+                order: column.order,
                 options:
                   column.options == undefined
                     ? undefined
@@ -1021,11 +1025,12 @@ export class TableService extends LogService {
             name: element.COLUMN_NAME,
           },
         });
-        const referencedColumnNameId = await prisma.database_table_column.findFirst({
+        const referencedColumnNameId =
+          await prisma.database_table_column.findFirst({
             where: {
               name: element.REFERENCED_COLUMN_NAME,
             },
-        });
+          });
         if (
           tableNameId &&
           columnNameId &&

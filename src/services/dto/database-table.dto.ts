@@ -4,6 +4,7 @@ import { prisma } from "@/libs/prisma";
 export interface DatabaseTableDto {
   id?: number;
   name: string;
+  display_column_id?: number;
   icon?: string;
   is_hidden?: boolean;
   can_create?: boolean;

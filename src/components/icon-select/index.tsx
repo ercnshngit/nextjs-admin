@@ -45,7 +45,7 @@ export default function IconSelect({
           </Button>
         </FormControl>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0">
+      <PopoverContent className="min-w-full p-0 self-start">
         <Command>
           <CommandInput placeholder="Search framework..." className="h-9" />
           <CommandEmpty>No framework found.</CommandEmpty>
