@@ -15,38 +15,21 @@ import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import IconSelect from "./components/IconSelect";
 
-type FormInputFactoryProps =
-  | {
-      field: DataBaseTableColumnDto;
-      table: DatabaseTableDto;
-      register: UseFormRegister<any>;
-      errors: FieldErrors;
-      formType: "create_crud_option";
-      id?: number;
-      setValue: any;
-      watch?: any;
-      control: any;
-      customInput?: {
-        for: string;
-        component: React.FC<any>;
-      }[];
-    }
-  | {
-      field: DataBaseTableColumnDto;
-      table: DatabaseTableDto;
-      register: UseFormRegister<any>;
-      errors: FieldErrors;
-      formType: "update_crud_option";
-      defaultValue: any;
-      id?: number;
-      setValue: any;
-      watch?: any;
-      control: any;
-      customInput?: {
-        for: string;
-        component: React.FC<any>;
-      }[];
-    };
+type FormInputFactoryProps = {
+  field: DataBaseTableColumnDto;
+  table: DatabaseTableDto;
+  register: UseFormRegister<any>;
+  errors: FieldErrors;
+  formType: "create_crud_option" | "update_crud_option";
+  id?: number;
+  setValue: any;
+  watch?: any;
+  control: any;
+  customInput?: {
+    for: string;
+    component: React.FC<any>;
+  }[];
+};
 
 export default function FormInputFactory({
   formType,
@@ -54,10 +37,7 @@ export default function FormInputFactory({
   customInput,
   ...props
 }: FormInputFactoryProps) {
-  const inputType =
-    props.field?.[formType]?.input_type?.name ||
-    props.field?.input_type?.name ||
-    "text";
+  const inputType = props.field?.input_type?.name || "text";
 
   if (customInput) {
     const CustomInputItem = customInput.find(
@@ -83,8 +63,6 @@ export default function FormInputFactory({
       return <Number {...props} />;
     case "relation":
       return <Select {...props} />;
-      //TODO: relation input type should be updated
-      return <Relation formType={formType} id={id} {...props} />;
     case "select":
       return <Select {...props} />;
     case "icon-select":

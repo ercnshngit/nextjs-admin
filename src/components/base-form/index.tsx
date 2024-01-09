@@ -38,127 +38,44 @@ export default function BaseForm(props: {
     watch,
     control,
   } = props;
-  if (formType === "create_crud_option") {
-    return (
-      <>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-wrap w-full gap-4"
-        >
-          {table?.columns &&
-            table.columns
-              .filter((field) =>
-                field.create_crud_option?.is_hidden || field.is_hidden
-                  ? false
-                  : true
-              )
-              .map((field) => (
-                <FormInputFactory
-                  key={field.name}
-                  formType={formType}
-                  errors={errors}
-                  field={field}
-                  register={register}
-                  table={table}
-                  id={id}
-                  watch={watch}
-                  setValue={setValue}
-                  customInput={customInput}
-                  control={control}
-                />
-              ))}
 
-          <button
-            type="submit"
-            onClick={() => {
-              handleSubmit(onSubmit);
-            }}
-            className="w-full px-2 py-1 text-white bg-blue-500 rounded-md"
-          >
-            {translate("FORM_SUBMIT_" + formType?.toUpperCase())}
-          </button>
-        </form>
-      </>
-    );
-  } else {
-    if (!id) return null;
-    return (
-      <>
-        <UpdateForm id={id} {...props} />
-      </>
-    );
-  }
+  const { data, error } = useQuery([table.name + "/" + id], () =>
+    getTableItem({ tableName: table.name, id: Number(id) })
+  );
 
-  function UpdateForm({
-    handleSubmit,
-    onSubmit,
-    table,
-    errors,
-    register,
-    formType,
-    id,
-    setValue,
-    customInput,
-    watch,
-    control,
-  }: {
-    handleSubmit: any;
-    onSubmit: any;
-    table: DatabaseTableDto;
-    errors: FieldErrors;
-    register: UseFormRegister<any>;
-    formType: "create_crud_option" | "update_crud_option";
-    id: number;
-    setValue?: any;
-    customInput?: {
-      for: string;
-      component: React.FC<any>;
-    }[];
-    watch?: any;
-    control: any;
-  }) {
-    const { data, error } = useQuery([table.name + "/" + id], () =>
-      getTableItem({ tableName: table.name, id: Number(id) })
-    );
+  return (
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-wrap w-full gap-4"
+    >
+      {table?.columns &&
+        table.columns
+          .filter((field) => (field.is_hidden ? false : true))
+          .map((field) => (
+            <FormInputFactory
+              key={field.name}
+              formType={formType}
+              errors={errors}
+              field={field}
+              register={register}
+              table={table}
+              id={id}
+              watch={watch}
+              setValue={setValue}
+              customInput={customInput}
+              control={control}
+              {...(formType === "create_crud_option" && {
+                defaultValue: data[0][field.name] || field.name,
+              })}
+            />
+          ))}
 
-    return (
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-wrap w-full gap-4"
+      <button
+        type="submit"
+        className="w-full px-2 py-1 text-white bg-blue-500 rounded-md"
       >
-        {data &&
-          table?.columns
-            ?.filter((field) =>
-              field.update_crud_option?.is_hidden || field.is_hidden
-                ? false
-                : true
-            )
-            .map((field) => {
-              return (
-                <FormInputFactory
-                  key={field.name}
-                  formType={formType}
-                  errors={errors}
-                  field={field}
-                  register={register}
-                  table={table}
-                  id={id}
-                  setValue={setValue}
-                  defaultValue={data[0][field.name] || field.name}
-                  customInput={customInput}
-                  watch={watch}
-                  control={control}
-                />
-              );
-            })}
-
-        <button
-          type="submit"
-          className="w-full px-2 py-1 text-white bg-blue-500 rounded-md"
-        >
-          {translate("FORM_SUBMIT_" + formType?.toUpperCase())}
-        </button>
-      </form>
-    );
-  }
+        {translate("FORM_SUBMIT_" + formType?.toUpperCase())}
+      </button>
+    </form>
+  );
 }
