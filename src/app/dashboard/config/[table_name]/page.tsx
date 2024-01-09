@@ -103,7 +103,7 @@ export default function TableConfig({
     can_create: table?.can_create || false,
     can_update: table?.can_update || false,
     columns: tableColumnsOrdered.map((column) => ({
-      order: Number(column.order) || 0,
+      order: Number(column.order || 0),
       id: column.id || 0,
       name: column.name,
       is_filterable: column.is_filterable || false,
