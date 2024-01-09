@@ -1000,6 +1000,7 @@ export class TableService extends LogService {
           name: table.table_name,
           can_create: true,
           can_update: true,
+          is_hidden: true,
         })),
       });
 

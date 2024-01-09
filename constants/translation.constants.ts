@@ -191,5 +191,10 @@ export class TranslationConstants {
 (197, 'CONFIG_TABLE_UPDATE_BUTTON', 'Ayarları Güncelle', 'tr'),
 (198, 'CONFIG_ICON_DESCRIPTION', 'İkon', 'tr'),
 (199, 'CONFIG_TABLENAME_DESCRIPTION', 'Veritabanı Tablosu Adı', 'tr'),
+(201, 'MENU_TYPES', 'Menü Kategorileri', 'tr'),
+(202, 'CONFIG_DISPLAY_COLUMN_TITLE', 'Listeleme Sütunu', 'tr'),
+(203, 'CONFIG_DISPLAY_COLUMN_DESCRIPTION', 'Seçim kutusunda (Combobox, select vb.) gösterilecek sütunu seçmenizi sağlar.', 'tr'),
+(204, 'CONFIG_COLUMN_ORDER', 'Sütun sırası', 'tr'),
+(205, 'CONFIG_COLUMN_ORDER_DESCRIPTION', 'Sütun sırası ayarlanabilir.', 'tr'),
 (200, 'FORM_SUBMIT_UPDATE_CRUD_OPTION', 'Güncelle', 'tr');`;
 }
