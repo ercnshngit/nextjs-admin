@@ -11,6 +11,7 @@ import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
 import { LogService } from "./log.service";
 import { table } from "console";
+import { th } from "date-fns/locale";
 
 config();
 export class TableService extends LogService {
@@ -559,6 +560,11 @@ export class TableService extends LogService {
           is_hidden: tableData.is_hidden,
           can_create: tableData.can_create,
           can_update: tableData.can_update,
+          display_column:{
+            connect:{
+              id : tableData.display_column_id == undefined ? 0 : tableData.display_column_id
+            }
+          },
           columns: {
             upsert: data.columns?.map((column) => ({
               where: { id: column.id }, // Sütunun ID'sine göre kontrol et
@@ -992,69 +998,64 @@ export class TableService extends LogService {
   }
 
   async createTableRelations() {
-    const tableRelations = (await this.getTableRelations()) as {
-      TABLE_NAME: string;
-      COLUMN_NAME: string;
-      REFERENCED_TABLE_NAME: string;
-      REFERENCED_COLUMN_NAME: string;
-    }[];
-    await tableRelations.forEach(async (element: any) => {
-      const tableNameId = await prisma.database_table.findFirst({
-        where: {
-          name: element.TABLE_NAME,
-        },
-      });
-      const referencedTableNameId = await prisma.database_table.findFirst({
-        where: {
-          name: element.REFERENCED_TABLE_NAME,
-        },
-      });
-      const columnNameId = await prisma.database_table_column.findFirst({
-        where: {
-          name: element.COLUMN_NAME,
-        },
-      });
-      const referencedColumnNameId =
-        await prisma.database_table_column.findFirst({
+    try {
+      const tableRelations = (await this.getTableRelations()) as {
+        TABLE_NAME: string;
+        COLUMN_NAME: string;
+        REFERENCED_TABLE_NAME: string;
+        REFERENCED_COLUMN_NAME: string;
+      }[];
+      tableRelations.forEach(async (element: any) => {
+        const tableNameId = await prisma.database_table.findFirst({
           where: {
-            name: element.REFERENCED_COLUMN_NAME,
+            name: element.TABLE_NAME,
           },
         });
-      console.log(
-        "var mııı?",
-        tableNameId,
-        columnNameId,
-        referencedTableNameId,
-        referencedColumnNameId
-      );
-      if (
-        tableNameId &&
-        columnNameId &&
-        referencedTableNameId &&
-        referencedColumnNameId
-      ) {
-        console.log("girdi mi?");
-        await prisma.column_relation.create({
-          data: {
-            table_id: tableNameId.id,
-            column_id: columnNameId.id,
-            referenced_table_id: referencedTableNameId.id,
-            referenced_column_id: referencedColumnNameId.id,
-            relation_type_id: 1,
-            foreign_key_name:
-              tableNameId?.name +
-              "_id_" +
-              referencedColumnNameId?.name +
-              "_" +
-              columnNameId?.name +
-              "_" +
-              referencedTableNameId?.name,
+        const referencedTableNameId = await prisma.database_table.findFirst({
+          where: {
+            name: element.REFERENCED_TABLE_NAME,
           },
         });
-      }
-    });
-
-    console.log(tableRelations);
+        const columnNameId = await prisma.database_table_column.findFirst({
+          where: {
+            name: element.COLUMN_NAME,
+          },
+        });
+        const referencedColumnNameId = await prisma.database_table_column.findFirst({
+            where: {
+              name: element.REFERENCED_COLUMN_NAME,
+            },
+        });
+        if (
+          tableNameId &&
+          columnNameId &&
+          referencedTableNameId &&
+          referencedColumnNameId
+        ) {
+          await prisma.column_relation.create({
+            data: {
+              table_id: tableNameId.id,
+              column_id: columnNameId.id,
+              referenced_table_id: referencedTableNameId.id,
+              referenced_column_id: referencedColumnNameId.id,
+              relation_type_id: 1,
+              foreign_key_name:
+                tableNameId?.name +
+                "_id_" +
+                referencedColumnNameId?.name +
+                "_" +
+                columnNameId?.name +
+                "_" +
+                referencedTableNameId?.name,
+            },
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      await this.createLog(error);
+      throw new Error(String(error));
+    }
   }
 
   async migrateTableConfig(table_name: any) {

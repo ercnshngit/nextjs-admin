@@ -2,6 +2,7 @@ import { prisma } from "@/libs/prisma";
 import { Encryptor } from "@/services/functions/encryptor";
 import { TableService } from "@/services/table.service";
 import { TypeService } from "@/services/type.service";
+import { Console } from "console";
 
 const typesService = new TypeService("");
 const service = new TableService("");
@@ -24,6 +25,8 @@ async function createTableConfig() {
       await service.migrateTableConfig(element.name);
     });
     console.log("Tables successfully created.");
+    await service.createTableRelations();
+    console.log("Relations successfully created.");
 
     let adminRoleId = null;
     adminRoleId = await prisma.role.findFirst({
@@ -38,6 +41,7 @@ async function createTableConfig() {
         },
       });
     }
+    console.log("adminRoleId :", adminRoleId)
 
     const userExist = await prisma.user.findFirst({
       where: {
@@ -62,6 +66,7 @@ async function createTableConfig() {
         },
       },
     });
+    
   } catch (error) {
     console.log("error :", error);
     await service.createLog(error);
@@ -69,4 +74,3 @@ async function createTableConfig() {
 }
 
 createTableConfig();
-service.createTableRelations();
