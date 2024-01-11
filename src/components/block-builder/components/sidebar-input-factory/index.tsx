@@ -38,19 +38,23 @@ export default function SidebarInputFactory({
   }
 
   const getInputComponent = () => {
-    switch (blockComponentProp.prop.type.name) {
-      case "text":
-        return <TextInput key={blockComponentProp.prop.key} {...props} />;
-      case "json":
-        return <JSONInput key={blockComponentProp.prop.key} {...props} />;
-      case "image":
-        return (
-          <ImagePickerInput key={blockComponentProp.prop.key} {...props} />
-        );
-      case "richtext":
-        return <RichTextEditor key={blockComponentProp.prop.key} {...props} />;
-      default:
-        return <TextInput key={blockComponentProp.prop.key} {...props} />;
+    if (blockComponentProp.prop.type.name.startsWith("json")) {
+      return <JSONInput key={blockComponentProp.prop.key} {...props} />;
+    } else {
+      switch (blockComponentProp.prop.type.name) {
+        case "text":
+          return <TextInput key={blockComponentProp.prop.key} {...props} />;
+        case "image":
+          return (
+            <ImagePickerInput key={blockComponentProp.prop.key} {...props} />
+          );
+        case "richtext":
+          return (
+            <RichTextEditor key={blockComponentProp.prop.key} {...props} />
+          );
+        default:
+          return <TextInput key={blockComponentProp.prop.key} {...props} />;
+      }
     }
   };
 

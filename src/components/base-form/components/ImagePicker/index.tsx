@@ -32,11 +32,12 @@ export default function ImagePicker({
   const [status, setStatus] = React.useState<
     "loading" | "success" | "error" | "idle"
   >("idle");
-  const { data, error } = useQuery(["media"], () =>
+  const { data, isError } = useQuery(["media"], () =>
     getMediaFromServer({
       directory: "images",
     })
   );
+
   const handleImageSelect = (image: any) => {
     setValue(image.img);
     setMediaPickerOpen(false);
@@ -56,7 +57,27 @@ export default function ImagePicker({
       setStatus("loading");
     },
   });
+  if (isError) {
+    return (
+      <div
+        key={field.name}
+        className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200"
+      >
+        <Label field={field} table={table} />
 
+        <input
+          className="px-2 py-1 border border-gray-200 rounded-md "
+          {...register(field.name, { required: field.is_required })}
+          defaultValue={defaultValue}
+        />
+        <div>
+          Dosya yükleme sistemine ulaşırken bir sorun oluştu. Resimleri link
+          olarak ekleyebilirsiniz
+        </div>
+        {errors[field.name] && <span>Bu alan gereklidir</span>}
+      </div>
+    );
+  }
   return (
     <div
       key={field.name}
@@ -80,7 +101,7 @@ export default function ImagePicker({
       {mediaPickerOpen && (
         <MediaPicker
           handleImageSelect={handleImageSelect}
-          images={data.images}
+          images={data?.images}
           setMediaPickerOpen={setMediaPickerOpen}
           status={status}
           handleUpload={(file: File) => mutation.mutate(file)}

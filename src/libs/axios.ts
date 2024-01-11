@@ -63,3 +63,13 @@ export const axiosFileClient = axios.create({
 axiosFileClient.interceptors.request.use(async (config) => {
   return config;
 });
+
+axiosClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    console.log("hata : ", JSON.stringify(error));
+    return Promise.reject(error);
+  }
+);
