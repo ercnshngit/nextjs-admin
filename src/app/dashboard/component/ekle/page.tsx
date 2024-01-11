@@ -62,7 +62,11 @@ export default function AddComponentPage() {
     props: [
       {
         key: "",
-        type_id: null,
+        type: {
+          id: null,
+          name: "",
+          table_id: null,
+        },
       },
     ],
   };
@@ -85,7 +89,11 @@ export default function AddComponentPage() {
     icon: string;
     props: {
       key: string;
-      type_id?: number | null;
+      type: {
+        id: number | null;
+        name: string;
+        table_id?: number | null;
+      };
     }[];
   };
 
@@ -100,9 +108,10 @@ export default function AddComponentPage() {
       props: data.props.map((prop) => ({
         prop: {
           key: prop.key,
-          type_id: Number(prop.type_id),
+          type_id: Number(prop.type.id),
           type: {
-            id: Number(prop.type_id),
+            id: Number(prop.type.id),
+            name: prop.type.name,
           },
           value: "",
         },
@@ -204,11 +213,27 @@ export default function AddComponentPage() {
                   />
                   <FormField
                     control={form.control}
-                    name={`props.${index}.type_id`}
+                    name={`props.${index}.type.id`}
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <Select
-                          onValueChange={field.onChange}
+                          onValueChange={() => {
+                            field.onChange;
+                            if (propTypes) {
+                              form.setValue(
+                                `props.${index}.type.name`,
+                                propTypes!.find(
+                                  (item) => item.id === Number(field.value)
+                                )!.name
+                              );
+                              form.setValue(
+                                `props.${index}.type.table_id`,
+                                propTypes!.find(
+                                  (item) => item.id === Number(field.value)
+                                )!.table_id
+                              );
+                            }
+                          }}
                           defaultValue={String(field.value)}
                         >
                           <FormControl>
@@ -244,7 +269,7 @@ export default function AddComponentPage() {
             className="mt-2 flex items-center bg-green-500 hover:bg-green-600"
             variant={"default"}
             type="button"
-            onClick={() => append({ key: "", type_id: 0 })}
+            onClick={() => append({ key: "", type: { id: null, name: "" } })}
           >
             <PlusCircle className="w-4 h-4 mr-2" />
             Append
