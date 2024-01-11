@@ -6,11 +6,14 @@ export const propsSchema = z.object({
   className: z.string(),
   value: z.string(),
 });
-export const defaultProps: z.infer<typeof propsSchema> = {
+
+Button.defaultProps = {
   className: "",
   value: "",
 };
-Button.displayName = "Button";
+Button.displayName = "Buton";
+Button.typeName = "Page Component";
+Button.iconName = "button-icon";
 
 export default function Button({ className, value }: ButtonProps) {
   return <button className={className}>{value}</button>;

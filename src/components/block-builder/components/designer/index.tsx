@@ -1,14 +1,13 @@
+import { Button } from "@/components/ui/button";
 import { useDesigner } from "@/contexts/designer-context";
+import { cn } from "@/libs/utils";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
-import { createStringFromTree, createTree } from "../../utils/tree-operations";
-import { handleDragEnd } from "../../utils/drag-helpers";
-import ElementsHtml from "../elements-html";
-import { cn } from "@/libs/utils";
-import ComponentWrapper from "../component-wrapper";
-import { Button } from "@/components/ui/button";
 import { componentTags } from "../../block-renderer/utils/component-tags";
+import { handleDragEnd } from "../../utils/drag-helpers";
+import { createTree } from "../../utils/tree-operations";
+import ComponentWrapper from "../component-wrapper";
 
 export default function Designer() {
   const {

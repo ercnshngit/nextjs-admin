@@ -1,24 +1,19 @@
 "use client";
 import BlockBuilder from "@/components/block-builder";
 import { Button } from "@/components/ui/button";
-import {
-  DesignerContextProvider,
-  useDesigner,
-} from "@/contexts/designer-context";
+import { useDesigner } from "@/contexts/designer-context";
 import { cn } from "@/libs/utils";
 import {
   createComponentsInBlock,
   getBlock,
   getBlockComponents,
-  getComponents,
   updateBlock,
 } from "@/services/dashboard";
-import { BlockDto } from "@/services/dto/block.dto";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function BuilderPage({

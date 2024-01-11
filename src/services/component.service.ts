@@ -68,31 +68,49 @@ export class ComponentService extends LogService {
       if (!tag) {
         tag = await prisma.tag.create({ data: { name: data.tag.name } });
       }
-
-      const typeCheck = await prisma.type.findUnique({
-        where: { id: data.type_id },
+      const componentTable = await prisma.database_table.findFirst({
+        where: { name: "component" },
       });
-      if (!typeCheck) {
+      const propTable = await prisma.database_table.findFirst({
+        where: { name: "prop" },
+      });
+      if (!componentTable || !propTable)
         return new Response(
           JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),
           { status: 404 }
         );
+
+      let typeCheck = await prisma.type.findFirst({
+        where: { name: data.type.name, table_id: componentTable.id },
+      });
+      if (!typeCheck) {
+        typeCheck = await prisma.type.create({
+          data: {
+            name: data.type.name,
+            table_id: componentTable.id,
+          },
+        });
       }
+
+      let componentCheck = await prisma.component.findFirst({
+        where: { name: data.name },
+      });
+      if (componentCheck) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.ALREADY_EXISTS_ERROR() }),
+          { status: 400 }
+        );
+      }
+
       const component = await prisma.component.create({
         data: {
           name: data.name,
           tag_id: tag.id,
-          type_id: data.type_id,
+          type_id: typeCheck.id,
           icon: data.icon,
         },
         include: { tag: true },
       });
-      if (!component) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
-          { status: 400 }
-        );
-      }
 
       const props = await Promise.all(
         data.props.map(async (propItem) => {
@@ -101,13 +119,13 @@ export class ComponentService extends LogService {
           });
           if (!prop) {
             let type = await prisma.type.findFirst({
-              where: { name: propItem.prop.type.name },
+              where: { name: propItem.prop.type.name, table_id: propTable.id },
             });
             if (!type) {
               type = await prisma.type.create({
                 data: {
                   name: propItem.prop.type.name,
-                  table_id: propItem.prop.type.table_id,
+                  table_id: propTable.id,
                 },
               });
             }
@@ -158,7 +176,7 @@ export class ComponentService extends LogService {
         data: {
           name: data.name,
           tag_id: data.tag.id,
-          type_id: data.type_id,
+          type_id: data.type.id,
           icon: data.icon,
         },
       });

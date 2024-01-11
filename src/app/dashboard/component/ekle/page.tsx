@@ -21,6 +21,7 @@ import {
 import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
 import { createComponent, getTypes } from "@/services/dashboard";
+import { CreateComponentDto } from "@/services/dto/component.dto";
 import { TypeDto } from "@/services/dto/type.dto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PlusCircle, Trash2Icon } from "lucide-react";
@@ -40,7 +41,7 @@ export default function AddComponentPage() {
   );
 
   const componentMutation = useMutation(
-    (data: any) => {
+    (data: CreateComponentDto) => {
       return createComponent({
         data: data,
       });
@@ -57,7 +58,11 @@ export default function AddComponentPage() {
     tag: {
       name: "",
     },
-    type_id: null,
+    type: {
+      id: null,
+      name: "",
+      table_id: null,
+    },
     icon: "",
     props: [
       {
@@ -85,7 +90,11 @@ export default function AddComponentPage() {
     tag: {
       name: string;
     };
-    type_id?: number | null;
+    type: {
+      id: number | null;
+      name: string;
+      table_id?: number | null;
+    };
     icon: string;
     props: {
       key: string;
@@ -99,23 +108,29 @@ export default function AddComponentPage() {
 
   const onSubmit = (data: DefaultValues) => {
     componentMutation.mutate({
+      id: 0,
       name: data.name,
       tag: {
+        id: 0,
         name: data.tag.name,
       },
-      type_id: Number(data.type_id),
+      type: {
+        id: Number(data.type.id),
+        name: data.type.name,
+        table_id: Number(data.type.table_id),
+      },
       icon: data.icon,
       props: data.props.map((prop) => ({
         prop: {
+          id: 0,
           key: prop.key,
-          type_id: Number(prop.type.id),
           type: {
             id: Number(prop.type.id),
             name: prop.type.name,
             table_id: Number(prop.type.table_id),
           },
-          value: "",
         },
+        value: "",
       })),
     });
   };
@@ -169,13 +184,23 @@ export default function AddComponentPage() {
           />
           <FormField
             control={form.control}
-            name={"type_id"}
+            name={"type.id"}
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Tip</FormLabel>
 
                 <Select
-                  onValueChange={field.onChange}
+                  onValueChange={(e) => {
+                    field.onChange(e);
+                    if (componentTypes) {
+                      const type = componentTypes.find(
+                        (item) => item.id === Number(e)
+                      );
+                      if (!type) return;
+                      form.setValue(`type.name`, type.name);
+                      form.setValue(`type.table_id`, type.table_id);
+                    }
+                  }}
                   defaultValue={String(field.value)}
                 >
                   <FormControl>
@@ -218,20 +243,20 @@ export default function AddComponentPage() {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <Select
-                          onValueChange={() => {
-                            field.onChange;
+                          onValueChange={(e) => {
+                            field.onChange(e);
                             if (propTypes) {
+                              const prop = propTypes.find(
+                                (item) => item.id === Number(e)
+                              );
+                              if (!prop) return;
                               form.setValue(
                                 `props.${index}.type.name`,
-                                propTypes!.find(
-                                  (item) => item.id === Number(field.value)
-                                )!.name
+                                prop.name
                               );
                               form.setValue(
                                 `props.${index}.type.table_id`,
-                                propTypes!.find(
-                                  (item) => item.id === Number(field.value)
-                                )!.table_id
+                                prop.table_id
                               );
                             }
                           }}

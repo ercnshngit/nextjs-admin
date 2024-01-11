@@ -13,7 +13,15 @@ import { useTranslate } from "@/langs";
 import { DataTable } from "../data-table/data-table";
 import { useSearchParams } from "next/navigation";
 
-export default function ListPage({ slug, data }: { slug: string; data: any }) {
+export default function ListPage({
+  slug,
+  data,
+  headerButtonSlot,
+}: {
+  slug: string;
+  data: any;
+  headerButtonSlot?: React.ReactNode;
+}) {
   const searchParams = useSearchParams();
   const page = searchParams.get("page");
   const filterBy = searchParams.get("filterBy");
@@ -54,7 +62,8 @@ export default function ListPage({ slug, data }: { slug: string; data: any }) {
       <div className="flex justify-between mb-4">
         <h3 className="text-lg font-medium">{translate(tableName)}</h3>
         {table?.can_create !== false && (
-          <div>
+          <div className="flex gap-4 items-center">
+            {headerButtonSlot}
             <Button asChild>
               <Link href={"/dashboard/" + tableName + "/ekle"}>
                 <PlusCircledIcon className="w-4 h-4 mr-2" />

@@ -1,26 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { useDesigner } from "@/contexts/designer-context";
-import { ComponentDto } from "@/services/dto/component.dto";
-import React, { useEffect } from "react";
-import SidebarComponent from "../sidebar-component";
-import { useQuery } from "@tanstack/react-query";
-import { getComponents, getTypes } from "@/services/dashboard";
-import SidebarInputFactory from "../sidebar-input-factory";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTranslate } from "@/langs";
-import TextInput from "../sidebar-input-factory/components/text-input";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -28,11 +14,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { slugify } from "@/utils/slugify";
-import RichTextEditor from "../sidebar-input-factory/components/rich-text";
-import ImagePickerInput from "../sidebar-input-factory/components/image-picker-input";
+import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDesigner } from "@/contexts/designer-context";
+import { useTranslate } from "@/langs";
+import { getComponents, getTypes } from "@/services/dashboard";
+import { ComponentDto } from "@/services/dto/component.dto";
 import { TypeDto } from "@/services/dto/type.dto";
-import JSONEditInput from "../json-edit-input";
+import { slugify } from "@/utils/slugify";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import SidebarComponent from "../sidebar-component";
+import SidebarInputFactory from "../sidebar-input-factory";
+import ImagePickerInput from "../sidebar-input-factory/components/image-picker-input";
+import RichTextEditor from "../sidebar-input-factory/components/rich-text";
+import TextInput from "../sidebar-input-factory/components/text-input";
+
 export default function DesignerSidebar() {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
     ["components"],

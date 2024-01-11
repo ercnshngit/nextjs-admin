@@ -50,16 +50,17 @@ const getData = async (filenames: string[]) => {
         );
         const Component = componentModule.default;
 
-        const staticComponent = React.createElement(Component, {
-          title: "sadfdsf",
-        });
+        const staticComponent = React.createElement(Component);
 
         const htmlRendered =
           ReactDOMServer.renderToStaticMarkup(staticComponent);
 
         components.push({
           name: file,
-          renderString: htmlRendered,
+          displayName: Component.displayName,
+          iconName: Component.iconName,
+          typeName: Component.typeName,
+          defaultProps: Component.defaultProps,
           componentPropsTypes: zodToJsonSchema(
             componentModule.propsSchema,
             "componentPropTypes"

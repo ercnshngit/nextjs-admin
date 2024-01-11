@@ -1,9 +1,6 @@
-import { getComponents } from "@/services/dashboard";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { ComponentDto } from "@/services/dto/component.dto";
-import { ComponentPropDto } from "@/services/dto/prop.dto";
 import { LogService } from "@/services/log.service";
-import { useQuery } from "@tanstack/react-query";
 
 export function transformInput({
   input,
@@ -83,12 +80,23 @@ export function transformInput({
         const prop = existingComponentProps.find((prop) => prop.key === key);
 
         const existingProp = prop
-          ? { ...prop, type_id: prop.type.id, type: undefined }
+          ? {
+              ...prop,
+              type_id: prop.type.id,
+              type: {
+                id: prop.type.id,
+                name: prop.type.name,
+              },
+            }
           : {
-            id: 0,
-            key: key,
-            type_id: 5,
-          };
+              id: 0,
+              key: key,
+              type: {
+                // TODO: Burası saçma bi bak
+                id: 0,
+                name: "string",
+              },
+            };
         return {
           id: 0,
           prop: existingProp,
@@ -104,7 +112,10 @@ export function transformInput({
             prop: {
               id: 37,
               key: "value", // TODO: Burası saçma
-              type_id: 5,
+              type: {
+                id: 0,
+                name: "string",
+              },
             },
             value: child,
           };
@@ -117,14 +128,14 @@ export function transformInput({
       if (child === " " || child === "" || child === "\n") return;
       Array.isArray(child)
         ? temp.push(
-          ...transformInput({
-            components: components,
-            input: child,
-            code: newCode,
-            depth: newdepth,
-            order: neworder,
-          })
-        )
+            ...transformInput({
+              components: components,
+              input: child,
+              code: newCode,
+              depth: newdepth,
+              order: neworder,
+            })
+          )
         : null;
     });
   return temp.flat();

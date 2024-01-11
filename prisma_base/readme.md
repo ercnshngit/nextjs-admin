@@ -1,1 +1,0 @@
-Bu klasör yeni güncellemelerde updatelenen forkların database şemaları bozulmaması içindir. Bu klasörün adını prisma olarak değiştirip kendi şemanızla birleştiriniz!

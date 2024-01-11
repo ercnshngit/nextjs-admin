@@ -2,6 +2,7 @@ import axiosClient from "@/libs/axios";
 import { BlockDto } from "./dto/block.dto";
 import { MenuDto } from "./dto/menu.dto";
 import { CREATE_MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
+import { CreateComponentDto } from "./dto/component.dto";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -23,12 +24,25 @@ export const getComponents = async () => {
   return data;
 };
 
+export const getComponentsFromFolder = async () => {
+  const { data } = await axiosClient.get("/component/file-system-api");
+  return data;
+};
+export const createComponentsFromFolder = async () => {
+  const { data } = await axiosClient.post("/component/file-system-api", {});
+  return data;
+};
+
 export const createComponentsInBlock = async ({ data }: any) => {
   const res = await axiosClient.post("/block/component", data);
   return res;
 };
 
-export const createComponent = async ({ data }: any) => {
+export const createComponent = async ({
+  data,
+}: {
+  data: CreateComponentDto;
+}) => {
   const res = await axiosClient.post("/component", data);
   return res;
 };
