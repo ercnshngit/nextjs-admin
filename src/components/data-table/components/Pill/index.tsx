@@ -23,8 +23,10 @@ export default function Pill({
         }
       </div>
     );
-  } else {
+  } else if (column.column_relations[0]?.referenced_table) {
     return <RelationPill value={value} column={column} />;
+  } else {
+    return <Badge variant={"secondary"}>{value}</Badge>;
   }
 }
 

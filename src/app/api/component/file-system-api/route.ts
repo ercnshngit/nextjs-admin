@@ -18,10 +18,6 @@ export async function POST(req: NextRequest) {
     const components = await getData(filenames);
 
     components?.forEach(async (component) => {
-      console.log(component.name);
-      console.log(component.componentPropsTypes.definitions);
-      console.log(component.componentPropsTypes.definitions.componentPropTypes);
-      console.log(typeof component.componentPropsTypes.definitions);
       const data = {
         id: 0,
         name: component.displayName || component.name,
@@ -38,7 +34,6 @@ export async function POST(req: NextRequest) {
           component.componentPropsTypes.definitions.componentPropTypes
             ?.properties
         ).map((i) => {
-          console.log(i);
           return {
             prop: {
               id: 0,
@@ -86,7 +81,6 @@ const getData = async (filenames: string[]) => {
   try {
     const components = [];
     for (const file of filenames) {
-      console.log(file);
       if (!file) throw new Error("File not found");
       const componentModule = await import(
         "../../../../components/block-builder/block-renderer/components/tags/" +

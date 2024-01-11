@@ -1,6 +1,10 @@
 import { prisma } from "@/libs/prisma";
 import { Encryptor } from "@/services/functions/encryptor";
-import { StartupService, apiPaths, getAllApiPaths } from "@/services/startup.service";
+import {
+  StartupService,
+  apiPaths,
+  getAllApiPaths,
+} from "@/services/startup.service";
 import { TableService } from "@/services/table.service";
 import { TranslationService } from "@/services/translation.service";
 import { TypeService } from "@/services/type.service";
@@ -11,15 +15,15 @@ const tableService = new TableService("table-config-script");
 const translationService = new TranslationService("table-config-script");
 const startupService = new StartupService("table-config-script");
 
-async function test() {
-  
-  const deneme = await getAllApiPaths("./src/app/api", 10);
-  console.log("deneme :", deneme);
-  console.log("api_paths :", apiPaths);
-}
+// async function test() {
 
-test();
-/*
+//   const deneme = await getAllApiPaths("./src/app/api", 10);
+//   console.log("deneme :", deneme);
+//   console.log("api_paths :", apiPaths);
+// }
+
+// test();
+
 async function createTableConfig() {
   try {
     const tables = await tableService.createTableConfigOnlyTableNames();
@@ -84,4 +88,3 @@ async function createTableConfig() {
 }
 
 createTableConfig();
-*/
