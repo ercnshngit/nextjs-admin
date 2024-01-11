@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyJwtToken } from "@/libs/jose";
 import { isAuthenticated } from "./services/auth/authenticator";
 import cors from "./utils/cors";
+import { ApiRouteConstants } from "../constants/api-route.constants";
 
 const isAuthPages = (url: string) =>
   url === "/" || url.startsWith("/?") || url.startsWith("/register");
 
-const PARAM = "param"; // tek bir yerden tanımlanıp kontrol edilmesi amacıyla yapıldı. Eğer path içerisinde parametre varsa, bu değişken ile kontrol edilecek.
 const authPassPaths = [
   { path: "/api/auth/login", method: "POST", hasParams: false },
   { path: "/api/auth/register", method: "POST", hasParams: false },
@@ -15,17 +15,17 @@ const authPassPaths = [
   { path: "/api/generals", method: "GET", hasParams: false },
   { path: "/api/component-render", method: "GET", hasParams: false },
   { path: "/api/translation/create", method: "POST", hasParams: false },
-  { path: `/api/block/component/get/${PARAM}`, method: "GET", hasParams: true },
+  { path: `/api/block/component/get/${ApiRouteConstants.PARAM}`, method: "GET", hasParams: true },
   { path: `/api/mail/send-contact-mail`, method: "POST", hasParams: false },
-  { path: `/api/table/${PARAM}`, method: "GET", hasParams: true },
-  { path: `/api/table/${PARAM}/${PARAM}`, method: "GET", hasParams: true },
+  { path: `/api/table/${ApiRouteConstants.PARAM}`, method: "GET", hasParams: true },
+  { path: `/api/table/${ApiRouteConstants.PARAM}/${ApiRouteConstants.PARAM}`, method: "GET", hasParams: true },
   {
-    path: `/api/table/${PARAM}/byslug/${PARAM}`,
+    path: `/api/table/${ApiRouteConstants.PARAM}/byslug/${ApiRouteConstants.PARAM}`,
     method: "GET",
     hasParams: true,
   },
   {
-    path: `/api/table/${PARAM}/update/${PARAM}`,
+    path: `/api/table/${ApiRouteConstants.PARAM}/update/${ApiRouteConstants.PARAM}`,
     method: "GET",
     hasParams: true,
   },
@@ -42,7 +42,7 @@ function isPathHasAuthPass(path: string, request: any): boolean {
         let isSame = true;
         for (let i = 0; i < pathSplit.length; i++) {
           // pathlerin her bir elemanı kontrol ediliyor
-          if (authPassPathSplit[i] === PARAM) {
+          if (authPassPathSplit[i] === ApiRouteConstants.PARAM) {
             // eğer parametreyse kontrol edilmiyor VE BU SEKILDE o / x / arasındakı parametre degerıde pass gecılıyor
             continue;
           }
