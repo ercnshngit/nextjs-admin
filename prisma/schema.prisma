@@ -198,8 +198,8 @@ model block_component_prop {
   block_component_id Int
   value              String @db.Text
 
-  prop            prop?            @relation("fk_bcomp_prop_id", fields: [prop_id], references: [id], map: "fk_bcomp_prop_id") //many to one
-  block_component block_component? @relation("fk_bcomp_block_component_id", fields: [block_component_id], references: [id], map: "fk_bcomp_block_component_id") //many to one
+  prop            prop?            @relation("fk_bcomp_prop_id", fields: [prop_id], references: [id], map: "fk_bcomp_prop_id", onDelete: Cascade) //many to one
+  block_component block_component? @relation("fk_bcomp_block_component_id", fields: [block_component_id], references: [id], map: "fk_bcomp_block_component_id", onDelete: Cascade) //many to one
 }
 
 model component {
@@ -221,8 +221,8 @@ model component_prop {
   component_id Int
   prop_id      Int
 
-  component component? @relation("fk_compp_component_id", fields: [component_id], references: [id], map: "fk_compp_component_id") //many to one
-  prop      prop?      @relation("fk_compp_prop_id", fields: [prop_id], references: [id], map: "fk_compp_prop_id") //many to one
+  component component? @relation("fk_compp_component_id", fields: [component_id], references: [id], map: "fk_compp_component_id", onDelete: Cascade) //many to one
+  prop      prop?      @relation("fk_compp_prop_id", fields: [prop_id], references: [id], map: "fk_compp_prop_id", onDelete: Cascade) //many to one
 }
 
 model prop {

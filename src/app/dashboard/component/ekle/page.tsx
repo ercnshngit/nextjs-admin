@@ -112,6 +112,7 @@ export default function AddComponentPage() {
           type: {
             id: Number(prop.type.id),
             name: prop.type.name,
+            table_id: Number(prop.type.table_id),
           },
           value: "",
         },
