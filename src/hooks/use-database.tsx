@@ -3,6 +3,7 @@ import {
   createTableConfig,
   deleteTableConfig,
   getTableConfig,
+  getTableItemByColumnAndValue,
   getTablesConfigs,
   getTablesStructure,
   recreateTableConfig,
@@ -28,6 +29,26 @@ export function useTable(table_name: string) {
   const sortables = table?.columns?.filter((table) => table.is_sortable);
 
   return { table, filterables, sortables, searchables, isLoading, error };
+}
+
+export function useTableDataByColumnAndValue(
+  tableName: string,
+  column: string,
+  value: string
+) {
+  const {
+    data: item,
+    error: error,
+    isLoading: isLoading,
+  } = useQuery([tableName, column, value], () =>
+    getTableItemByColumnAndValue({
+      tableName,
+      column,
+      value,
+    })
+  );
+
+  return { item, isLoading, error };
 }
 
 export const useConfigs = () => {

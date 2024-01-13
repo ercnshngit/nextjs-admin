@@ -11,10 +11,10 @@ import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import JSONInput from "./components/json-input";
 
 type SidebarInputFactoryProps = {
-  blockComponentProp: ComponentPropDto;
   value: any;
+  propKey: string;
+  typeName: string;
   setValue: any;
-  blockComponent: BlockComponentDto;
   customInput?: {
     for: string;
     component: React.FC<any>;
@@ -23,14 +23,15 @@ type SidebarInputFactoryProps = {
 
 export default function SidebarInputFactory({
   customInput,
-  blockComponentProp,
+  propKey,
+  typeName,
   ...props
 }: SidebarInputFactoryProps) {
   const { translate } = useTranslate();
 
   if (customInput) {
     const CustomInputItem = customInput.find(
-      (item) => item.for === blockComponentProp.prop.key
+      (item) => item.for === propKey
     )?.component;
     if (CustomInputItem) {
       return <CustomInputItem {...props} />;
@@ -38,32 +39,26 @@ export default function SidebarInputFactory({
   }
 
   const getInputComponent = () => {
-    if (blockComponentProp.prop.type.name.startsWith("json")) {
-      return <JSONInput key={blockComponentProp.prop.key} {...props} />;
+    if (typeName.startsWith("json")) {
+      return <JSONInput key={propKey} {...props} />;
     } else {
-      switch (blockComponentProp.prop.type.name) {
+      switch (typeName) {
         case "text":
-          return <TextInput key={blockComponentProp.prop.key} {...props} />;
+          return <TextInput key={propKey} {...props} />;
         case "image":
-          return (
-            <ImagePickerInput key={blockComponentProp.prop.key} {...props} />
-          );
+          return <ImagePickerInput key={propKey} {...props} />;
         case "richtext":
-          return (
-            <RichTextEditor key={blockComponentProp.prop.key} {...props} />
-          );
+          return <RichTextEditor key={propKey} {...props} />;
         default:
-          return <TextInput key={blockComponentProp.prop.key} {...props} />;
+          return <TextInput key={propKey} {...props} />;
       }
     }
   };
 
   return (
     <div className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200">
-      <Label htmlFor={blockComponentProp.prop.key}>
-        {translate(blockComponentProp.prop.key)}
-      </Label>
-      <p className="text-xs text-gray-400">{blockComponentProp.prop.key}</p>
+      <Label htmlFor={propKey}>{translate(propKey)}</Label>
+      <p className="text-xs text-gray-400">{propKey}</p>
       {getInputComponent()}
     </div>
   );

@@ -98,7 +98,15 @@ export class TableService extends LogService {
     }
   }
 
-  async getTableByColumn(table_name: string, value: string, column: string) {
+  async getTableByColumn({
+    table_name,
+    column,
+    value,
+  }: {
+    table_name: string;
+    column: string;
+    value: string;
+  }) {
     try {
       console.log(value);
 

@@ -5,16 +5,17 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { table_name: string; slug: string } }
+  { params }: { params: { table_name: string; column: string; value: string } }
 ) {
   const table_name = params.table_name;
-  const slug = params.slug;
+  const column = params.column;
+  const value = params.value;
   const tableService = new TableService(req.nextUrl.pathname);
   try {
     const res = await tableService.getTableByColumn({
       table_name: table_name,
-      column: "slug",
-      value: slug,
+      column: column,
+      value: value,
     });
     return cors(req, res);
   } catch (error) {

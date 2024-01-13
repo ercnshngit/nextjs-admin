@@ -68,7 +68,6 @@ export default function DesignerSidebar() {
   }, [block, form.reset]);
 
   const onSubmit = (data: any) => {
-    console.log(data);
     setUpdateBlockData({
       title: data.title,
       slug: data.slug,
@@ -116,9 +115,9 @@ export default function DesignerSidebar() {
                 }
                 return (
                   <SidebarInputFactory
-                    blockComponent={selectedElement}
+                    propKey={prop.prop.key}
+                    typeName={prop.prop.type.name}
                     key={prop.prop.key}
-                    blockComponentProp={prop}
                     setValue={(value: string) =>
                       updateElement(selectedElement.code, {
                         ...selectedElement,

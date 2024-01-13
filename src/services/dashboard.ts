@@ -213,3 +213,18 @@ export const getDashboard = async () => {
   const { data: responseData } = await axiosClient.get("/dashboard");
   return responseData;
 };
+
+export const getTableItemByColumnAndValue = async ({
+  tableName,
+  column,
+  value,
+}: {
+  tableName: string;
+  column: string;
+  value: string | number;
+}) => {
+  const { data: responseData } = await axiosClient.get(
+    `/table/${tableName}/by/${column}/${value}`
+  );
+  return responseData;
+};
