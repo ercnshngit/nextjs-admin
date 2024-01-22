@@ -352,6 +352,12 @@ export class ErrorMessages {
       en: "Table config cannot update.",
     };
   }
+  static PERMISSION_ERROR() {
+    return {
+      tr: "Bu işlemi yapmak için yetkiniz bulunmamaktadır.",
+      en: "You do not have permission to do this.",
+    };
+  }
 }
 
 export class ConfirmMessages {

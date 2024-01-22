@@ -298,6 +298,7 @@ model permission {
   api_route api_route? @relation("fk_pr_api_route_id", fields: [api_route_id], references: [id], map: "fk_pr_api_route_id")
 
   permission_roles permission_role[] @relation("fk_pro_permission_id")
+   @@unique([api_route_id, is_auth, is_role], name: "ui_api_route_auth_role")
 }
 
 model api_route {
@@ -309,6 +310,8 @@ model api_route {
 
   table      database_table? @relation("fk_ar_table_id", fields: [table_id], references: [id], map: "fk_ar_table_id")
   permission permission[]    @relation("fk_pr_api_route_id")
+
+  @@unique([path, method], name: "ui_path_method")
 }
 
 model permission_role {
