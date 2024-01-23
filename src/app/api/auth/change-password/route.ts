@@ -3,14 +3,14 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest)  {
-  const authService = new AuthService(request.nextUrl.pathname);
+  const service = new AuthService(request);
   try {
+    await service.securiyCheck();
     const body = await request.json();
     const userId = request.headers.get("user_id");
-    return cors(request, await authService.changePassword(body, userId));
+    return cors(request, await service.changePassword(body, userId));
   } catch (error) {
-    await authService.createLog({ error });
-    return cors(request, new Response(JSON.stringify({ status: "error", message: error }), { status: 500 }));
+    return service.createLogAndResolveError(error);
   }
 }
 

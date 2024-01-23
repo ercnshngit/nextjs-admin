@@ -2,8 +2,13 @@ import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { CreateComponentPropDto } from "./dto/prop.dto";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class ComponentPropService extends LogService{
+export class ComponentPropService extends BaseService{
+    constructor(request?: any) {
+        super(request);
+    }
+    
     async getComponentProp(id: number) {
         const component_prop = await prisma.component_prop.findUnique({ where: { id } })
         if (!component_prop) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }

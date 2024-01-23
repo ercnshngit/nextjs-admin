@@ -2,8 +2,14 @@ import { prisma } from "@/libs/prisma";
 import { TagDto } from "./dto/tag.dto";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class TagService extends LogService{
+export class TagService extends BaseService{
+
+    constructor(request?: any) {
+        super(request);
+    }
+
     async getTag(id: number) {
         const tag = await prisma.tag.findUnique({ where: { id } })
         if (!tag) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }

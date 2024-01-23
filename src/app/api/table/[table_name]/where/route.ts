@@ -8,16 +8,14 @@ export async function POST(
   { params }: { params: { table_name: string } }
 ) {
   const table_name = params.table_name;
-  const tableService = new TableService(req.nextUrl.pathname);
+  const service = new TableService(req);
   try {
+    await service.securiyCheck();
     const body = await req.json();
-    const res = await tableService.getTableWithWhere(table_name, body);
+    const res = await service.getTableWithWhere(table_name, body);
     return cors(req, res);
   } catch (error) {
-    console.log(error)
-    await tableService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

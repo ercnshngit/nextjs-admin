@@ -5,13 +5,13 @@ import { NextRequest } from "next/server";
 export async function POST(
   request: NextRequest,
 ) {
-  const authService = new AuthService(request.nextUrl.pathname)
+  const service = new AuthService(request)
   try {
+    await service.securiyCheck();
     const body = await request.json()
-    return cors(request, await authService.registerUser(body));
+    return cors(request, await service.registerUser(body));
   } catch (error) {
-    await authService.createLog({ error });
-    return cors(request, new Response(JSON.stringify({ status: "error", message: error })));
+    return service.createLogAndResolveError(error);
   }
 }
 

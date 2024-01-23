@@ -3,34 +3,24 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const propService = new PropService(req.nextUrl.pathname);
+  const service = new PropService(req);
   try {
-    const res = await propService.getProps();
+    await service.securiyCheck();
+    const res = await service.getProps();
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await propService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 
 export async function POST(req: NextRequest) {
-  const propService = new PropService(req.nextUrl.pathname);
+  const service = new PropService(req);
   try {
+    await service.securiyCheck();
     const body = await req.json();
-    const res = await propService.createProp(body);
+    const res = await service.createProp(body);
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await propService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

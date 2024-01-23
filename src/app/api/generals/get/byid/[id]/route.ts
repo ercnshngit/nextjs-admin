@@ -6,15 +6,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const generalService = new GeneralService(req.nextUrl.pathname);
+  const service = new GeneralService(req);
   try {
-    const response = await generalService.getGeneralById(Number(params.id));
-
+    await service.securiyCheck();
+    const response = await service.getGeneralById(Number(params.id));
     return cors(req, response);
   } catch (error) {
-    console.log(error);
-    await generalService.createLog({ error });
-    return cors(req, new Response(JSON.stringify(error), { status: 400 }));
+    return await service.createLogAndResolveError(error);
   }
 }
 
@@ -22,19 +20,13 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const generalService = new GeneralService(req.nextUrl.pathname);
+  const service = new GeneralService(req);
   try {
+    await service.securiyCheck();
     const body = await req.json();
-    return await generalService.updateGeneral(Number(params.id), body);
+    return await service.updateGeneral(Number(params.id), body);
   } catch (error) {
-    console.log(error);
-    await generalService.createLog({ error });
-    return cors(
-      req,
-      new Response(null, {
-        status: 204,
-      })
-    );
+    return await service.createLogAndResolveError(error);
   }
 }
 

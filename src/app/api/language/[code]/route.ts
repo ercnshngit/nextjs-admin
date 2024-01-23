@@ -7,14 +7,13 @@ export async function GET(
   params: { params: { code: string } }
 ) {
   const code = params.params.code
-  const languageService = new LanguageService(req.nextUrl.pathname)
+  const service = new LanguageService(req)
   try {
-    const res = await languageService.getLanguageByCode(code)
+    await service.securiyCheck()
+    const res = await service.getLanguageByCode(code)
     return cors(req, res);
   } catch (error) {
-    await languageService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

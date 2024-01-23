@@ -7,15 +7,14 @@ export async function POST(
   { params }: { params: { column_id: number } }
 ) {
   const column_id = params.column_id
-  const tableService = new TableService(req.nextUrl.pathname)
+  const service = new TableService(req)
   const body = await req.json()
   try {
-    const res = await tableService.createCrudOption(column_id, body);
+    await service.securiyCheck();
+    const res = await service.createCrudOption(column_id, body);
     return cors(req, res);
   } catch (error) {
-    await tableService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

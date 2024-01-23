@@ -6,14 +6,13 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const generalService = new GeneralService(req.nextUrl.pathname);
+  const service = new GeneralService(req);
   try {
-    const response = await generalService.getGeneralsBySlug(params.slug);
+    await service.securiyCheck();
+    const response = await service.getGeneralsBySlug(params.slug);
     return cors(req, response);
   } catch (error) {
-    console.log(error);
-    await generalService.createLog({ error });
-    return cors(req, new Response(JSON.stringify(error), { status: 400 }));
+    return await service.createLogAndResolveError(error);
   }
 }
 

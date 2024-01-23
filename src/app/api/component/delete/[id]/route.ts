@@ -6,17 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const componentService = new ComponentService(req.nextUrl.pathname);
+  const service = new ComponentService(req);
   try {
-    const res = await componentService.deleteComponent(Number(params.id));
+    await service.securiyCheck();
+    const res = await service.deleteComponent(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    await componentService.createLog({ error });
-    console.log(error);
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

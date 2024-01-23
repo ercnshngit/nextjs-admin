@@ -2,12 +2,18 @@ import { prisma } from "@/libs/prisma";
 import { BlockDto } from "@/services/dto/block.dto";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class BlockService extends LogService{
+export class BlockService extends BaseService{
+
+    constructor(request?: any) {
+        super(request);
+    }
+
     async getBlock(id: number) {
         const block = await this.checkBlockExist(id)
         if (block instanceof Response) { return block }
-        return new Response(JSON.stringify(block));
+        return new Response(JSON.stringify({ result : block }), { status: 200 });
     }
 
     async getBlocks() {

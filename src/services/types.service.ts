@@ -2,8 +2,12 @@ import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { TypeDto } from "./dto/type.dto";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class TypeService extends LogService{
+export class TypeService extends BaseService{
+    constructor(request?: any) {
+        super(request);
+    }
     async getType(id: number) {
         const type = await prisma.type.findUnique({ where: { id } })
         if (!type) {

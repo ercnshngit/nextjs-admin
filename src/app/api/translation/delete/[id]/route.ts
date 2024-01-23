@@ -7,15 +7,13 @@ export async function POST(
   params: { params: { id: number } }
 ) {
   const id = params.params.id
-  const translationService = new TranslationService(req.nextUrl.pathname)
+  const service = new TranslationService(req)
   try {
-    const res = await translationService.deleteTranslation(id)
+    await service.securiyCheck();
+    const res = await service.deleteTranslation(id)
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await translationService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

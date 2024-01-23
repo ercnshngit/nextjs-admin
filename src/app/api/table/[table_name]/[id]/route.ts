@@ -1,4 +1,3 @@
-import { LogService } from "@/services/log.service";
 import { TableService } from "@/services/table.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
@@ -9,14 +8,13 @@ export async function GET(
   ) {
     const table_name = params.table_name
     const id = params.id 
-    const tableService = new TableService(req.nextUrl.pathname)
+    const service = new TableService(req)
     try {
-      const res = await tableService.getTableById(table_name , id)
+      await service.securiyCheck()
+      const res = await service.getTableById(table_name , id)
       return cors(req, res); 
     } catch (error) {
-      await tableService.createLog({ error });
-      const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-      return cors(req, res);   
+      return await service.createLogAndResolveError(error);  
     }
 }
 

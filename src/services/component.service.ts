@@ -5,8 +5,14 @@ import {
 } from "../../constants/messages.constants";
 import { ComponentDto, CreateComponentDto } from "./dto/component.dto";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class ComponentService extends LogService {
+export class ComponentService extends BaseService {
+
+  constructor(request?: any) {
+    super(request);
+  }
+
   async getComponent(id: number) {
     const component = await prisma.component.findUnique({
       where: { id },

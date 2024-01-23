@@ -3,10 +3,14 @@ import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constan
 import { MenuDto } from "./dto/menu.dto";
 import { MenuFunctions } from "./functions/menu-functions";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
 const func = new MenuFunctions;
 
-export class MenuService extends LogService{
+export class MenuService extends BaseService{
+    constructor(request?: any) {
+        super(request);
+    }
 
     async getMenuById(id: number) {
         const menu = await prisma.menu.findMany({ where: { id } });

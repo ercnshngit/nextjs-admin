@@ -6,19 +6,14 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const blockComponentPropService = new BlockComponentPropService(req.nextUrl.pathname);
+  const service = new BlockComponentPropService(req);
   try {
-    const res = await blockComponentPropService.deleteBlockComponentProp(
+    await service.securiyCheck();
+    const res = await service.deleteBlockComponentProp(
       Number(params.id)
     );
     return cors(req, res);
   } catch (error) {
-    await blockComponentPropService.createLog({ error });
-    console.log(error);
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

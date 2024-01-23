@@ -6,17 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const menuService = new MenuService(req.nextUrl.pathname);
+  const service = new MenuService(req.nextUrl.pathname);
   try {
-    const res = await menuService.getMenuBySlug(params.slug);
+    await service.securiyCheck();
+    const res = await service.getMenuBySlug(params.slug);
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await menuService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

@@ -6,20 +6,15 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { type_id: string; slug: string } }
 ) {
-  const menuService = new MenuService(req.nextUrl.pathname);
+  const service = new MenuService(req);
   try {
-    const res = await menuService.getMenuByTypeAndSlug(
+    await service.securiyCheck();
+    const res = await service.getMenuByTypeAndSlug(
       Number(params.type_id),
       params.slug
     );
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await menuService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

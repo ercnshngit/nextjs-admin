@@ -12,7 +12,7 @@ export class LogService {
     if (error instanceof Object) {
       error = JSON.stringify(error);
     }
-    console.log("epathhhhhh : ", this.path);
+    console.log("log-path :: ", this.path);
     await prisma.log.create({
       data: {
         body: JSON.stringify(errorString != undefined ? errorString : error),

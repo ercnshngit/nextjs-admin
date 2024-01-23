@@ -3,13 +3,18 @@ import {
   ConfirmMessages,
   ErrorMessages,
 } from "../../constants/messages.constants";
+import { BaseService } from "./base.service";
 import {
   CreateBlockComponentsDto,
   UpdateBlockComponentDto,
 } from "./dto/block_component.dto";
-import { LogService } from "./log.service";
 
-export class BlockComponentService extends LogService {
+export class BlockComponentService extends BaseService {
+
+  constructor(request?: any) {
+    super(request);
+  }
+
   async getBlockComponent(block_id: number) {
     try {
       const blockComponent = await prisma.block_component.findMany({
@@ -47,10 +52,15 @@ export class BlockComponentService extends LogService {
           props: block_component_prop,
         };
       });
-
-      return new Response(JSON.stringify(result));
+      if (!result) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
-      await this.createLog({ error });
+      throw error;
     }
   }
 

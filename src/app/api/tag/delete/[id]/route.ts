@@ -6,17 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const tagService = new TagService(req.nextUrl.pathname);
+  const service = new TagService(req);
   try {
-    const res = await tagService.deleteTag(Number(params.id));
+    await service.securiyCheck();
+    const res = await service.deleteTag(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await tagService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

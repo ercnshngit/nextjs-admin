@@ -6,29 +6,27 @@ import { NextRequest } from "next/server";
 export async function POST(
   req: NextRequest,
 ) {
-  const languageService = new LanguageService(req.nextUrl.pathname)
+  const service = new LanguageService(req)
   try {
+    await service.securiyCheck()
     const body = await req.json()
-    const res = await languageService.createLanguage(body)
+    const res = await service.createLanguage(body)
     return cors(req, res);
   } catch (error) {
-    await languageService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 
 export async function GET(
   req: NextRequest,
 ) {
-  const languageService = new LanguageService(req.nextUrl.pathname)
+  const service = new LanguageService(req)
   try {
-    const res = await languageService.getLanguages()
+    await service.securiyCheck()
+    const res = await service.getLanguages()
     return cors(req, res);
   } catch (error) {
-    await languageService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

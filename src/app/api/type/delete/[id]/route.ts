@@ -6,17 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const typesService = new TypeService(req.nextUrl.pathname);
+  const service = new TypeService(req);
   try {
-    const res = await typesService.deleteType(Number(params.id));
+    await service.securiyCheck();
+    const res = await service.deleteType(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await typesService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

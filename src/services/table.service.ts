@@ -6,15 +6,18 @@ import {
 import { SqlConstants } from "../../constants/sql";
 import { InputTypes, TypeCategories } from "../../constants/types.constants";
 import { prisma } from "../libs/prisma";
-import { DatabaseTableDto } from "./dto/database-table.dto";
+import { BaseService } from "./base.service";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
-import { LogService } from "./log.service";
-import { table } from "console";
-import { th } from "date-fns/locale";
+import { DatabaseTableDto } from "./dto/database-table.dto";
 
 config();
-export class TableService extends LogService {
+export class TableService extends BaseService {
+  
+  constructor(request?: any) {
+    super(request);
+  }
+
   async getTableNames() {
     try {
       const tableNames = await prisma.$queryRawUnsafe(

@@ -6,17 +6,12 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const propService = new PropService(req.nextUrl.pathname);
+  const service = new PropService(req);
   try {
-    const res = await propService.deleteProp(Number(params.id));
+    await service.securiyCheck();
+    const res = await service.deleteProp(Number(params.id));
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await propService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }

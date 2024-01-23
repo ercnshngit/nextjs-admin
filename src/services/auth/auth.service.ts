@@ -7,10 +7,15 @@ import {
 } from "../../../constants/messages.constants";
 import { generateAccessToken } from "./jwt";
 import { LogService } from "../log.service";
+import { BaseService } from "../base.service";
 
 const encryptor = new Encryptor();
 
-export class AuthService extends LogService {
+export class AuthService extends BaseService {
+  constructor(request?: any) {
+    super(request);
+  }
+
   async login(
     data: {
       email: string;

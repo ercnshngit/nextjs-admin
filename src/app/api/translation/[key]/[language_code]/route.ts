@@ -6,17 +6,15 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { key: string, language_code: string } }
 ) {
-  const key = params.key
-  const lang_code = params.language_code
-  const translationService = new TranslationService(req.nextUrl.pathname)
+  const service = new TranslationService(req)
   try {
-    const res = await translationService.getTranslationWithKeyAndLangId(key, lang_code);
+    await service.securiyCheck();
+    const key = params.key
+    const lang_code = params.language_code
+    const res = await service.getTranslationWithKeyAndLangId(key, lang_code);
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await translationService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

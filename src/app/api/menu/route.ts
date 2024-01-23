@@ -3,37 +3,24 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const menuService = new MenuService(req.nextUrl.pathname);
+  const service = new MenuService(req);
   try {
-    const response = await menuService.getMenus();
+    await service.securiyCheck();
+    const response = await service.getMenus();
     return cors(req, response);
   } catch (error) {
-    console.log(error);
-    await menuService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 
 export async function POST(req: NextRequest) {
-  const menuService = new MenuService(req.nextUrl.pathname);
+  const service = new MenuService(req);
   try {
+    await service.securiyCheck();
     const body = await req.json();
-    const res = await menuService.createMenu(body);
+    const res = await service.createMenu(body);
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await menuService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
-
-//export async function OPTIONS(request: Request) { 
-//  return cors(
-//    request,
-//    new Response(null, {
-//      status: 204,
-//    })
-//  );
-//}

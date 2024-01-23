@@ -1,21 +1,18 @@
 import { TranslationService } from "@/services/translation.service";
 import cors from "@/utils/cors";
-import { getErrorMessage } from "@/utils/error-resolver";
 import { NextRequest } from "next/server";
 
 export async function POST(
   req: NextRequest,
 ) {
-  const translationService = new TranslationService(req.nextUrl.pathname)
+  const service = new TranslationService(req)
   try {
+    await service.securiyCheck();
     const body = await req.json()
-    const res = await translationService.createTranslation(body)
+    const res = await service.createTranslation(body)
     return cors(req, res);
   } catch (error : any) {
-    console.log("error message : ",getErrorMessage(error));
-    await translationService.createLog( error );
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

@@ -6,16 +6,14 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { key: string } }
 ) {
-  const key = params.key
-  const translationService = new TranslationService(req.nextUrl.pathname)
+  const service = new TranslationService(req)
   try {
-    const res = await translationService.getTranslationsWithKey(key)
+    await service.securiyCheck();
+    const key = params.key
+    const res = await service.getTranslationsWithKey(key)
     return cors(req, res);
   } catch (error) {
-    console.log(error);
-    await translationService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

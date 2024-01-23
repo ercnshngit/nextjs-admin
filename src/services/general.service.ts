@@ -5,8 +5,12 @@ import {
 } from "../../constants/messages.constants";
 import { GeneralDto } from "./dto/general.dto";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class GeneralService extends LogService{
+export class GeneralService extends BaseService{
+  constructor(request?: any) {
+    super(request);
+  }
   async getGeneralById(id: number) {
     const general = await prisma.general.findUnique({ where: { id } });
     if (!general) {

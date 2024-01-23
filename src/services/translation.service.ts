@@ -4,11 +4,12 @@ import { LogService } from "./log.service";
 import { getErrorMessage } from "@/utils/error-resolver";
 import { TranslationConstants } from "../../constants/translation.constants";
 import { stringify } from "querystring";
+import { BaseService } from "./base.service";
 
-export class TranslationService extends LogService{
+export class TranslationService extends BaseService{
 
-    constructor(path : string) {
-        super(path);
+    constructor(request?: any) {
+        super(request);
     }
 
     async getTranslationsWithKey(key: string) {

@@ -6,15 +6,14 @@ import { NextRequest } from "next/server";
 export async function POST(
   req: NextRequest,
 ) {
-  const tableService = new TableService(req.nextUrl.pathname)
+  const service = new TableService(req)
   const body = await req.json()
   try {
-    const res = await tableService.createColumnRelation(body)
+    await service.securiyCheck();
+    const res = await service.createColumnRelation(body)
     return cors(req, res);
   } catch (error) {
-    await tableService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

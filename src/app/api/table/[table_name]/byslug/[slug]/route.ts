@@ -9,21 +9,17 @@ export async function GET(
 ) {
   const table_name = params.table_name;
   const slug = params.slug;
-  const tableService = new TableService(req.nextUrl.pathname);
+  const service = new TableService(req);
   try {
-    const res = await tableService.getTableByColumn({
+    await service.securiyCheck();
+    const res = await service.getTableByColumn({
       table_name: table_name,
       column: "slug",
       value: slug,
     });
     return cors(req, res);
   } catch (error) {
-    await tableService.createLog({ error });
-    const res = new Response(
-      JSON.stringify({ status: "error", message: error }),
-      { status: 500 }
-    );
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

@@ -7,14 +7,13 @@ export async function POST(
   params: { params: { id: number } }
 ) {
   const id = params.params.id
-  const languageService = new LanguageService(req.nextUrl.pathname)
+  const service = new LanguageService(req)
   try {
-    const res = await languageService.deleteLanguage(id)
+    await service.securiyCheck()
+    const res = await service.deleteLanguage(id)
     return cors(req, res);
   } catch (error) {
-    await languageService.createLog({ error });
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

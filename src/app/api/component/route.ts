@@ -3,29 +3,25 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const componentService = new ComponentService(req.nextUrl.pathname);
+  const service = new ComponentService(req);
   try {
-    const res = await componentService.getComponents();
+    await service.securiyCheck();
+    const res = await service.getComponents();
     return cors(req, res);
   } catch (error) {
-    await componentService.createLog({ error });
-    console.log(error);
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 
 export async function POST(req: NextRequest) {
-  const componentService = new ComponentService(req.nextUrl.pathname)
+  const service = new ComponentService(req)
   try {
+    await service.securiyCheck()
     const body = await req.json()
-    const res = await componentService.createComponent(body)
+    const res = await service.createComponent(body)
     return cors(req, res);
   } catch (error) {
-    await componentService.createLog({ error });
-    console.log(error)
-    const res = new Response(JSON.stringify({ status: "error", message: error }), { status: 500 });
-    return cors(req, res);
+    return await service.createLogAndResolveError(error);
   }
 }
 

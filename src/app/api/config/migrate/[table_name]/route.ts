@@ -7,16 +7,12 @@ export async function GET(
     { params }: { params: { table_name: string}}
 ) {
     console.log("table_name", params.table_name);
-    const tableService = new TableService(req.nextUrl.pathname);
+    const service = new TableService(req);
     try {
-      const res = await tableService.migrateTableConfig(params.table_name);
+      await service.securiyCheck();
+      const res = await service.migrateTableConfig(params.table_name);
       return cors(req, res);
     } catch (error) {
-      await tableService.createLog({ error });
-      const res = new Response(
-        JSON.stringify({ status: "error", message: error }),
-        { status: 500 }
-      );
-      return cors(req, res);
+      return await service.createLogAndResolveError(error);
     }
   }

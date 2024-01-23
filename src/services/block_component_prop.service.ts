@@ -2,8 +2,14 @@ import { prisma } from "@/libs/prisma";
 import { ConfirmMessages, ErrorMessages } from "../../constants/messages.constants";
 import { BlockComponentPropDto } from "./dto/block_component_prop.dto";
 import { LogService } from "./log.service";
+import { BaseService } from "./base.service";
 
-export class BlockComponentPropService extends LogService{
+export class BlockComponentPropService extends BaseService{
+
+    constructor(request?: any) {
+        super(request);
+    }
+
     async getBlockComponentProp(id: number) {
         const blockComponentProp = await prisma.block_component_prop.findUnique({ where: { id } })
         if (!blockComponentProp) { return new Response(JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }), { status: 404 }); }
