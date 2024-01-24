@@ -13,7 +13,9 @@ export class PermissionService{
     async getApiRouteInfo(path: string, request: any) {
         try {
             const apiRoutes = await prisma.api_route.findMany();
+            console.log("apiRoutes : ", apiRoutes);
             const correctApi = this.findCorrectApiPath(request, apiRoutes);
+            console.log("correctApi : ", correctApi);
             const apiRouteInfo = await prisma.permission.findFirst({
                 include:{
                   api_route:true,
@@ -24,7 +26,7 @@ export class PermissionService{
                   }
                 },
                 where: {
-                  api_route_id: correctApi.id
+                  api_route_id: correctApi == undefined ? 0 : correctApi.id,
                 },
             });
             return apiRouteInfo;
