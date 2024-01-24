@@ -23,13 +23,14 @@ import { ComponentDto } from "@/services/dto/component.dto";
 import { TypeDto } from "@/services/dto/type.dto";
 import { slugify } from "@/utils/slugify";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import SidebarComponent from "../sidebar-component";
 import SidebarInputFactory from "../sidebar-input-factory";
 import ImagePickerInput from "../sidebar-input-factory/components/image-picker-input";
 import RichTextEditor from "../sidebar-input-factory/components/rich-text";
 import TextInput from "../sidebar-input-factory/components/text-input";
+import Loading from "@/components/loading";
 
 export default function DesignerSidebar() {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
@@ -114,26 +115,28 @@ export default function DesignerSidebar() {
                   return <div key={prop.prop.key}>.</div>;
                 }
                 return (
-                  <SidebarInputFactory
-                    propKey={prop.prop.key}
-                    typeName={prop.prop.type.name}
-                    key={prop.prop.key}
-                    setValue={(value: string) =>
-                      updateElement(selectedElement.code, {
-                        ...selectedElement,
-                        props: selectedElement.props.map((p) => {
-                          if (p.prop.key === prop.prop.key) {
-                            return {
-                              ...p,
-                              value: value,
-                            };
-                          }
-                          return p;
-                        }),
-                      })
-                    }
-                    value={prop.value}
-                  />
+                  <Suspense key={prop.prop.key} fallback={<Loading />}>
+                    <SidebarInputFactory
+                      propKey={prop.prop.key}
+                      typeName={prop.prop.type.name}
+                      key={prop.prop.key}
+                      setValue={(value: string) =>
+                        updateElement(selectedElement.code, {
+                          ...selectedElement,
+                          props: selectedElement.props.map((p) => {
+                            if (p.prop.key === prop.prop.key) {
+                              return {
+                                ...p,
+                                value: value,
+                              };
+                            }
+                            return p;
+                          }),
+                        })
+                      }
+                      value={prop.value}
+                    />
+                  </Suspense>
                 );
               })}
             </div>
@@ -166,7 +169,7 @@ export default function DesignerSidebar() {
 
                       <FormControl>
                         <TextInput
-                          key={field.name}
+                          propKey={field.name}
                           value={field.value}
                           setValue={field.onChange}
                         />
@@ -187,7 +190,7 @@ export default function DesignerSidebar() {
 
                       <FormControl>
                         <TextInput
-                          key={field.name}
+                          propKey={field.name}
                           value={slugify(
                             field.value ? field.value : title || ""
                           )}
@@ -210,7 +213,7 @@ export default function DesignerSidebar() {
 
                       <FormControl>
                         <RichTextEditor
-                          key={field.name}
+                          propKey={field.name}
                           value={field.value}
                           setValue={field.onChange}
                         />
@@ -288,7 +291,7 @@ export default function DesignerSidebar() {
 
                       <FormControl>
                         <ImagePickerInput
-                          key={field.name}
+                          propKey={field.name}
                           value={field.value}
                           setValue={field.onChange}
                         />
@@ -309,7 +312,7 @@ export default function DesignerSidebar() {
 
                       <FormControl>
                         <ImagePickerInput
-                          key={field.name}
+                          propKey={field.name}
                           value={field.value}
                           setValue={field.onChange}
                         />

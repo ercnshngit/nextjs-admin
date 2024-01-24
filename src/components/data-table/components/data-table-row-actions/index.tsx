@@ -20,7 +20,12 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
       <Button
         className="bg-blue-500"
         onClick={() => {
-          router.push("/dashboard/" + slug + "/" + row.original.id);
+          router.push(
+            "/dashboard/" +
+              (slug === "type"
+                ? "menu_type" + "/" + row.original.id
+                : slug + "/" + row.original.id)
+          );
         }}
       >
         Görüntüle
@@ -28,7 +33,12 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
       <Button
         variant={"secondary"}
         onClick={() => {
-          router.push("/dashboard/" + slug + "/" + row.original.id + "/update");
+          router.push(
+            "/dashboard/" +
+              (slug === "type"
+                ? "menu_type" + "/" + row.original.id
+                : slug + "/" + row.original.id)
+          );
         }}
       >
         Düzenle

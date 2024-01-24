@@ -11,7 +11,7 @@ import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
 
 import { DataTable } from "../data-table/data-table";
-import { useSearchParams } from "next/navigation";
+import useSearchParams from "@/hooks/use-search-params";
 
 export default function ListPage({
   slug,
@@ -23,13 +23,13 @@ export default function ListPage({
   headerButtonSlot?: React.ReactNode;
 }) {
   const searchParams = useSearchParams();
-  const page = searchParams.get("page");
-  const filterBy = searchParams.get("filterBy");
-  const filterValue = searchParams.get("filterValue");
+  const allParams = searchParams.getAllQueryString();
+  const page = Number(allParams?.["page"]) || 1;
 
   const { table, filterables, searchables } = useTable(slug);
 
   const tableName = table?.name || "";
+  console.log(slug);
   const tableColumns = columns(slug, table?.columns || []);
   const { translate } = useTranslate();
 
@@ -79,14 +79,18 @@ export default function ListPage({
             tableName={tableName}
             columns={tableColumns}
             data={
-              filterBy && filterValue
-                ? tableData.filter(
-                    (data: any) =>
-                      String(data[filterBy as any]) === String(filterValue)
+              Object.keys(allParams).length > 0
+                ? tableData.filter((data: any) =>
+                    Object.keys(allParams).every((key) =>
+                      data.hasOwnProperty(key)
+                        ? String(data[key as any]) ===
+                          String(allParams[key as any])
+                        : true
+                    )
                   )
                 : tableData
             }
-            page={page ? parseInt(page) : 1}
+            page={page ? page : 1}
             filterables={filterablesData}
             searchables={searchablesData}
             databaseTableColumns={table?.columns || []}

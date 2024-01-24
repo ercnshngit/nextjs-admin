@@ -5,7 +5,7 @@ import { PageComponent } from "@/types/page-component";
 import { createChildrenTree } from "../../utils/tree-operations";
 import { Icons } from "../../utils/icons";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
-import { componentTags } from "../../block-renderer/utils/component-tags";
+import { componentTags } from "../../../../block-renderer/utils/component-tags";
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);

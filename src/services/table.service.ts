@@ -111,13 +111,11 @@ export class TableService extends BaseService {
     value: string;
   }) {
     try {
-      console.log(value);
-
-      const query = SqlConstants.SELECT_ALL_WITH_COLUMN_NAME_QUERY(
-        table_name,
+      const query = SqlConstants.SELECT_ALL_WITH_COLUMN_NAME_QUERY({
+        tableName: table_name,
         value,
-        column
-      );
+        column,
+      });
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
         return new Response(

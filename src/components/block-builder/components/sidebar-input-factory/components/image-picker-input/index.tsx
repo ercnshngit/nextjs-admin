@@ -9,11 +9,11 @@ import React from "react";
 import { toast } from "react-toastify";
 
 export default function ImagePickerInput({
-  key,
+  propKey,
   value,
   setValue,
 }: {
-  key: string;
+  propKey: string;
   value: any;
   setValue: any;
 }) {
@@ -50,7 +50,7 @@ export default function ImagePickerInput({
     <>
       <input
         className="px-2 py-1 border border-gray-200 rounded-md "
-        id={key}
+        id={propKey}
         value={value}
       />
       <Button

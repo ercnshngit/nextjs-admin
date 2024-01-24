@@ -51,10 +51,32 @@ export default function useSearchParams() {
     [searchParams]
   );
 
+  const getMultipleQueryString = useCallback(
+    (names: string[]) => {
+      const params = new URLSearchParams(searchParams);
+      const values: { [key: string]: string } = {};
+      names.forEach((name) => {
+        values[name] = params.get(name) || "";
+      });
+      return values;
+    },
+    [searchParams]
+  );
+
+  const getAllQueryString = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    const values: { [key: string]: string } = {};
+    params.forEach((value, key) => {
+      values[key] = value;
+    });
+    return values;
+  }, [searchParams]);
   return {
     setQueryString,
     setQueryStringNoRefresh,
     getQueryString,
     setMultipleQueryString,
+    getMultipleQueryString,
+    getAllQueryString,
   };
 }

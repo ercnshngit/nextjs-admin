@@ -7,7 +7,7 @@ import { GeneralDto } from "./dto/general.dto";
 import { LogService } from "./log.service";
 import { BaseService } from "./base.service";
 
-export class GeneralService extends BaseService{
+export class GeneralService extends BaseService {
   constructor(request?: any) {
     super(request);
   }
@@ -41,6 +41,14 @@ export class GeneralService extends BaseService{
         { status: 404 }
       );
     }
+    return new Response(JSON.stringify(generals));
+  }
+
+  async getGeneralSlugs() {
+    const generals = await prisma.general.groupBy({
+      by: "slug",
+    });
+
     return new Response(JSON.stringify(generals));
   }
 

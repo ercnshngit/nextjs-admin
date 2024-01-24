@@ -228,3 +228,14 @@ export const getTableItemByColumnAndValue = async ({
   );
   return responseData;
 };
+
+export const getGeneralSlugs = async () => {
+  const { data: responseData } = await axiosClient.get("/general/slugs");
+  return responseData;
+};
+export const getGeneralBySlug = async (slug: string) => {
+  const { data: responseData } = await axiosClient.get(
+    "/general/get/byslug/" + slug
+  );
+  return responseData;
+};

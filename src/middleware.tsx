@@ -16,9 +16,10 @@ const authPassPaths = [
   { path: "/api/block", method: "GET", hasParams: false },
   { path: "/api/component", method: "GET", hasParams: false },
   { path: "/api/menu", method: "GET", hasParams: false },
-  { path: "/api/generals", method: "GET", hasParams: false },
+  { path: "/api/general", method: "GET", hasParams: false },
   { path: "/api/component-render", method: "GET", hasParams: false },
   { path: "/api/translation/create", method: "POST", hasParams: false },
+  { path: "/api/general/slugs", method: "GET", hasParams: false },
   {
     path: `/api/block/component/get/${ApiRouteConstants.PARAM}`,
     method: "GET",

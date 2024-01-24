@@ -18,7 +18,7 @@ export default function MenuType({ params }: { params: { id: string } }) {
   const id = params.id;
   const { data: menu_type, error: isError } = useQuery<MENU_TYPE, Error>(
     ["menu_type", id],
-    () => getTableItem({ id: Number(id), tableName: "menu_type" }),
+    () => getTableItem({ id: Number(id), tableName: "type" }),
     { enabled: !!id }
   );
   if (menu_type) {
@@ -69,7 +69,7 @@ function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
         <h3 className="text-lg font-medium">{translate("menu")}</h3>
         <div>
           <Button asChild>
-            <Link href={"/menu/ekle"}>
+            <Link href={"/dashboard/menu/ekle"}>
               <PlusCircledIcon className="w-4 h-4 mr-2" />
               Yeni {translate("menu")} ekle
             </Link>

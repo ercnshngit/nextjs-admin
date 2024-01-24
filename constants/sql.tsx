@@ -89,12 +89,19 @@ export class SqlConstants {
   }
 
   //TODO: Metem burası güvenli mi bi bak sdfsdfsd
-  static SELECT_ALL_WITH_COLUMN_NAME_QUERY(
-    tableName: string,
-    value: string,
-    column: string
-  ) {
-    return this.SELECT_ALL_WITH_WHERE_QUERRY(tableName, column + " = " + value);
+  static SELECT_ALL_WITH_COLUMN_NAME_QUERY({
+    tableName,
+    column,
+    value,
+  }: {
+    tableName: string;
+    value: string;
+    column: string;
+  }) {
+    return this.SELECT_ALL_WITH_WHERE_QUERRY(
+      tableName,
+      tableName + "." + column + " = '" + value + "'"
+    );
   }
 
   static UPDATE_QUERRY_WITH_ID(tableName: string, set: string, id: number) {

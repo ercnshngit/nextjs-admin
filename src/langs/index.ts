@@ -40,7 +40,7 @@ export const translations: Translations = {
     },
   },
 
-  generals: {
+  general: {
     tr: "Genel",
     en: "Generals",
     id: {

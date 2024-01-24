@@ -1,5 +1,6 @@
 "use client";
 import BaseForm from "@/components/base-form";
+import useSearchParams from "@/hooks/use-search-params";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { createTableItem } from "@/services/panel";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -31,21 +31,30 @@ export function useTable(table_name: string) {
   return { table, filterables, sortables, searchables, isLoading, error };
 }
 
-export function useTableDataByColumnAndValue(
-  tableName: string,
-  column: string,
-  value: string
-) {
+export function useTableDataByColumnAndValue({
+  tableName,
+  column,
+  value,
+  options,
+}: {
+  tableName: string;
+  column: string;
+  value: string;
+  options?: any;
+}) {
   const {
     data: item,
     error: error,
     isLoading: isLoading,
-  } = useQuery([tableName, column, value], () =>
-    getTableItemByColumnAndValue({
-      tableName,
-      column,
-      value,
-    })
+  } = useQuery(
+    [tableName, column, value],
+    () =>
+      getTableItemByColumnAndValue({
+        tableName,
+        column,
+        value,
+      }),
+    options
   );
 
   return { item, isLoading, error };

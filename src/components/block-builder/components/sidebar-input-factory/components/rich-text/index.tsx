@@ -2,7 +2,7 @@
 import { ComponentPropDto } from "@/services/dto/prop.dto";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import React from "react";
+import React, { useState } from "react";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { uploadMediaToServer } from "@/services/media";
 
@@ -138,20 +138,26 @@ const COLORS = [
 ];
 
 export default function RichTextEditor({
-  key,
+  propKey,
   value,
   setValue,
 }: {
-  key: string;
+  propKey: string;
   value: any;
   setValue: any;
 }) {
+  const [text, setText] = useState(value || "");
+  const handleSetValue = (value: string) => {
+    console.log(value);
+    setText(value);
+    setValue(value);
+  };
   return (
     <div className="border min-h-[100px] border-gray-200 rounded-md">
       <ReactQuill
         theme="snow"
-        value={value}
-        onChange={setValue}
+        value={text}
+        onChange={handleSetValue}
         modules={modules}
         formats={formats}
         className="h-full"

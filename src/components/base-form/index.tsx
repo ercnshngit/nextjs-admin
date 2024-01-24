@@ -6,6 +6,7 @@ import FormInputFactory from "./form-input-factory";
 import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
+import useSearchParams from "@/hooks/use-search-params";
 
 export default function BaseForm(props: {
   handleSubmit: any;
@@ -46,6 +47,8 @@ export default function BaseForm(props: {
       enabled: formType === "update_crud_option" && !!id,
     }
   );
+  const searchParams = useSearchParams();
+  const allParams = searchParams.getAllQueryString();
 
   return (
     <form
@@ -68,9 +71,11 @@ export default function BaseForm(props: {
               setValue={setValue}
               customInput={customInput}
               control={control}
-              {...(formType === "update_crud_option" && {
-                defaultValue: data[0][field.name] || field.name,
-              })}
+              {...(formType === "update_crud_option"
+                ? {
+                    defaultValue: data[0][field.name] || field.name,
+                  }
+                : { defaultValue: allParams[field.name] || field.name })}
             />
           ))}
 

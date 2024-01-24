@@ -3,12 +3,12 @@ import { ComponentPropDto } from "@/services/dto/prop.dto";
 import React from "react";
 
 export default function TextInput({
-  key,
+  propKey,
   value,
   setValue,
   ...rest
 }: {
-  key: string;
+  propKey: string;
   value: any;
   setValue: any;
 }) {
@@ -16,7 +16,7 @@ export default function TextInput({
     <input
       className="rounded-md border w-full border-gray-300 p-2"
       type="text"
-      id={key}
+      id={propKey}
       value={value}
       onChange={(e) => setValue(e.target.value)}
       {...rest}

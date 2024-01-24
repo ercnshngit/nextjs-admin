@@ -37,11 +37,13 @@ export function DataTableFacetedFilter<TData, TValue>({
   filterable,
 }: DataTableFacetedFilter<TData, TValue>) {
   const { data, error } = useQuery(
-    ["relation_column", filterable.column_relations[0].referenced_table_id],
+    ["relation_column", filterable.column_relations?.[0]?.referenced_table_id],
     () =>
-      getTable({
-        tableName: filterable.column_relations[0].referenced_table.name,
-      })
+      filterable.column_relations.length > 0
+        ? getTable({
+            tableName: filterable.column_relations[0].referenced_table.name,
+          })
+        : undefined
   );
 
   const facets = column?.getFacetedUniqueValues();
