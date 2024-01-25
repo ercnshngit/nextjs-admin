@@ -36,7 +36,16 @@ export default function UpdateFormBase({
       updateTableItem({
         tableName: table.name!,
         id: id,
-        data: Object.entries(data).map(([key, value]) => ({ key, value })),
+        data: Object.entries(data)
+          .map(([key, value]) =>
+            value === ""
+              ? null
+              : {
+                  key,
+                  value,
+                }
+          )
+          .filter((item) => item !== null),
       }),
     {
       onSuccess: async () => {

@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const service = new BlockComponentPropService(req.nextUrl.pathname);
+  const service = new BlockComponentPropService(req);
   try {
     await service.securiyCheck();
     const body = await req.json();

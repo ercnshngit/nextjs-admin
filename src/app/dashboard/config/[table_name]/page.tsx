@@ -478,42 +478,44 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.input_type_id`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center gap-4 justify-between p-3 border rounded-lg shadow-sm">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
+                          <FormItem className="flex flex-col  gap-4  p-3 border rounded-lg shadow-sm">
+                            <div className="w-full flex gap-4 items-center justify-between">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
 
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={String(field.value)}
-                            >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue
-                                    placeholder={translate(
-                                      "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
-                                    )}
-                                  />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {input_types?.map((input_type) => (
-                                  <SelectItem
-                                    key={input_type.id}
-                                    value={String(input_type.id)}
-                                  >
-                                    {translate(input_type.name)}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={String(field.value)}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      placeholder={translate(
+                                        "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
+                                      )}
+                                    />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {input_types?.map((input_type) => (
+                                    <SelectItem
+                                      key={input_type.id}
+                                      value={String(input_type.id)}
+                                    >
+                                      {translate(input_type.name)}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
 
                             <FormMessage />
 
@@ -571,38 +573,40 @@ function Options({ index, form }: { index: number; form: any }) {
     name: `columns.${index}.options`,
   });
 
+  const { translate } = useTranslate();
+
   return (
     <div>
-      <div style={{ marginLeft: 10, borderLeft: "2px solid red" }}>
+      <div className="border-l-2 border-red-500 ml-3 flex flex-col gap-4">
+        <div className="flex h-10 ml-3">
+          <p className="flex-1 font-semiBold">{translate("LABEL")}</p>
+          <p className="flex-1 font-semiBold">{translate("VALUE")}</p>
+          <div className="w-16" />
+        </div>
         {fields.map((item, k) => {
           return (
-            <div
-              key={item.id}
-              style={{
-                height: "50px",
-                display: "flex",
-                marginLeft: 10,
-              }}
-            >
+            <div key={item.id} className="flex h-10 ml-3 gap-2">
               <input
                 className="rounded-md border w-full border-gray-300 p-2"
                 {...form.register(
                   `columns.${index}.options.${k}.label` as const
                 )}
               />
+
               <input
                 className="rounded-md border w-full border-gray-300 p-2"
                 {...form.register(
                   `columns.${index}.options.${k}.value` as const
                 )}
               />
-              <button
+              <Button
                 type="button"
+                variant={"destructive"}
                 onClick={() => remove(k)}
-                style={{ height: "40px", marginTop: 0 }}
+                className="h-10 w-16"
               >
                 Delete
-              </button>
+              </Button>
             </div>
           );
         })}
@@ -613,13 +617,13 @@ function Options({ index, form }: { index: number; form: any }) {
         type="button"
         onClick={() =>
           append({
-            label: "item",
-            value: "sdfdsfs",
+            label: translate("LABEL"),
+            value: translate("VALUE"),
           })
         }
       >
         <PlusCircle className="w-4 h-4 mr-2" />
-        Append
+        {translate("APPEND")}
       </Button>
 
       <hr />

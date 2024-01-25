@@ -1,6 +1,6 @@
 export class TranslationConstants {
   static LANGUAGE_QUERY =
-    "INSERT INTO `language` (`id`, `name`, `code`) VALUES (1, 'English', 'en'), (2, 'Türkçe', 'tr');";
+    "INSERT INTO `language` (`id`, `name`, `code`) VALUES (1, 'English', 'en'), (2, 'Türkçe', 'tr') ON DUPLICATE KEY UPDATE id=id;";
   static TRANSLATION_QUERY = `INSERT INTO translation (id, translation.key, translated_text, language_code) VALUES
 (1, 'block', 'Blok', 'tr'),
 (3, 'user', 'Kullanıcı', 'tr'),
@@ -196,5 +196,9 @@ export class TranslationConstants {
 (203, 'CONFIG_DISPLAY_COLUMN_DESCRIPTION', 'Seçim kutusunda (Combobox, select vb.) gösterilecek sütunu seçmenizi sağlar.', 'tr'),
 (204, 'CONFIG_COLUMN_ORDER', 'Sütun sırası', 'tr'),
 (205, 'CONFIG_COLUMN_ORDER_DESCRIPTION', 'Sütun sırası ayarlanabilir.', 'tr'),
-(200, 'FORM_SUBMIT_UPDATE_CRUD_OPTION', 'Güncelle', 'tr');`;
+(206, 'APPEND', 'Ekle', 'tr'),
+(207, 'VALUE', 'Değer', 'tr'),
+(208, 'LABEL', 'Ad', 'tr'),
+(209, 'SELECT_OPTIONS', 'Seçenekler', 'tr'),
+(200, 'FORM_SUBMIT_UPDATE_CRUD_OPTION', 'Güncelle', 'tr') ON DUPLICATE KEY UPDATE id=id;`;
 }

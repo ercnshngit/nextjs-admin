@@ -12,15 +12,18 @@ import { useTranslate } from "@/langs";
 
 import { DataTable } from "../data-table/data-table";
 import useSearchParams from "@/hooks/use-search-params";
+import { Row } from "@tanstack/react-table";
 
 export default function ListPage({
   slug,
   data,
-  headerButtonSlot,
+  addButtonHref,
+  buttons,
 }: {
   slug: string;
   data: any;
-  headerButtonSlot?: React.ReactNode;
+  addButtonHref?: any;
+  buttons?: (row: Row<any>) => React.ReactNode;
 }) {
   const searchParams = useSearchParams();
   const allParams = searchParams.getAllQueryString();
@@ -29,8 +32,7 @@ export default function ListPage({
   const { table, filterables, searchables } = useTable(slug);
 
   const tableName = table?.name || "";
-  console.log(slug);
-  const tableColumns = columns(slug, table?.columns || []);
+  const tableColumns = columns(slug, table?.columns || [], buttons);
   const { translate } = useTranslate();
 
   const [tableData, setTableData] = useState(data);
@@ -63,9 +65,17 @@ export default function ListPage({
         <h3 className="text-lg font-medium">{translate(tableName)}</h3>
         {table?.can_create !== false && (
           <div className="flex gap-4 items-center">
-            {headerButtonSlot}
             <Button asChild>
-              <Link href={"/dashboard/" + tableName + "/ekle"}>
+              <Link
+                href={
+                  addButtonHref
+                    ? addButtonHref
+                    : {
+                        pathname: "/dashboard/" + tableName + "/ekle",
+                        query: searchParams.getAllQueryString(),
+                      }
+                }
+              >
                 <PlusCircledIcon className="w-4 h-4 mr-2" />
                 Yeni {translate(tableName)} ekle
               </Link>

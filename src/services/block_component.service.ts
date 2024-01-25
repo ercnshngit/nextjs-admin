@@ -8,9 +8,10 @@ import {
   CreateBlockComponentsDto,
   UpdateBlockComponentDto,
 } from "./dto/block_component.dto";
+import { BlockDto } from "./dto/block.dto";
+import { Prisma } from "@prisma/client";
 
 export class BlockComponentService extends BaseService {
-
   constructor(request?: any) {
     super(request);
   }
@@ -54,7 +55,9 @@ export class BlockComponentService extends BaseService {
       });
       if (!result) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR() }),
+          JSON.stringify({
+            message: ErrorMessages.BLOCK_COMPONENT_NOT_FOUND_ERROR(),
+          }),
           { status: 404 }
         );
       }
@@ -166,26 +169,60 @@ export class BlockComponentService extends BaseService {
 
   async createBlockComponent(data: CreateBlockComponentsDto) {
     try {
-      if (data.block_id) {
-        await this.deleteBlockComponentByBlockId(data.block_id);
+      // Delete all "block components" and "children" connected to the "block id"
+      if (data.block.id) {
+        await this.deleteBlockComponentByBlockId(data.block.id);
       }
 
       const results = [];
+      const block = (await this.getOrCreateItemFromDatabase({
+        data: data.block,
+        table: "block",
+      })) as BlockDto;
+
+      if (!block) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
+          { status: 400 }
+        );
+      }
 
       for (const item of data.block_components) {
-        const data = await this.getOrCreateBlockComponents(
-          item.component.tag,
-          item.component.type,
-          item.block,
-          item.component,
-          item.code
-        );
-        if (data instanceof Response) return data;
+        const check_code = await prisma.block_component.findFirst({
+          where: { code: item.code },
+        });
+        if (check_code) {
+          return new Response(
+            JSON.stringify({ message: ErrorMessages.DUPLICATE_CODE_ERROR() }),
+            { status: 400 }
+          );
+        }
+
+        const tag = await this.getOrCreateItemFromDatabase({
+          data: item.component.tag,
+          table: "tag",
+        });
+
+        const type = await this.getOrCreateItemFromDatabase({
+          data: item.component.type,
+          table: "type",
+        });
+
+        const component = await this.getOrCreateItemFromDatabase({
+          data: item.component,
+          table: "component",
+        });
+
+        if (!tag || !component || !type)
+          return new Response(
+            JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
+            { status: 400 }
+          );
 
         const block_component = await prisma.block_component.create({
           data: {
-            component_id: data.component.id,
-            block_id: data.block.id,
+            component_id: component.id,
+            block_id: block.id,
             belong_block_component_code: item.belong_block_component_code,
             depth: item.depth,
             order: item.order,
@@ -194,37 +231,37 @@ export class BlockComponentService extends BaseService {
           },
         });
 
-        const props = await Promise.all(
-          item.props.map(async (propItem) => {
-            let prop = await prisma.prop.findFirst({
-              where: { key: propItem.prop.key },
-            });
-            if (!prop)
-              prop = await prisma.prop.create({
-                data: {
-                  key: propItem.prop.key,
-                  type_id: propItem.prop.type.id,
-                },
-              });
+        const props: { key: string; value: string }[] = [];
 
-            await prisma.block_component_prop.create({
+        item.props.forEach(async (propItem) => {
+          let prop = await prisma.prop.findFirst({
+            where: { key: propItem.prop.key },
+          });
+          if (!prop)
+            prop = await prisma.prop.create({
               data: {
-                block_component_id: block_component.id,
-                prop_id: prop.id,
-                value: propItem.value,
+                key: propItem.prop.key,
+                type_id: propItem.prop.type.id,
               },
             });
-            return { key: prop.key, value: propItem.value };
-          })
-        );
+
+          await prisma.block_component_prop.create({
+            data: {
+              block_component_id: block_component.id,
+              prop_id: prop.id,
+              value: propItem.value,
+            },
+          });
+          props.push({ key: prop.key, value: propItem.value });
+        });
 
         results.push({
-          id: data.component.id,
-          name: data.component.name,
-          tag_id: data.tag.id,
-          type_id: data.type.id,
-          icon: data.component.icon,
-          block_id: data.block.id,
+          id: component.id,
+          name: component.name,
+          tag_id: tag.id,
+          type_id: type.id,
+          icon: component.icon,
+          block_id: block.id,
           belong_block_component_code: item.belong_block_component_code,
           depth: item.depth,
           order: item.order,
@@ -295,57 +332,25 @@ export class BlockComponentService extends BaseService {
     return true;
   }
 
-  async getOrCreateBlockComponents(
-    tagData: any,
-    typeData: any,
-    blockData: any,
-    componentData: any,
-    code: any
-  ) {
-    let tag = tagData.id
-      ? await prisma.tag.findUnique({ where: { id: tagData.id } })
-      : await prisma.tag.create({ data: { name: tagData.name } });
-    let type = typeData.id
-      ? await prisma.type.findUnique({ where: { id: typeData.id } })
-      : await prisma.type.create({ data: typeData });
-    let block = blockData.id
-      ? await prisma.block.findUnique({ where: { id: blockData.id } })
-      : await prisma.block.create({ data: blockData });
-    if (!tag || !type || !block) {
-      console.warn("tag, type, block not found", tag, type, block);
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
-        { status: 400 }
-      );
-    }
-    let component = componentData.id
-      ? await prisma.component.findUnique({ where: { id: componentData.id } })
-      : await prisma.component.create({
-          data: {
-            name: componentData.name,
-            tag_id: tag.id,
-            type_id: type.id,
-            icon: componentData.icon,
-          },
-        });
-    if (!component) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.CREATE_FAILED_ERROR() }),
-        { status: 400 }
-      );
-    }
-    if (code) {
-      const check_code = await prisma.block_component.findFirst({
-        where: { code },
+  async getOrCreateItemFromDatabase({
+    data,
+    table,
+  }: {
+    data: any;
+    table: string;
+  }) {
+    let item;
+    if (data.id && data.id !== 0) {
+      item = await (prisma[table as Prisma.ModelName] as any).findUnique({
+        where: { id: data.id },
       });
-      if (check_code) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.DUPLICATE_CODE_ERROR() }),
-          { status: 400 }
-        );
-      }
+    } else {
+      item = await (prisma[table as Prisma.ModelName] as any).create({
+        data: { ...data, id: undefined },
+      });
     }
-    return { tag, type, block, component };
+
+    return item;
   }
 
   async updateBlockComponent(id: number, data: UpdateBlockComponentDto) {

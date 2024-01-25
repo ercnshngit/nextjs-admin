@@ -9,20 +9,26 @@ import { useQuery } from "@tanstack/react-query";
 import { getTableItem } from "@/services/panel";
 import { useTranslate } from "@/langs";
 import { useTable } from "@/hooks/use-database";
+import useSearchParams from "@/hooks/use-search-params";
 
 export default function Ekle({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const { table } = useTable(slug);
   const tableName = table?.name || "";
   const { translate } = useTranslate();
-
+  const searchParams = useSearchParams();
   return (
     <div className="container py-10 mx-auto">
       <div className="flex justify-between mb-4">
         <h3 className="text-lg font-medium">{translate(tableName)} Ekle</h3>
         <div>
           <Button asChild>
-            <Link href={"/dashboard/" + tableName}>
+            <Link
+              href={{
+                pathname: "/dashboard/" + tableName,
+                query: searchParams.getAllQueryString(),
+              }}
+            >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Geri Dön
             </Link>

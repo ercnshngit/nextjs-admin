@@ -21,7 +21,7 @@ export default function ImagePickerInput({
   const [status, setStatus] = React.useState<
     "loading" | "success" | "error" | "idle"
   >("idle");
-  const { data, error } = useQuery(["media"], () =>
+  const { data, isError } = useQuery(["media"], () =>
     getMediaFromServer({
       directory: "images",
     })
@@ -45,7 +45,21 @@ export default function ImagePickerInput({
       setStatus("loading");
     },
   });
-
+  if (isError) {
+    return (
+      <>
+        <input
+          className="px-2 py-1 border border-gray-200 rounded-md "
+          id={propKey}
+          value={value}
+        />
+        <div>
+          Dosya yükleme sistemine ulaşırken bir sorun oluştu. Resimleri link
+          olarak ekleyebilirsiniz
+        </div>
+      </>
+    );
+  }
   return (
     <>
       <input

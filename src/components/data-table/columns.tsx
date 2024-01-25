@@ -3,7 +3,7 @@
 import { DataTableColumnHeader } from "@/components/datatable/header/datatable-sortable-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslate } from "@/langs";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import ColumnCellFactory from "./column-cell-factory";
 import { DataTableRowActions } from "./components/data-table-row-actions";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
@@ -16,8 +16,9 @@ export type ColumnDefWithName<TData> =
 
 export const columns: (
   slug: string,
-  columns: DataBaseTableColumnDto[]
-) => ColumnDefWithName<any>[] = (slug, columns) => {
+  columns: DataBaseTableColumnDto[],
+  buttons?: (row: Row<any>) => React.ReactNode
+) => ColumnDefWithName<any>[] = (slug, columns, buttons) => {
   return [
     {
       id: "select",
@@ -73,7 +74,7 @@ export const columns: (
       cell: ({ row }) => {
         return (
           <div className="flex justify-end">
-            <DataTableRowActions row={row} slug={slug} />
+            <DataTableRowActions row={row} slug={slug} buttons={buttons} />
           </div>
         );
       },

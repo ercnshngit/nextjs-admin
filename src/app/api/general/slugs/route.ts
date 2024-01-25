@@ -3,7 +3,7 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const generalService = new GeneralService(req.nextUrl.pathname);
+  const generalService = new GeneralService(req);
   try {
     const res = await generalService.getGeneralSlugs();
     return cors(req, res);

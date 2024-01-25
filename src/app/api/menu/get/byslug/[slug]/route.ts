@@ -6,7 +6,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const service = new MenuService(req.nextUrl.pathname);
+  const service = new MenuService(req);
   try {
     await service.securiyCheck();
     const res = await service.getMenuBySlug(params.slug);

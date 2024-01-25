@@ -1,44 +1,19 @@
 "use client";
-import BlockBuilder, {
-  BlockBuilderWithoutDnd,
-} from "@/components/block-builder";
+import BlockBuilder from "@/components/block-builder";
 import { Button } from "@/components/ui/button";
 import { useDesigner } from "@/contexts/designer-context";
 import { cn } from "@/libs/utils";
-import {
-  createComponentsInBlock,
-  getBlock,
-  getBlockComponents,
-  updateBlock,
-} from "@/services/dashboard";
+import { createComponentsInBlock } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
-export default function BuilderPage({
-  params,
-}: {
-  params: {
-    id: string;
-  };
-}) {
+export default function BuilderPage() {
   const { elements, setElements, setBlock, updateBlockData } = useDesigner();
   const router = useRouter();
-  const { data: block_components } = useQuery(
-    ["block_components", params.id],
-    () => getBlockComponents(Number(params.id))
-  );
-
-  useEffect(() => {
-    if (!block_components) return;
-
-    setElements(block_components);
-  }, [block_components]);
-
-  const queryClient = useQueryClient();
 
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
@@ -46,40 +21,16 @@ export default function BuilderPage({
       onSuccess: async (data) => {
         console.log(JSON.stringify(data));
         toast.success("Blok başarıyla güncellendi");
-        await queryClient.invalidateQueries(["block_components", params.id]);
       },
     }
   );
 
-  const updateBlockMutation = useMutation(
-    () => updateBlock(Number(params.id), updateBlockData),
-    {
-      onSuccess: async (data) => {
-        console.log(JSON.stringify(data));
-        toast.success("Blok başarıyla güncellendi");
-        await queryClient.invalidateQueries(["block", params.id]);
-      },
-    }
-  );
-
-  const { data: block } = useQuery(["block", params.id], () =>
-    getBlock({
-      id: Number(params.id),
-    })
-  );
-
-  const [blockName, setBlockName] = useState(block?.title || "");
   const [fullscreen, setFullscreen] = useState(false);
 
   const handleSave = async () => {
-    if (!block) {
-      toast.error("Blok bulunamadı");
-      return;
-    }
-
     const data: CreateBlockComponentsDto = {
       block: {
-        id: Number(params.id),
+        ...updateBlockData,
       },
       block_components: elements
         .filter((e) => {
@@ -90,22 +41,11 @@ export default function BuilderPage({
         })
         .map((el) => ({
           ...el,
-          block: {
-            id: Number(params.id),
-            title: blockName,
-            type_id: block.type_id,
-          },
         })),
     };
 
     await createBlocks.mutate(data);
-    await updateBlockMutation.mutate();
   };
-
-  useEffect(() => {
-    const newBlock = block || null;
-    setBlock(newBlock);
-  }, [block]);
 
   return (
     <div
@@ -122,7 +62,7 @@ export default function BuilderPage({
             </Button>
             <div className="">
               <h1 className="text-lg font-bold text-white bg-transparent border-none">
-                {blockName}
+                Yeni Blok
               </h1>
             </div>
           </div>
@@ -142,7 +82,7 @@ export default function BuilderPage({
           </div>
         </div>
       </div>
-      <BlockBuilderWithoutDnd />
+      <BlockBuilder />
     </div>
   );
 }

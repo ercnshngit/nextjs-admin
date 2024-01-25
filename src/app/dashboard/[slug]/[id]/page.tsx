@@ -28,7 +28,7 @@ export default function MasrafContent({
       <div className="flex justify-between mb-4">
         <div className="flex flex-row items-center space-x-4">
           <Button asChild>
-            <Link href={"/" + tableName}>
+            <Link href={"/dashboard/" + tableName}>
               <ArrowLeftIcon className="w-4 h-4 md:mr-2" />
               <span className="hidden md:inline"> Geri </span>
             </Link>

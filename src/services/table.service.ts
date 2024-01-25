@@ -13,7 +13,6 @@ import { DatabaseTableDto } from "./dto/database-table.dto";
 
 config();
 export class TableService extends BaseService {
-  
   constructor(request?: any) {
     super(request);
   }
@@ -56,7 +55,6 @@ export class TableService extends BaseService {
   async getTable(table_name: string) {
     try {
       const query = "SELECT * FROM `" + table_name + "`";
-      console.log(query);
       const table = await prisma.$queryRawUnsafe(`${query}`);
 
       if (!table) {
@@ -77,7 +75,6 @@ export class TableService extends BaseService {
 
   async getTableById(table_name: string, id: number) {
     try {
-      console.log(id);
       if (typeof id === "number") {
         // do something
         return new Response(

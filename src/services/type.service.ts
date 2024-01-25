@@ -22,7 +22,6 @@ export class TypeService extends BaseService {
         );
       }
 
-      console.log("patlayan yer", table);
       let input_types = [] as any;
       TypeJsons.INPUT_TYPES.forEach(async (element) => {
         const isTypeExist = await prisma.type.findFirst({

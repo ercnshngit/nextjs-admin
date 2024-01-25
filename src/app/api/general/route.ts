@@ -3,7 +3,7 @@ import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const service = new GeneralService(req.nextUrl.pathname);
+  const service = new GeneralService(req);
   try {
     await service.securiyCheck();
     const res = await service.getGenerals();
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const service = new GeneralService(req.nextUrl.pathname);
+  const service = new GeneralService(req);
   try {
     await service.securiyCheck();
     const body = await req.json();

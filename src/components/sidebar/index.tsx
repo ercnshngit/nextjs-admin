@@ -15,7 +15,7 @@ export function Sidebar({ className }: { className?: string }) {
   const { translate } = useTranslate();
 
   const pathname = usePathname();
-  const { getQueryString } = useSearchParams();
+  const { getAllQueryString } = useSearchParams();
   const { configs, error } = useConfigs();
 
   const { data: blockTypes } = useQuery<TypeDto[]>(["block_types"], () =>
@@ -38,7 +38,7 @@ export function Sidebar({ className }: { className?: string }) {
                 key={item.id}
                 asChild
                 variant={
-                  getQueryString("filterValue") === String(item.id)
+                  Object.values(getAllQueryString()).includes(String(item.id))
                     ? "default"
                     : "ghost"
                 }
@@ -47,7 +47,7 @@ export function Sidebar({ className }: { className?: string }) {
                 <Link
                   href={{
                     pathname: "/dashboard/block",
-                    query: { filterBy: "type_id", filterValue: item.id },
+                    query: { type_id: item.id },
                   }}
                 >
                   <List className="w-5 h-5 mr-2" />

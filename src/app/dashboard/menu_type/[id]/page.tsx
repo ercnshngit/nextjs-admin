@@ -13,6 +13,7 @@ import { MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
 import { useRouter } from "next/navigation";
 import MenuList from "../menu-list";
 import { getMenuItems, updateMenu } from "@/services/dashboard";
+import Loading from "@/components/loading";
 
 export default function MenuType({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -22,13 +23,31 @@ export default function MenuType({ params }: { params: { id: string } }) {
     { enabled: !!id }
   );
   if (menu_type) {
-    return <Menu slug={menu_type.slug} lang={menu_type.language_code} />;
+    return (
+      <Menu
+        slug={menu_type.slug}
+        menuTypeId={+id}
+        lang={menu_type.language_code}
+      />
+    );
   } else {
-    return <div>Bulunamadı</div>;
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
   }
 }
 
-function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
+function Menu({
+  slug,
+  lang,
+  menuTypeId,
+}: {
+  slug: string;
+  lang: "TR" | "EN";
+  menuTypeId: number;
+}) {
   const { data, error } = useQuery<{ menus: { menu: MENU_ITEM }[] }, Error>(
     ["menu", slug, lang],
     () => getMenuItems({ slug, lang })
@@ -69,7 +88,12 @@ function Menu({ slug, lang }: { slug: string; lang: "TR" | "EN" }) {
         <h3 className="text-lg font-medium">{translate("menu")}</h3>
         <div>
           <Button asChild>
-            <Link href={"/dashboard/menu/ekle"}>
+            <Link
+              href={{
+                pathname: "/dashboard/menu/ekle",
+                query: { type_id: menuTypeId },
+              }}
+            >
               <PlusCircledIcon className="w-4 h-4 mr-2" />
               Yeni {translate("menu")} ekle
             </Link>

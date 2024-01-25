@@ -26,7 +26,7 @@ export default function ComponentWrapper({
   component: BlockComponentDto;
   [key: string]: any;
 }) {
-  const { removeElement, setSelectedElement } = useDesigner();
+  const { removeElement, setSelectedElement, addElement } = useDesigner();
   const topHalf = useDroppable({
     id: component.code + "-top",
     data: {
@@ -57,7 +57,6 @@ export default function ComponentWrapper({
   });
 
   const Component = componentTags[component.component.tag.name];
-  const { addElement } = useDesigner();
   const duplicateElement = useCallback(
     (component: BlockComponentDto, parentCode?: string) => {
       const code = crypto.randomUUID();
@@ -194,6 +193,77 @@ export default function ComponentWrapper({
         {bottomHalf.isOver && (
           <div className="absolute bottom-0 w-full rounded-md h-[7px] bg-primary rounded-t-none" />
         )}
+      </div>
+    </Suspense>
+  );
+}
+
+export function ComponentWrapperWithoutDnd({
+  hoveredElement,
+  setHoveredElement,
+  component,
+  tag: string,
+  ...props
+}: {
+  hoveredElement: string[];
+  setHoveredElement: React.Dispatch<React.SetStateAction<string[]>>;
+  component: BlockComponentDto;
+  [key: string]: any;
+}) {
+  const { removeElement, setSelectedElement, addElement } = useDesigner();
+
+  const Component = componentTags[component.component.tag.name];
+
+  return (
+    <Suspense
+      fallback={
+        <Loading className="border min-h-[100px]  rounded-md group border-gray-400 border-dashed" />
+      }
+    >
+      <div
+        onMouseEnter={() => {
+          setHoveredElement((prev) => [...prev, component.code]);
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setSelectedElement(component);
+        }}
+        onMouseLeave={() =>
+          setHoveredElement((prev) =>
+            prev.filter((item) => item !== component.code)
+          )
+        }
+        className={cn(
+          "relative border min-h-[100px]  rounded-md group",
+          hoveredElement[hoveredElement.length - 1] === component.code
+            ? "border-blue-500 border-2"
+            : "border-gray-400 border-dashed"
+        )}
+      >
+        <div
+          className={cn(
+            "absolute top-0 right-0 gap-1 z-40 bg-gray-900 flex rounded py-1 px-2 items-center",
+            hoveredElement[hoveredElement.length - 1] === component.code
+              ? "flex"
+              : "hidden"
+          )}
+        >
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedElement(component);
+            }}
+            variant="default"
+            size="icon"
+            className="w-6 h-6 p-1"
+          >
+            <Pencil2Icon />
+          </Button>
+        </div>
+
+        <div className="p-2" id={component.code}>
+          <Component {...props} />
+        </div>
       </div>
     </Suspense>
   );

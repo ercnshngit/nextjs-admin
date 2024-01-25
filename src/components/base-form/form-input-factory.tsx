@@ -14,6 +14,7 @@ import TextArea from "./components/TextArea";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import IconSelect from "./components/IconSelect";
+import Slugify from "./components/Slugify";
 
 type FormInputFactoryProps = {
   field: DataBaseTableColumnDto;
@@ -55,6 +56,8 @@ export default function FormInputFactory({
       return <Date {...props} />;
     case "hidden":
       return <Hidden {...props} />;
+    case "slugify":
+      return <Slugify {...props} />;
     case "image":
       return <ImagePicker {...props} />;
     case "multi-select":

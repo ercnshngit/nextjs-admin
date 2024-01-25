@@ -6,6 +6,8 @@ export const queryClient = new QueryClient({
     queries: {
       suspense: true,
       useErrorBoundary: false,
+      refetchOnWindowFocus: false, // default: true
+      retry: false,
     },
   },
 });

@@ -22,8 +22,8 @@ type DesignerContextType = {
   block: BlockDto | null;
   setBlock: Dispatch<SetStateAction<BlockDto | null>>;
   updateElement: (code: string, element: BlockComponentDto) => void;
-  updateBlockData: Partial<BlockDto> | null;
-  setUpdateBlockData: Dispatch<SetStateAction<Partial<BlockDto> | null>>;
+  updateBlockData: BlockDto;
+  setUpdateBlockData: Dispatch<SetStateAction<BlockDto>>;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
@@ -34,8 +34,16 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
     useState<BlockComponentDto | null>(null);
   const [mode, setMode] = useState<"html" | "preview" | "ui">("ui");
   const [block, setBlock] = useState<BlockDto | null>(null);
-  const [updateBlockData, setUpdateBlockData] =
-    useState<Partial<BlockDto> | null>(null);
+  const [updateBlockData, setUpdateBlockData] = useState<BlockDto>({
+    id: 0,
+    title: "İsimsiz",
+    type_id: 0,
+    description: "",
+    image_url: "",
+    background_image_url: "",
+    slug: "",
+    status: 0,
+  });
 
   const addElement = (index: number, element: BlockComponentDto) => {
     setElements((prev) => {

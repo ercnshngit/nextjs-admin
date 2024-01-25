@@ -6,12 +6,10 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const service = new BlockComponentService(req.nextUrl.pathname);
+  const service = new BlockComponentService(req);
   try {
     await service.securiyCheck();
-    const res = await service.getBlockComponentBySlug(
-      params.slug
-    );
+    const res = await service.getBlockComponentBySlug(params.slug);
     if (!res)
       return new Response(
         JSON.stringify({ status: "error", message: "Not found" }),
@@ -31,10 +29,7 @@ export async function POST(
   try {
     await service.securiyCheck();
     const body = await req.json();
-    const res = await service.updateBlockComponent(
-      Number(params.id),
-      body
-    );
+    const res = await service.updateBlockComponent(Number(params.id), body);
     return cors(req, res);
   } catch (error) {
     return await service.createLogAndResolveError(error);

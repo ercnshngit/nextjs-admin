@@ -6,8 +6,10 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import Designer from "./components/designer";
-import DesignerSidebar from "./components/designer-sidebar";
+import Designer, { DesignerWithoutDnd } from "./components/designer";
+import DesignerSidebar, {
+  DesignerSidebarWithoutDnd,
+} from "./components/designer-sidebar";
 import DragOverlayWrapper from "./components/drag-overlay-wrapper";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
 
@@ -38,5 +40,14 @@ export default function BlockBuilder() {
       </div>
       <DragOverlayWrapper />
     </DndContext>
+  );
+}
+
+export function BlockBuilderWithoutDnd() {
+  return (
+    <div className="flex">
+      <DesignerWithoutDnd />
+      <DesignerSidebarWithoutDnd />
+    </div>
   );
 }

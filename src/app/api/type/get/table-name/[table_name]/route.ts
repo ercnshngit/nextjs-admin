@@ -13,6 +13,7 @@ export async function GET(
     const res = await service.getTypeWithTableName(table_name);
     return cors(req, res);
   } catch (error) {
+    console.log(error);
     return await service.createLogAndResolveError(error);
   }
 }

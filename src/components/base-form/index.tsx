@@ -19,6 +19,7 @@ export default function BaseForm(props: {
   setValue: any;
   watch?: any;
   control: any;
+  onSubmitAndGoBack?: any;
   customInput?: {
     for: string;
     component: React.FC<any>;
@@ -29,6 +30,7 @@ export default function BaseForm(props: {
   const {
     handleSubmit,
     onSubmit,
+    onSubmitAndGoBack,
     table,
     errors,
     register,
@@ -75,7 +77,7 @@ export default function BaseForm(props: {
                 ? {
                     defaultValue: data[0][field.name] || field.name,
                   }
-                : { defaultValue: allParams[field.name] || field.name })}
+                : { defaultValue: allParams[field.name] || "" })}
             />
           ))}
 
@@ -85,6 +87,15 @@ export default function BaseForm(props: {
       >
         {translate("FORM_SUBMIT_" + formType?.toUpperCase())}
       </button>
+      {onSubmitAndGoBack && (
+        <button
+          type="button"
+          onClick={handleSubmit(onSubmitAndGoBack)}
+          className="w-full px-2 py-1 text-white bg-blue-500 rounded-md"
+        >
+          {translate("FORM_SUBMIT_" + formType?.toUpperCase() + "_AND_GO_BACK")}
+        </button>
+      )}
     </form>
   );
 }

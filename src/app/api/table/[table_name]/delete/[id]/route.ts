@@ -8,7 +8,7 @@ export async function GET(
 ) {
   const table_name = params.table_name;
   const id = params.id;
-  const service = new TableService(req.nextUrl.pathname);
+  const service = new TableService(req);
   try {
     await service.securiyCheck();
     const res = await service.deleteTableWithId(table_name, id);
@@ -18,7 +18,7 @@ export async function GET(
   }
 }
 
-export async function OPTIONS(request: Request) { 
+export async function OPTIONS(request: Request) {
   return cors(
     request,
     new Response(null, {

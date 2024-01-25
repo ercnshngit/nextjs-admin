@@ -209,6 +209,11 @@ export const updateBlock = async (id: number, data: any) => {
   return responseData;
 };
 
+export const createBlockWithComponents = async (data: any) => {
+  const { data: responseData } = await axiosClient.post("/block/create/", data);
+  return responseData;
+};
+
 export const getDashboard = async () => {
   const { data: responseData } = await axiosClient.get("/dashboard");
   return responseData;
