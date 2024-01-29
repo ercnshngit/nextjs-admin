@@ -2,6 +2,7 @@ import { ComponentPropService } from "@/services/component_prop.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const service = new ComponentPropService(req);
   try {

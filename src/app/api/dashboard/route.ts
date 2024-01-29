@@ -3,6 +3,7 @@ import { prisma } from "@/libs/prisma";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const pageCount = await prisma.block.count();

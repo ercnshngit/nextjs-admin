@@ -19,6 +19,7 @@ export async function POST(
 }
 
 // TÜm verileri döner
+export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest,
   { params }: { params: { table_name: string } }
@@ -34,7 +35,7 @@ export async function GET(
   }
 }
 
-export async function OPTIONS(request: Request) { 
+export async function OPTIONS(request: Request) {
   return cors(
     request,
     new Response(null, {

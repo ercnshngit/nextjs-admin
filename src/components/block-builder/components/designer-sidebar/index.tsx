@@ -54,6 +54,7 @@ export default function DesignerSidebar() {
   const { translate } = useTranslate();
 
   const form = useForm();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     if (block) {
@@ -69,7 +70,7 @@ export default function DesignerSidebar() {
       });
     }
     console.log("block yok");
-  }, [block, form.reset]);
+  }, [block, form.reset, searchParams, form]);
 
   const onSubmit = (data: any) => {
     setUpdateBlockData({
@@ -83,8 +84,6 @@ export default function DesignerSidebar() {
       background_image_url: data.background_image_url || "",
     });
   };
-
-  const searchParams = useSearchParams();
 
   useEffect(() => {
     const subscription = form.watch(() => form.handleSubmit(onSubmit)());

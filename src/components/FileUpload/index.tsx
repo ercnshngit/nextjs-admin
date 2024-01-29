@@ -51,7 +51,7 @@ export default function FileUpload({
       setFile(acceptedFiles[0]);
       uploadFile(acceptedFiles[0]);
     },
-    [setFile]
+    [setFile, setMessage, uploadFile]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 

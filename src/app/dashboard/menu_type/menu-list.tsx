@@ -50,7 +50,8 @@ export default function MenuList({
           children: createMenuTree(data, menu.id),
         };
       });
-  }, []);
+  },
+  []);
 
   const [menuData, setMenuData] = useState<TreeItems>(
     data
@@ -84,7 +85,7 @@ export default function MenuList({
           };
         })
     );
-  }, [data]);
+  }, [data, createMenuTree]);
   const { translate } = useTranslate();
 
   const queryClient = useQueryClient();

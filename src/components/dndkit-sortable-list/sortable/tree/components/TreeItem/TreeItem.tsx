@@ -78,7 +78,7 @@ export const TreeItem = forwardRef<HTMLDivElement, Props>(function TreeItem(
         <span className={styles.Text}>{item.title}</span>
         {!clone && (
           <Action>
-            <Link href={`/menu/${item.id}/update`}>
+            <Link href={`/dashboard/menu/${item.id}/update`}>
               <AiFillEdit size={18} />
             </Link>
           </Action>
