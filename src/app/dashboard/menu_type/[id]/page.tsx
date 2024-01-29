@@ -24,11 +24,10 @@ export default function MenuType({ params }: { params: { id: string } }) {
   );
   if (menu_type) {
     return (
-      <Menu
-        slug={menu_type.slug}
-        menuTypeId={+id}
-        lang={menu_type.language_code}
-      />
+      <>
+        {JSON.stringify(menu_type)}
+        <Menu menuTypeId={+id} />
+      </>
     );
   } else {
     return (
@@ -39,25 +38,17 @@ export default function MenuType({ params }: { params: { id: string } }) {
   }
 }
 
-function Menu({
-  slug,
-  lang,
-  menuTypeId,
-}: {
-  slug: string;
-  lang: "TR" | "EN";
-  menuTypeId: number;
-}) {
-  const { data, error } = useQuery<{ menus: { menu: MENU_ITEM }[] }, Error>(
-    ["menu", slug, lang],
-    () => getMenuItems({ slug, lang })
+function Menu({ menuTypeId }: { menuTypeId: number }) {
+  const { data, error } = useQuery<MENU_ITEM[], Error>(
+    ["menus", menuTypeId],
+    () => getMenuItems({ typeId: menuTypeId })
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation(
     (data: UPDATE_MENU_ITEM) => updateMenu({ id: data.id, data: data.data }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["menu"]);
+        queryClient.invalidateQueries(["menus", menuTypeId]);
         console.log("updateMutation");
       },
       onError: (error) => {
@@ -69,13 +60,13 @@ function Menu({
   const { translate } = useTranslate();
 
   const handleUpdate = (id: UniqueIdentifier, parentId: UniqueIdentifier) => {
-    const item = data?.menus.find((menu) => menu.menu.title === id);
-    const parentItem = data?.menus.find((menu) => menu.menu.title === parentId);
+    const item = data?.find((menu) => menu.title === id);
+    const parentItem = data?.find((menu) => menu.title === parentId);
 
     updateMutation.mutate({
-      id: item?.menu.id as number,
+      id: item?.id as number,
       data: {
-        menu_belong_id: parentItem?.menu.id as number,
+        menu_belong_id: parentItem?.id as number,
       },
     });
   };
@@ -83,8 +74,8 @@ function Menu({
   const handleRemove = (id: UniqueIdentifier) => {};
 
   return (
-    <div className="container py-10 mx-auto">
-      <div className="flex justify-between mb-4">
+    <div className="container mx-auto py-10">
+      <div className="mb-4 flex justify-between">
         <h3 className="text-lg font-medium">{translate("menu")}</h3>
         <div>
           <Button asChild>
@@ -94,7 +85,7 @@ function Menu({
                 query: { type_id: menuTypeId },
               }}
             >
-              <PlusCircledIcon className="w-4 h-4 mr-2" />
+              <PlusCircledIcon className="mr-2 h-4 w-4" />
               Yeni {translate("menu")} ekle
             </Link>
           </Button>
@@ -104,7 +95,7 @@ function Menu({
       <Card className="min-h-[700px]">
         <CardContent>
           <div className="py-10">
-            {data && data.menus?.length > 0 ? (
+            {data && data?.length > 0 ? (
               <MenuList
                 data={data}
                 handleUpdate={handleUpdate}

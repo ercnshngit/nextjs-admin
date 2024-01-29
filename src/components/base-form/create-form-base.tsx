@@ -69,12 +69,7 @@ export default function CreateFormBase({ table }: { table: DatabaseTableDto }) {
         queryClient.invalidateQueries([table.name]);
         toast.success("Kayıt başarıyla oluşturuldu");
         router.push(
-          "/dashboard/" +
-            table.name +
-            "?" +
-            Object.entries(searchParams.getAllQueryString())
-              .map(([key, value]) => key + "=" + value)
-              .join("&")
+          "/dashboard/" + table.name + searchParams.createSearchParamsForUrl()
         );
       },
       onError: (error) => {

@@ -71,6 +71,17 @@ export default function useSearchParams() {
     });
     return values;
   }, [searchParams]);
+
+  const createSearchParamsForUrl = useCallback(() => {
+    const url =
+      "?" +
+      Object.entries(getAllQueryString())
+        .map(([key, value]) => key + "=" + value)
+        .join("&");
+
+    return url;
+  }, [getAllQueryString]);
+
   return {
     setQueryString,
     setQueryStringNoRefresh,
@@ -78,5 +89,6 @@ export default function useSearchParams() {
     setMultipleQueryString,
     getMultipleQueryString,
     getAllQueryString,
+    createSearchParamsForUrl,
   };
 }

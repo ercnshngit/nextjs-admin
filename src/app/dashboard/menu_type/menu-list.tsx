@@ -24,7 +24,7 @@ export default function MenuList({
   onRemove,
   handleUpdate,
 }: {
-  data: { menus: { menu: MENU_ITEM }[] };
+  data: MENU_ITEM[];
   onRemove: (id: UniqueIdentifier) => void;
   handleUpdate: (id: UniqueIdentifier, parentId: UniqueIdentifier) => void;
 }) {
@@ -37,53 +37,50 @@ export default function MenuList({
     return false;
   }
   const createMenuTree = useCallback(function createMenuTree(
-    data: { menus: { menu: MENU_ITEM }[] },
+    data: MENU_ITEM[],
     parentId: number
   ): TreeItems {
-    return data?.menus
-      ?.filter(
-        (menu: { menu: MENU_ITEM }) => menu.menu.menu_belong_id === parentId
-      )
-      .map((menu: { menu: MENU_ITEM }) => {
+    return data
+      ?.filter((menu: MENU_ITEM) => menu.menu_belong_id === parentId)
+      .map((menu: MENU_ITEM) => {
         return {
-          id: menu.menu.title,
-          uniqueId: menu.menu.id,
+          id: menu.title,
+          uniqueId: menu.id,
           collapsed: true,
-          children: createMenuTree(data, menu.menu.id),
+          children: createMenuTree(data, menu.id),
         };
       });
-  },
-  []);
-  //TODO: menü güncellenince güncellencek
+  }, []);
+
   const [menuData, setMenuData] = useState<TreeItems>(
-    data?.menus
+    data
       ?.filter(
-        (menu: { menu: MENU_ITEM }) =>
-          menu.menu.menu_belong_id === 0 || menu.menu.menu_belong_id === null
+        (menu: MENU_ITEM) =>
+          menu.menu_belong_id === 0 || menu.menu_belong_id === null
       )
-      .map((menu: { menu: MENU_ITEM }) => {
+      .map((menu: MENU_ITEM) => {
         return {
-          id: menu.menu.title,
-          uniqueId: menu.menu.id,
+          id: menu.title,
+          uniqueId: menu.id,
           collapsed: true,
-          children: createMenuTree(data, menu.menu.id),
+          children: createMenuTree(data, menu.id),
         };
       })
   );
 
   useEffect(() => {
     setMenuData(
-      data?.menus
+      data
         ?.filter(
-          (menu: { menu: MENU_ITEM }) =>
-            menu.menu.menu_belong_id === 0 || menu.menu.menu_belong_id === null
+          (menu: MENU_ITEM) =>
+            menu.menu_belong_id === 0 || menu.menu_belong_id === null
         )
-        .map((menu: { menu: MENU_ITEM }) => {
+        .map((menu: MENU_ITEM) => {
           return {
-            id: menu.menu.title,
-            uniqueId: menu.menu.id,
+            id: menu.title,
+            uniqueId: menu.id,
             collapsed: true,
-            children: createMenuTree(data, menu.menu.id),
+            children: createMenuTree(data, menu.id),
           };
         })
     );

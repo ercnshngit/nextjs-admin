@@ -107,7 +107,9 @@ export class BlockService extends BaseService {
       await logService.createLog({ error });
       console.log(error);
       return new Response(
-        JSON.stringify({ status: "error", error_message: error })
+        JSON.stringify({ status: "error", error_message: error }),
+
+        { status: 400 }
       );
     }
   }

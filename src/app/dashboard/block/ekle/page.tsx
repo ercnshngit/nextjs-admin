@@ -2,6 +2,7 @@
 import BlockBuilder from "@/components/block-builder";
 import { Button } from "@/components/ui/button";
 import { useDesigner } from "@/contexts/designer-context";
+import useSearchParams from "@/hooks/use-search-params";
 import { cn } from "@/libs/utils";
 import { createComponentsInBlock } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
@@ -14,6 +15,7 @@ import { toast } from "react-toastify";
 export default function BuilderPage() {
   const { elements, setElements, setBlock, updateBlockData } = useDesigner();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
@@ -21,6 +23,9 @@ export default function BuilderPage() {
       onSuccess: async (data) => {
         console.log(JSON.stringify(data));
         toast.success("Blok başarıyla güncellendi");
+        const route =
+          "/dashboard/block" + searchParams.createSearchParamsForUrl();
+        router.push(route);
       },
     }
   );
@@ -50,7 +55,7 @@ export default function BuilderPage() {
   return (
     <div
       className={cn(
-        " flex flex-col w-full h-full  bg-gray-700",
+        " flex h-full w-full flex-col  bg-gray-700",
         fullscreen && "absolute inset-0"
       )}
     >
@@ -58,10 +63,10 @@ export default function BuilderPage() {
         <div className="flex items-center justify-between px-4 py-2">
           <div className="flex items-center gap-6">
             <Button onClick={() => router.back()} variant="secondary">
-              <ArrowLeftCircleIcon className="w-5 h-5" />
+              <ArrowLeftCircleIcon className="h-5 w-5" />
             </Button>
             <div className="">
-              <h1 className="text-lg font-bold text-white bg-transparent border-none">
+              <h1 className="border-none bg-transparent text-lg font-bold text-white">
                 Yeni Blok
               </h1>
             </div>
@@ -71,13 +76,13 @@ export default function BuilderPage() {
               onClick={() => setFullscreen((prev) => !prev)}
               variant="secondary"
             >
-              <FullscreenIcon className="w-5 h-5" />
+              <FullscreenIcon className="h-5 w-5" />
             </Button>
           </div>
           <div className="flex items-center space-x-2">
             <div className="text-sm text-white">Kaydet</div>
             <Button onClick={handleSave} variant="secondary">
-              <Save className="w-5 h-5" />
+              <Save className="h-5 w-5" />
             </Button>
           </div>
         </div>

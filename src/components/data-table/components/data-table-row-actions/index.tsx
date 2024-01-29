@@ -22,7 +22,7 @@ export function DataTableRowActions({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="flex flex-wrap gap-2 w-fit">
+    <div className="flex w-fit flex-wrap gap-2">
       {JSON.stringify(buttons)}
       {buttons ? (
         buttons(row)
@@ -31,12 +31,7 @@ export function DataTableRowActions({
           <Button
             className="bg-blue-500"
             onClick={() => {
-              router.push(
-                "/dashboard/" +
-                  (slug === "type"
-                    ? "menu_type" + "/" + row.original.id
-                    : slug + "/" + row.original.id)
-              );
+              router.push("/dashboard/" + slug + "/" + row.original.id);
             }}
           >
             Görüntüle
@@ -45,10 +40,7 @@ export function DataTableRowActions({
             variant={"secondary"}
             onClick={() => {
               router.push(
-                "/dashboard/" +
-                  (slug === "type"
-                    ? "menu_type" + "/" + row.original.id
-                    : slug + "/" + row.original.id)
+                "/dashboard/" + slug + "/" + row.original.id + "/update"
               );
             }}
           >
@@ -64,7 +56,7 @@ export function DataTableRowActions({
           setOpen(true);
         }}
       >
-        <BsFillTrashFill className="w-4 h-4" /> Sil
+        <BsFillTrashFill className="h-4 w-4" /> Sil
       </Button>
 
       <DeleteItem

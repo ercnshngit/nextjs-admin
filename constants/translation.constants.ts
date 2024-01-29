@@ -200,5 +200,6 @@ export class TranslationConstants {
 (207, 'VALUE', 'Değer', 'tr'),
 (208, 'LABEL', 'Ad', 'tr'),
 (209, 'SELECT_OPTIONS', 'Seçenekler', 'tr'),
+(210, 'FORM_SUBMIT_CREATE_CRUD_OPTION_AND_GO_BACK', 'Olustur ve geri don', 'tr'),
 (200, 'FORM_SUBMIT_UPDATE_CRUD_OPTION', 'Güncelle', 'tr') ON DUPLICATE KEY UPDATE id=id;`;
 }

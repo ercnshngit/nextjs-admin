@@ -158,20 +158,14 @@ export const createMenu = async (data: { id: number; data: any }) => {
 
 export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
   const { data: responseData } = await axiosClient.post(
-    "/menu/set/" + id,
+    "/menu/get/byid/" + id,
     data
   );
   return responseData;
 };
 
-export const getMenuItems = async ({
-  slug,
-  lang,
-}: {
-  slug: string;
-  lang: "TR" | "EN";
-}) => {
-  const { data } = await axiosClient.get(`/menu/get/allwith/${slug}/${lang}`);
+export const getMenuItems = async ({ typeId }: { typeId: number }) => {
+  const { data } = await axiosClient.get(`/menu/get/byslug/${typeId}`);
   return data;
 };
 
@@ -202,10 +196,10 @@ export const createCrudOption = async (column_id: number, data: any) => {
 };
 
 export const updateBlock = async (id: number, data: any) => {
-  const { data: responseData } = await axiosClient.post(
-    "/block/get/" + id,
-    data
-  );
+  const { data: responseData } = await axiosClient.post("/block/get/" + id, {
+    ...data,
+    id,
+  });
   return responseData;
 };
 

@@ -7,7 +7,6 @@ import TextInput from "./components/text-input";
 import { Label } from "@/components/ui/label";
 import { useTranslate } from "@/langs";
 import RichTextEditor from "./components/rich-text";
-import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import JSONInput from "./components/json-input";
 import { ImSpinner2 } from "react-icons/im";
 import DataInput from "./components/data-input";
@@ -60,12 +59,12 @@ export default function SidebarInputFactory({
   }
 
   return (
-    <div className="flex flex-col w-full gap-2 pb-4 border-b border-gray-200">
+    <div className="flex w-full flex-col gap-2 border-b border-gray-200 pb-4">
       <Label htmlFor={propKey}>{translate(propKey)}</Label>
       <p className="text-xs text-gray-400">{propKey}</p>
       {!typeName && (
         <div className="flex items-center justify-center">
-          <ImSpinner2 className="animate-spin h-6 w-6" />
+          <ImSpinner2 className="h-6 w-6 animate-spin" />
         </div>
       )}
       {typeName && getInputComponent(typeName)}
