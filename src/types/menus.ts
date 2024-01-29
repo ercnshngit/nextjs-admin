@@ -11,12 +11,7 @@ export type MENU_ITEM = {
 export type CREATE_MENU_ITEM = {
   title: string;
   type_id: number;
-  menu_belong_id: number;
-  page_belongs: [
-    {
-      id: number;
-    }
-  ];
+  menu_belong_id: number | null;
   route: string;
   status: number;
 };

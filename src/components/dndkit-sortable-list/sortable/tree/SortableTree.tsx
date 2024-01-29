@@ -76,7 +76,7 @@ interface Props {
   indicator?: boolean;
   removable?: boolean;
   onRemove(id: UniqueIdentifier): boolean;
-  onUpdate(id: UniqueIdentifier, parentId: UniqueIdentifier): void;
+  onUpdate(id: UniqueIdentifier, parentId: UniqueIdentifier | null): void;
 }
 
 export function SortableTree({
@@ -270,11 +270,10 @@ export function SortableTree({
 
       const sortedItems = arrayMove(clonedItems, activeIndex, overIndex);
       const newItems = buildTree(sortedItems);
-      console.log("burada");
+
       if (activeTreeItem.parentId !== parentId) {
-        if (parentId !== null) {
-          onUpdate(active.id, parentId);
-        }
+        console.log("burada");
+        onUpdate(active.id, parentId);
       } else {
         console.log("activeTreeItem", activeTreeItem);
         console.log("parentId", parentId);

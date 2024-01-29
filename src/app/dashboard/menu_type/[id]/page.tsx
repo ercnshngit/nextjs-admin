@@ -23,12 +23,7 @@ export default function MenuType({ params }: { params: { id: string } }) {
     { enabled: !!id }
   );
   if (menu_type) {
-    return (
-      <>
-        {JSON.stringify(menu_type)}
-        <Menu menuTypeId={+id} />
-      </>
-    );
+    return <Menu menuTypeId={+id} />;
   } else {
     return (
       <div>
@@ -59,14 +54,17 @@ function Menu({ menuTypeId }: { menuTypeId: number }) {
   const router = useRouter();
   const { translate } = useTranslate();
 
-  const handleUpdate = (id: UniqueIdentifier, parentId: UniqueIdentifier) => {
+  const handleUpdate = (
+    id: UniqueIdentifier,
+    parentId: UniqueIdentifier | null
+  ) => {
     const item = data?.find((menu) => menu.title === id);
     const parentItem = data?.find((menu) => menu.title === parentId);
 
     updateMutation.mutate({
       id: item?.id as number,
       data: {
-        menu_belong_id: parentItem?.id as number,
+        menu_belong_id: (parentItem?.id as number) || null,
       },
     });
   };

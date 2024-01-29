@@ -129,15 +129,15 @@ model tag {
 }
 
 model menu {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   title          String
   slug           String
-  route          String?  @db.Text
+  route          String?   @db.Text
   menu_belong_id Int?
   type_id        Int
-  status         Int      @default(0)
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  status         Int       @default(0)
+  created_at     DateTime  @default(now())
+  updated_at     DateTime? @updatedAt
 
   menu_belong menu?  @relation("fk_menu_belong_id", fields: [menu_belong_id], references: [id], map: "fk_menu_belong_id") //many to one
   menu_child  menu[] @relation("fk_menu_belong_id") //one to many
@@ -259,14 +259,14 @@ model language {
 }
 
 model user {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   first_name String
   last_name  String
   email      String
   password   String
   role_id    Int?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
 
   role role? @relation("fk_u_role_id", fields: [role_id], references: [id], map: "fk_u_role_id")
 
@@ -282,11 +282,11 @@ model role {
 }
 
 model log {
-  id         Int      @id @default(autoincrement())
-  body       String   @db.LongText
+  id         Int       @id @default(autoincrement())
+  body       String    @db.LongText
   path       String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
 }
 
 model permission {
@@ -298,7 +298,8 @@ model permission {
   api_route api_route? @relation("fk_pr_api_route_id", fields: [api_route_id], references: [id], map: "fk_pr_api_route_id")
 
   permission_roles permission_role[] @relation("fk_pro_permission_id")
-   @@unique([api_route_id, is_auth, is_role], name: "ui_api_route_auth_role")
+
+  @@unique([api_route_id, is_auth, is_role], name: "ui_api_route_auth_role")
 }
 
 model api_route {
