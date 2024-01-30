@@ -36,7 +36,7 @@ export default function BuilderPage({
     if (!block_components) return;
 
     setElements(block_components);
-  }, [block_components]);
+  }, [block_components, setElements]);
 
   const queryClient = useQueryClient();
 
@@ -105,7 +105,7 @@ export default function BuilderPage({
   useEffect(() => {
     const newBlock = block || null;
     setBlock(newBlock);
-  }, [block]);
+  }, [block, setBlock]);
 
   return (
     <div

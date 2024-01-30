@@ -5,6 +5,7 @@ import { NextRequest } from "next/server";
 
 config();
 // Bir veritabanındakı tablo isimlerini , kolon isimlerini ve kolon tiplerini döndürür.
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const service = new TableService(req);
   try {

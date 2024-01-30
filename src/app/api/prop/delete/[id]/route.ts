@@ -2,6 +2,7 @@ import { PropService } from "@/services/prop.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }

@@ -2,6 +2,7 @@ import { BlockService } from "@/services/block.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
+export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const service = new BlockService(req);
   try {

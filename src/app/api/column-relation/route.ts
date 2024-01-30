@@ -2,10 +2,9 @@ import { TableService } from "@/services/table.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-) {
-  const service = new TableService(req)
+export const dynamic = "force-dynamic";
+export async function GET(req: NextRequest) {
+  const service = new TableService(req);
   try {
     await service.securiyCheck();
     const res = await service.getAllColumnRelations();
@@ -15,7 +14,7 @@ export async function GET(
   }
 }
 
-export async function OPTIONS(request: Request) { 
+export async function OPTIONS(request: Request) {
   return cors(
     request,
     new Response(null, {
