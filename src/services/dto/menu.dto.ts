@@ -8,3 +8,8 @@ export interface MenuDto {
   status: number;
   submenus?: MenuDto[];
 }
+
+export interface MenuOrderUpdateDto {
+  first_menu_id: number;
+  second_menu_id: number;
+}

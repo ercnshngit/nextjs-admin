@@ -110,13 +110,13 @@ model type {
   column_input_type      database_table_column[] @relation("fk_dbtc_input_type_id")
   column_relation        column_relation[]       @relation("fk_cr_relation_type_id")
   table                  database_table?         @relation("fk_type_table_id", fields: [table_id], references: [id], map: "fk_type_table_id") //many to one
-  menu                   menu[]                  @relation("fk_menu_type_id") //one to many
+  menu                   menu[]                  @relation("fk_m_type_id") //one to many
   block                  block[]                 @relation("fk_bk_type_id") //one to many
   component              component[]             @relation("fk_comp_type_id") //one to many
   prop                   prop[]                  @relation("fk_prop_type_id") //one to many
   language               language?               @relation("fk_type_language_code", fields: [language_code], references: [code], map: "fk_type_language_code")
 
-  @@unique([table_id, name], name: "unique_table_id_name")
+  @@unique([table_id, name], map: "type_table_id_name_key")
 }
 
 model tag {
@@ -136,12 +136,21 @@ model menu {
   menu_belong_id Int?
   type_id        Int
   status         Int       @default(0)
+  previous_id    Int?      
+  next_id        Int?      
   created_at     DateTime  @default(now())
   updated_at     DateTime? @updatedAt
 
-  menu_belong menu?  @relation("fk_menu_belong_id", fields: [menu_belong_id], references: [id], map: "fk_menu_belong_id") //many to one
-  menu_child  menu[] @relation("fk_menu_belong_id") //one to many
-  type        type?  @relation("fk_menu_type_id", fields: [type_id], references: [id], map: "fk_menu_type_id") //many to one
+
+  menu_belong menu?  @relation("fk_m_menu_belong_id", fields: [menu_belong_id], references: [id], map: "fk_m_menu_belong_id")
+  previous_menu menu?  @relation("fk_m_previous_id", fields: [previous_id], references: [id], map: "fk_m_previous_id")
+  next_menu     menu?  @relation("fk_m_next_id", fields: [next_id], references: [id], map: "fk_m_next_id")
+  menu_child  menu[] @relation("fk_m_menu_belong_id")
+  previous   menu[] @relation("fk_m_previous_id")
+  next       menu[] @relation("fk_m_next_id")
+  type        type?  @relation("fk_m_type_id", fields: [type_id], references: [id], map: "fk_m_type_id")
+
+  
 }
 
 model general {

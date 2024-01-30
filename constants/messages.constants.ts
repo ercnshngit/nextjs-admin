@@ -358,6 +358,12 @@ export class ErrorMessages {
       en: "You do not have permission to do this.",
     };
   }
+  static MENU_BELONG_ID_NOT_SAME_ERROR() {
+    return {
+      tr: "Menüye ait id'ler aynı olmalıdır.",
+      en: "Menu belong id must be the same.",
+    };
+  }
 }
 
 export class ConfirmMessages {
