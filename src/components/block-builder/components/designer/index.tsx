@@ -7,11 +7,9 @@ import { useEffect, useState } from "react";
 import { componentTags } from "../../../../block-renderer/utils/component-tags";
 import { handleDragEnd } from "../../utils/drag-helpers";
 import { createTree } from "../../utils/tree-operations";
-import ComponentWrapper, {
-  ComponentWrapperWithoutDnd,
-} from "../component-wrapper";
+import ComponentWrapper from "../component-wrapper";
 
-export default function Designer() {
+export default function Designer({ dragDrop }: { dragDrop: boolean }) {
   const {
     elements,
     addElement,
@@ -56,6 +54,7 @@ export default function Designer() {
   const renderComponentWrapper = (component: BlockComponentDto) => {
     return (
       <ComponentWrapper
+        dragDrop={dragDrop}
         hoveredElement={hoveredElement}
         setHoveredElement={setHoveredElement}
         component={component}
@@ -103,7 +102,10 @@ export default function Designer() {
         <Button
           variant={"destructive"}
           size={"sm"}
-          onClick={() => removeElement(component.code)}
+          onClick={(e) => {
+            e.stopPropagation();
+            removeElement(component.code);
+          }}
         >
           Sil
         </Button>
@@ -130,11 +132,8 @@ export default function Designer() {
           if (selectedElement) setSelectedElement(null);
         }}
       >
-        {/* {mode === "html" ? (
-          // <ElementsHtml setElements={setElements} jsx={jsx} setJsx={setJsx} />
-        ) : ( */}
         <div
-          ref={droppable.setNodeRef}
+          ref={dragDrop ? droppable.setNodeRef : undefined}
           className={cn(
             "bg-background h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto",
             droppable.isOver && "ring-4 ring-primary ring-inset"
@@ -151,132 +150,6 @@ export default function Designer() {
               <div className="h-[120px] rounded-md bg-primary/20"></div>
             </div>
           )}
-          {elements.length > 0 && (
-            <div className="flex flex-col w-full gap-2 p-4">
-              {tree.map((component) => {
-                if (component.component.tag.name in componentTags) {
-                  return mode === "preview"
-                    ? renderPreview(component)
-                    : mode === "ui"
-                    ? renderComponentWrapper(component)
-                    : null;
-                }
-                return renderUnsupported(component);
-              })}
-            </div>
-          )}
-        </div>
-        {/* )} */}
-      </div>
-    </div>
-  );
-}
-
-export function DesignerWithoutDnd() {
-  const {
-    elements,
-    addElement,
-    selectedElement,
-    setSelectedElement,
-    removeElement,
-    setElements,
-    mode,
-    setBlock,
-  } = useDesigner();
-
-  const [tree, setTree] = useState<BlockComponentDto[]>([]);
-  const [hoveredElement, setHoveredElement] = useState<string[]>([]);
-  // const [jsx, setJsx] = useState<string>("");
-
-  useEffect(() => {
-    const elementTree = createTree(elements);
-    if (!elementTree) return;
-    setTree(elementTree);
-    // setJsx(createStringFromTree(elementTree));
-  }, [elements]);
-
-  const renderComponentWrapper = (component: BlockComponentDto) => {
-    return (
-      <ComponentWrapperWithoutDnd
-        hoveredElement={hoveredElement}
-        setHoveredElement={setHoveredElement}
-        component={component}
-        {...Object.fromEntries(
-          component.props.map((prop) => [prop.prop.key, prop.value])
-        )}
-        key={component.code}
-      >
-        {component.children?.map((child) => {
-          if (child.component.tag.name in componentTags) {
-            return renderComponentWrapper(child);
-          }
-          return renderUnsupported(child);
-        })}
-      </ComponentWrapperWithoutDnd>
-    );
-  };
-
-  const renderPreview = (component: BlockComponentDto) => {
-    const Component = componentTags[component.component.tag.name];
-
-    return (
-      <Component
-        {...Object.fromEntries(
-          component.props.map((prop) => [prop.prop.key, prop.value])
-        )}
-        key={component.code}
-        id={component.code}
-      >
-        {component.children?.map((child) => {
-          if (child.component.tag.name in componentTags) {
-            renderPreview(child);
-          }
-          return renderUnsupported(child);
-        })}
-      </Component>
-    );
-  };
-
-  const renderUnsupported = (component: BlockComponentDto) => {
-    return (
-      <div className="text-center text-red-400 bg-red-100">
-        {component.component.tag.name}
-        <p className="text-red-400">Desteklenmeyen bileşen lütfen silin</p>
-        <Button
-          variant={"destructive"}
-          size={"sm"}
-          onClick={() => removeElement(component.code)}
-        >
-          Sil
-        </Button>
-        <div className="w-full border-b border-red-400"></div>
-        {component.children?.map((child) => {
-          if (child.component.tag.name in componentTags) {
-            return mode === "preview"
-              ? renderPreview(component)
-              : mode === "ui"
-              ? renderComponentWrapper(component)
-              : null;
-          }
-          return renderUnsupported(child);
-        })}
-      </div>
-    );
-  };
-
-  return (
-    <div className="flex w-full h-full ">
-      <div
-        className="w-full h-full p-4 "
-        onClick={() => {
-          if (selectedElement) setSelectedElement(null);
-        }}
-      >
-        <div
-          className={cn(
-            "bg-background h-full m-auto rounded-xl flex flex-col flex-grow items-center justify-start flex-1 overflow-y-auto"
-          )}
-        >
           {elements.length > 0 && (
             <div className="flex flex-col w-full gap-2 p-4">
               {tree.map((component) => {

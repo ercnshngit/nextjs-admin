@@ -1,14 +1,8 @@
-import React from "react";
-import dynamic from "next/dynamic";
-import {
-  Controller,
-  FieldErrors,
-  UseFormRegister,
-  useController,
-} from "react-hook-form";
-import Label from "../Label";
+import { ReactQuillWrapper } from "@/libs/react-quill";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
+import { Controller, FieldErrors, UseFormRegister } from "react-hook-form";
+import Label from "../Label";
 
 const RichTextBox = ({
   field,
@@ -33,7 +27,11 @@ const RichTextBox = ({
       <Controller
         name={field.name}
         control={control}
-        render={({ field }) => <div></div>}
+        render={({ field }) => (
+          <div className="min-h-[400px] ">
+            <ReactQuillWrapper value={field.value} setValue={field.onChange} />
+          </div>
+        )}
       />
       {errors[field.name] && <span>Bu alan gereklidir</span>}
     </div>

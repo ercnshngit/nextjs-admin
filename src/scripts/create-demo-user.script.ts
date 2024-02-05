@@ -23,7 +23,11 @@ export async function createDemoUser() {
     },
   });
   if (userExist) {
-    return;
+    await prisma.user.delete({
+      where: {
+        id: userExist.id,
+      },
+    });
   }
   const encryptor = new Encryptor();
 

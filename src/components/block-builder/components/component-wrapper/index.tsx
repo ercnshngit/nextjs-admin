@@ -19,11 +19,13 @@ export default function ComponentWrapper({
   setHoveredElement,
   component,
   tag: string,
+  dragDrop,
   ...props
 }: {
   hoveredElement: string[];
   setHoveredElement: React.Dispatch<React.SetStateAction<string[]>>;
   component: BlockComponentDto;
+  dragDrop: boolean;
   [key: string]: any;
 }) {
   const { removeElement, setSelectedElement, addElement } = useDesigner();
@@ -91,7 +93,7 @@ export default function ComponentWrapper({
       }
     >
       <div
-        ref={draggable.setNodeRef}
+        ref={dragDrop ? draggable.setNodeRef : undefined}
         onMouseEnter={() => {
           setHoveredElement((prev) => [...prev, component.code]);
         }}
@@ -111,15 +113,19 @@ export default function ComponentWrapper({
             : "border-gray-400 border-dashed"
         )}
       >
-        <div
-          ref={topHalf.setNodeRef}
-          className="absolute w-full h-1/3 rounded-t-md"
-        />
+        {dragDrop && (
+          <>
+            <div
+              ref={topHalf.setNodeRef}
+              className="absolute w-full h-1/3 rounded-t-md"
+            />
 
-        <div
-          ref={bottomHalf.setNodeRef}
-          className="absolute bottom-0 w-full h-1/3 rounded-b-md"
-        />
+            <div
+              ref={bottomHalf.setNodeRef}
+              className="absolute bottom-0 w-full h-1/3 rounded-b-md"
+            />
+          </>
+        )}
         <div
           className={cn(
             "absolute top-0 right-0 gap-1 z-40 bg-gray-900 flex rounded py-1 px-2 items-center",
@@ -128,17 +134,41 @@ export default function ComponentWrapper({
               : "hidden"
           )}
         >
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              duplicateElement(component);
-            }}
-            variant="default"
-            size="icon"
-            className="w-6 h-6 p-1"
-          >
-            <CopyIcon />
-          </Button>
+          {dragDrop && (
+            <>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  duplicateElement(component);
+                }}
+                variant="default"
+                size="icon"
+                className="w-6 h-6 p-1"
+              >
+                <CopyIcon />
+              </Button>
+              <Button
+                {...draggable.listeners}
+                {...draggable.attributes}
+                variant="secondary"
+                size="icon"
+                className="w-6 h-6 p-1"
+              >
+                <MoveIcon />
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation(); // avoid selection of element while deleting
+                  removeElement(component.code);
+                }}
+                variant="destructive"
+                size="icon"
+                className="w-6 h-6 p-1"
+              >
+                <TrashIcon />
+              </Button>
+            </>
+          )}
           <Button
             onClick={(e) => {
               e.stopPropagation();
@@ -150,120 +180,31 @@ export default function ComponentWrapper({
           >
             <Pencil2Icon />
           </Button>
-          <Button
-            {...draggable.listeners}
-            {...draggable.attributes}
-            variant="secondary"
-            size="icon"
-            className="w-6 h-6 p-1"
-          >
-            <MoveIcon />
-          </Button>
-          <Button
-            onClick={(e) => {
-              e.stopPropagation(); // avoid selection of element while deleting
-              removeElement(component.code);
-            }}
-            variant="destructive"
-            size="icon"
-            className="w-6 h-6 p-1"
-          >
-            <TrashIcon />
-          </Button>
         </div>
-        {topHalf.isOver && (
+        {dragDrop && topHalf.isOver && (
           <div className="absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none" />
         )}
-        {children.isOver && (
+        {dragDrop && children.isOver && (
           <div className="absolute w-full rounded-md top-1/3 h-1/3 bg-primary " />
         )}
         <div className="p-2" id={component.code}>
           <Component {...props} />
         </div>
-        {component.hasChildren && component.children?.length === 0 && (
-          <div
-            ref={children.setNodeRef}
-            className="absolute w-full h-1/3 px-2 bottom-1/3 "
-          >
-            <div className="border border-dashed hover:border-blue-500 hover:border-collapse">
-              <PlusIcon className="w-6 h-6 m-auto text-gray-400 hover:text-blue-500" />
+        {dragDrop &&
+          component.hasChildren &&
+          component.children?.length === 0 && (
+            <div
+              ref={children.setNodeRef}
+              className="absolute w-full h-1/3 px-2 bottom-1/3 "
+            >
+              <div className="border border-dashed hover:border-blue-500 hover:border-collapse">
+                <PlusIcon className="w-6 h-6 m-auto text-gray-400 hover:text-blue-500" />
+              </div>
             </div>
-          </div>
-        )}
-        {bottomHalf.isOver && (
+          )}
+        {dragDrop && bottomHalf.isOver && (
           <div className="absolute bottom-0 w-full rounded-md h-[7px] bg-primary rounded-t-none" />
         )}
-      </div>
-    </Suspense>
-  );
-}
-
-export function ComponentWrapperWithoutDnd({
-  hoveredElement,
-  setHoveredElement,
-  component,
-  tag: string,
-  ...props
-}: {
-  hoveredElement: string[];
-  setHoveredElement: React.Dispatch<React.SetStateAction<string[]>>;
-  component: BlockComponentDto;
-  [key: string]: any;
-}) {
-  const { removeElement, setSelectedElement, addElement } = useDesigner();
-
-  const Component = componentTags[component.component.tag.name];
-
-  return (
-    <Suspense
-      fallback={
-        <Loading className="border min-h-[100px]  rounded-md group border-gray-400 border-dashed" />
-      }
-    >
-      <div
-        onMouseEnter={() => {
-          setHoveredElement((prev) => [...prev, component.code]);
-        }}
-        onClick={(e) => {
-          e.stopPropagation();
-          setSelectedElement(component);
-        }}
-        onMouseLeave={() =>
-          setHoveredElement((prev) =>
-            prev.filter((item) => item !== component.code)
-          )
-        }
-        className={cn(
-          "relative border min-h-[100px]  rounded-md group",
-          hoveredElement[hoveredElement.length - 1] === component.code
-            ? "border-blue-500 border-2"
-            : "border-gray-400 border-dashed"
-        )}
-      >
-        <div
-          className={cn(
-            "absolute top-0 right-0 gap-1 z-40 bg-gray-900 flex rounded py-1 px-2 items-center",
-            hoveredElement[hoveredElement.length - 1] === component.code
-              ? "flex"
-              : "hidden"
-          )}
-        >
-          <Button
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedElement(component);
-            }}
-            variant="default"
-            size="icon"
-            className="w-6 h-6 p-1"
-          >
-            <Pencil2Icon />
-          </Button>
-        </div>
-
-        <div className="p-2" id={component.code}>
-          <Component {...props} />
-        </div>
       </div>
     </Suspense>
   );

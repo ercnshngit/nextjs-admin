@@ -21,10 +21,14 @@ export default function ServicesComponent({
 }) {
   return (
     <section className="container relative flex flex-col items-center py-10 text-center md:py-20 ">
-      <EditableContent propName={"title"} propValue={title}>
+      <EditableContent typeName="text" propName={"title"} propValue={title}>
         <Title>{control(title)}</Title>
       </EditableContent>
-      <EditableContent propName={"description"} propValue={description}>
+      <EditableContent
+        typeName="richtext"
+        propName={"description"}
+        propValue={description}
+      >
         <Description className="max-w-2xl">{control(description)}</Description>
       </EditableContent>
       <EditableData

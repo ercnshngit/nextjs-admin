@@ -995,14 +995,32 @@ export class TableService extends BaseService {
 
   async createTableConfigOnlyTableNames() {
     try {
-      const tableNames = await this.getTableNames();
+      const tableNames = (await this.getTableNames()) as {
+        table_name: string;
+      }[];
       if (!tableNames) {
         return null;
       }
       const tableNamesArray = Object.values(tableNames);
 
+      //if exist dont include
+      const existingTables = await prisma.database_table.findMany({
+        where: {
+          name: {
+            in: tableNamesArray.map((table) => table.table_name),
+          },
+        },
+      });
+
+      const filteredTableNamesArray = tableNamesArray.filter(
+        (table) =>
+          !existingTables.some(
+            (existingTable) => existingTable.name == table.table_name
+          )
+      );
+
       const result = await prisma.database_table.createMany({
-        data: tableNamesArray.map((table) => ({
+        data: filteredTableNamesArray.map((table) => ({
           name: table.table_name,
           can_create: true,
           can_update: true,

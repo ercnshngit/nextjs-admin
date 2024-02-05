@@ -6,14 +6,12 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import Designer, { DesignerWithoutDnd } from "./components/designer";
-import DesignerSidebar, {
-  DesignerSidebarWithoutDnd,
-} from "./components/designer-sidebar";
+import Designer from "./components/designer";
+import DesignerSidebar from "./components/designer-sidebar";
 import DragOverlayWrapper from "./components/drag-overlay-wrapper";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
 
-export default function BlockBuilder() {
+export default function BlockBuilder({ dragDrop }: { dragDrop: boolean }) {
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10, // 10px
@@ -35,19 +33,10 @@ export default function BlockBuilder() {
       collisionDetection={customCollisionDetectionAlgorithm}
     >
       <div className="flex">
-        <Designer />
+        <Designer dragDrop={dragDrop} />
         <DesignerSidebar />
       </div>
       <DragOverlayWrapper />
     </DndContext>
-  );
-}
-
-export function BlockBuilderWithoutDnd() {
-  return (
-    <div className="flex">
-      <DesignerWithoutDnd />
-      <DesignerSidebarWithoutDnd />
-    </div>
   );
 }

@@ -9,7 +9,7 @@ import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function BuilderPage() {
@@ -87,7 +87,7 @@ export default function BuilderPage() {
           </div>
         </div>
       </div>
-      <BlockBuilder />
+      <BlockBuilder dragDrop={true} />
     </div>
   );
 }

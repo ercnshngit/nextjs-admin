@@ -1,7 +1,5 @@
 "use client";
-import BlockBuilder, {
-  BlockBuilderWithoutDnd,
-} from "@/components/block-builder";
+import BlockBuilder from "@/components/block-builder";
 import { Button } from "@/components/ui/button";
 import { useDesigner } from "@/contexts/designer-context";
 import { cn } from "@/libs/utils";
@@ -142,7 +140,7 @@ export default function BuilderPage({
           </div>
         </div>
       </div>
-      <BlockBuilderWithoutDnd />
+      <BlockBuilder dragDrop={false} />
     </div>
   );
 }
