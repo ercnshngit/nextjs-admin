@@ -52,7 +52,12 @@ function Options({
           })
         : data?.map((item: any) => {
             return {
-              label: item.name,
+              label: field.column_relations[0].referenced_table.display_column
+                ? item[
+                    field.column_relations[0].referenced_table.display_column
+                      .name as any
+                  ]
+                : item.name,
               value: item.id,
             };
           })

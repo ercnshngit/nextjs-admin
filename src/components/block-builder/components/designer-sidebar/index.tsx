@@ -105,10 +105,10 @@ export default function DesignerSidebar() {
 
       <Tabs defaultValue={"block"} className="w-full">
         <TabsList>
-          <TabsTrigger value="components">Component</TabsTrigger>
+          {/* <TabsTrigger value="components">Component</TabsTrigger> */}
           <TabsTrigger value="block">Block Settings</TabsTrigger>
         </TabsList>
-        <TabsContent value="components">
+        {/* <TabsContent value="components">
           {selectedElement && (
             <div className="flex w-full flex-col gap-2">
               <h1 className="text-2xl font-bold">Properties</h1>
@@ -152,7 +152,7 @@ export default function DesignerSidebar() {
                 );
               })}
           </div>
-        </TabsContent>
+        </TabsContent> */}
         <TabsContent value="block">
           <div className="flex w-full flex-col gap-2">
             <h1 className="text-2xl font-bold">Properties</h1>

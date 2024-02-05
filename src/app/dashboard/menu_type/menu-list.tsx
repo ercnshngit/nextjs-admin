@@ -26,7 +26,7 @@ export default function MenuList({
 }: {
   data: MENU_ITEM[];
   onRemove: (id: UniqueIdentifier) => void;
-  handleUpdate: (id: UniqueIdentifier, parentId: UniqueIdentifier) => void;
+  handleUpdate: any;
 }) {
   const [open, setOpen] = useState(false);
   const [currentRemoveId, setCurrentRemoveId] = useState<UniqueIdentifier>();
@@ -36,56 +36,28 @@ export default function MenuList({
     setCurrentRemoveId(id);
     return false;
   }
-  const createMenuTree = useCallback(function createMenuTree(
-    data: MENU_ITEM[],
-    parentId: number
-  ): TreeItems {
-    return data
-      ?.filter((menu: MENU_ITEM) => menu.menu_belong_id === parentId)
-      .map((menu: MENU_ITEM) => {
+  const assingMenuTreeProperties = useCallback(
+    function assingMenuTreeProperties(data: MENU_ITEM[]): TreeItems {
+      return data.map((menu: MENU_ITEM) => {
         return {
           id: menu.title,
           uniqueId: menu.id,
           collapsed: true,
-          children: createMenuTree(data, menu.id),
+          children: assingMenuTreeProperties(menu.submenus),
         };
       });
-  },
-  []);
+    },
+    []
+  );
 
   const [menuData, setMenuData] = useState<TreeItems>(
-    data
-      ?.filter(
-        (menu: MENU_ITEM) =>
-          menu.menu_belong_id === 0 || menu.menu_belong_id === null
-      )
-      .map((menu: MENU_ITEM) => {
-        return {
-          id: menu.title,
-          uniqueId: menu.id,
-          collapsed: true,
-          children: createMenuTree(data, menu.id),
-        };
-      })
+    assingMenuTreeProperties(data)
   );
 
   useEffect(() => {
-    setMenuData(
-      data
-        ?.filter(
-          (menu: MENU_ITEM) =>
-            menu.menu_belong_id === 0 || menu.menu_belong_id === null
-        )
-        .map((menu: MENU_ITEM) => {
-          return {
-            id: menu.title,
-            uniqueId: menu.id,
-            collapsed: true,
-            children: createMenuTree(data, menu.id),
-          };
-        })
-    );
-  }, [data, createMenuTree]);
+    setMenuData(assingMenuTreeProperties(data));
+  }, [data, assingMenuTreeProperties]);
+
   const { translate } = useTranslate();
 
   const queryClient = useQueryClient();

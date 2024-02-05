@@ -164,8 +164,20 @@ export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
   return responseData;
 };
 
+export const changeMenuOrder = async (data: any) => {
+  const { data: responseData } = await axiosClient.post(
+    "/menu/change-order",
+    data
+  );
+  return responseData;
+};
+
 export const getMenuItems = async ({ typeId }: { typeId: number }) => {
-  const { data } = await axiosClient.get(`/menu/get/byslug/${typeId}`);
+  const { data } = await axiosClient.get(`/menu/get/bytype/${typeId}`);
+  return data;
+};
+export const getMenuBySlug = async ({ slug }: { slug: string }) => {
+  const { data } = await axiosClient.get(`/menu/get/byslug/${slug}`);
   return data;
 };
 

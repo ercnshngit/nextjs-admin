@@ -12,7 +12,11 @@ import { MENU_TYPE } from "@/types/menu_types";
 import { MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
 import { useRouter } from "next/navigation";
 import MenuList from "../menu-list";
-import { getMenuItems, updateMenu } from "@/services/dashboard";
+import {
+  changeMenuOrder,
+  getMenuItems,
+  updateMenu,
+} from "@/services/dashboard";
 import Loading from "@/components/loading";
 
 export default function MenuType({ params }: { params: { id: string } }) {
@@ -40,11 +44,12 @@ function Menu({ menuTypeId }: { menuTypeId: number }) {
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation(
-    (data: UPDATE_MENU_ITEM) => updateMenu({ id: data.id, data: data.data }),
+    (data: { from: number; to: number }) => {
+      return changeMenuOrder(data);
+    },
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["menus", menuTypeId]);
-        console.log("updateMutation");
       },
       onError: (error) => {
         console.log(error);
@@ -54,19 +59,8 @@ function Menu({ menuTypeId }: { menuTypeId: number }) {
   const router = useRouter();
   const { translate } = useTranslate();
 
-  const handleUpdate = (
-    id: UniqueIdentifier,
-    parentId: UniqueIdentifier | null
-  ) => {
-    const item = data?.find((menu) => menu.title === id);
-    const parentItem = data?.find((menu) => menu.title === parentId);
-
-    updateMutation.mutate({
-      id: item?.id as number,
-      data: {
-        menu_belong_id: (parentItem?.id as number) || null,
-      },
-    });
+  const handleUpdate = (data: { from: number; to: number }) => {
+    updateMutation.mutate(data);
   };
 
   const handleRemove = (id: UniqueIdentifier) => {};

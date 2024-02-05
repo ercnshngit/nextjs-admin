@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import { useTranslate } from "@/langs";
 import Link from "next/link";
+import useSearchParams from "@/hooks/use-search-params";
 
 export default function CreatePage({
   tableName,
@@ -13,6 +14,7 @@ export default function CreatePage({
   children: React.ReactNode;
 }) {
   const { translate } = useTranslate();
+  const searchParams = useSearchParams();
 
   return (
     <div className="container py-10 mx-auto">
@@ -20,7 +22,13 @@ export default function CreatePage({
         <h3 className="text-lg font-medium">{translate(tableName)} Ekle</h3>
         <div>
           <Button asChild>
-            <Link href={"/dashboard/" + tableName}>
+            <Link
+              href={{
+                pathname: "/dashboard/" + tableName,
+                query: searchParams.getAllQueryString(),
+              }}
+            >
+              {" "}
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Geri Dön
             </Link>

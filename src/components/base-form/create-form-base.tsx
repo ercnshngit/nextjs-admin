@@ -79,6 +79,14 @@ export default function CreateFormBase({ table }: { table: DatabaseTableDto }) {
     }
   );
   const onSubmit: SubmitHandler<any> = (data) => {
+    // change empty string to null
+    const parsedData: any = {};
+    Object.entries(data).forEach(([key, value]) => {
+      if (value === "") {
+      } else {
+        parsedData[key] = value;
+      }
+    });
     createMutation.mutate(data);
   };
   const onSubmitAndGoBack: SubmitHandler<any> = (data) => {

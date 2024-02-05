@@ -32,6 +32,8 @@ export default function Select({
         })}
         defaultValue={defaultValue}
       >
+        <option value=""></option>
+
         {field.options && field.options.length > 0 ? (
           field.options?.map((option) => {
             return (

@@ -32,6 +32,23 @@ export class MenuService extends BaseService {
     return new Response(JSON.stringify(result));
   }
 
+  async getMenuBySlug(slug: string) {
+    const menu = await prisma.menu.findFirst({ where: { slug } });
+    if (!menu) {
+      return new Response(
+        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
+        { status: 404 }
+      );
+    }
+
+    const result = [];
+
+    const submenus = await this.getSubMenus(menu.id);
+    result.push({ ...menu, submenus });
+
+    return new Response(JSON.stringify(result));
+  }
+
   async getMenuByTypeId(typeId: number) {
     const menu = await prisma.menu.findMany({
       select: {
@@ -42,8 +59,10 @@ export class MenuService extends BaseService {
         menu_belong_id: true,
         route: true,
         status: true,
+        previous_id: true,
+        next_id: true,
       },
-      where: { type_id: typeId, menu_belong_id: null},
+      where: { type_id: typeId, menu_belong_id: null },
     });
     if (!menu || menu.length === 0) {
       return new Response(
@@ -53,7 +72,8 @@ export class MenuService extends BaseService {
     }
 
     const result = [];
-    for (const menuItem of menu) {
+    const sortedMenus = await this.sortMenus(menu);
+    for (const menuItem of sortedMenus) {
       const submenus = await this.getSubMenus(menuItem.id);
       result.push({ ...menuItem, submenus });
     }
@@ -84,7 +104,7 @@ export class MenuService extends BaseService {
           { status: 404 }
         );
       }
-  
+
       const secondMenu = await prisma.menu.findUnique({
         where: { id: data.second_menu_id },
       });
@@ -96,57 +116,78 @@ export class MenuService extends BaseService {
       }
       if (firstMenu.menu_belong_id !== secondMenu.menu_belong_id) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.MENU_BELONG_ID_NOT_SAME_ERROR() }),
+          JSON.stringify({
+            message: ErrorMessages.MENU_BELONG_ID_NOT_SAME_ERROR(),
+          }),
           { status: 400 }
         );
       }
-      console.log(firstMenu.previous_id , secondMenu.previous_id , firstMenu.next_id , secondMenu.next_id);
-      const updatedFirstMenu = await prisma.menu.update({ // ilk menüyü güncelle
+      console.log(
+        firstMenu.previous_id,
+        secondMenu.previous_id,
+        firstMenu.next_id,
+        secondMenu.next_id
+      );
+      const updatedFirstMenu = await prisma.menu.update({
+        // ilk menüyü güncelle
         where: { id: data.first_menu_id },
-        include: { previous: true, next: true},
-        data: { 
+        include: { previous: true, next: true },
+        data: {
           previous_id: secondMenu.previous_id,
           next_id: secondMenu.next_id,
-        }
+        },
       });
       if (!updatedFirstMenu) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() , location: "firstMenuIdUpdate"}),
+          JSON.stringify({
+            message: ErrorMessages.UPDATE_FAILED_ERROR(),
+            location: "firstMenuIdUpdate",
+          }),
           { status: 400 }
         );
       }
-      const updatedFirstMenuPreviousAndNextMenus = await prisma.menu.update({ // ilk menünün önceki ve sonraki menülerini güncelle
+      const updatedFirstMenuPreviousAndNextMenus = await prisma.menu.update({
+        // ilk menünün önceki ve sonraki menülerini güncelle
         where: { id: data.first_menu_id },
-        include: { previous: true, next: true},
-        data: { 
-          previous_menu: secondMenu.previous_id == null ? {} : {
-            update:{
-              data:{
-                next_id: firstMenu.id,
-              }
-            }
-          },
-          next_menu: secondMenu.next_id == null ? {} : {
-            update:{
-              data:{
-                previous_id: firstMenu.id,
-              }
-            }
-          },
-        }
+        include: { previous: true, next: true },
+        data: {
+          previous_menu:
+            secondMenu.previous_id == null
+              ? {}
+              : {
+                  update: {
+                    data: {
+                      next_id: firstMenu.id,
+                    },
+                  },
+                },
+          next_menu:
+            secondMenu.next_id == null
+              ? {}
+              : {
+                  update: {
+                    data: {
+                      previous_id: firstMenu.id,
+                    },
+                  },
+                },
+        },
       });
       if (!updatedFirstMenuPreviousAndNextMenus) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() , location: "firstMenuNext&PreviousUpdate"}),
+          JSON.stringify({
+            message: ErrorMessages.UPDATE_FAILED_ERROR(),
+            location: "firstMenuNext&PreviousUpdate",
+          }),
           { status: 400 }
         );
       }
-      const updatedSecondMenu = await prisma.menu.update({ 
+      const updatedSecondMenu = await prisma.menu.update({
         where: { id: data.second_menu_id },
-        include: { previous: true, next: true},
+        include: { previous: true, next: true },
         data: {
           previous_id: firstMenu.previous_id,
-          next_id: firstMenu.next_id, 
+          next_id: firstMenu.next_id,
         },
       });
       if (!updatedSecondMenu) {
@@ -155,34 +196,50 @@ export class MenuService extends BaseService {
           { status: 400 }
         );
       }
-  
-      const updatedSecondMenuPreviousAndNextMenus = await prisma.menu.update({ // ikinci menünün önceki ve sonraki menülerini güncelle
+
+      const updatedSecondMenuPreviousAndNextMenus = await prisma.menu.update({
+        // ikinci menünün önceki ve sonraki menülerini güncelle
         where: { id: data.second_menu_id },
-        include: { previous: true, next: true},
-        data: { 
-          previous_menu: firstMenu.previous_id == null ? {} : {
-            update:{
-              data:{
-                next_id: secondMenu.id,
-              }
-            }
-          },
-          next_menu: firstMenu.next_id == null ? {} : {
-            update:{
-              data:{
-                previous_id: secondMenu.id,
-              }
-            }
-          },
-        }
+        include: { previous: true, next: true },
+        data: {
+          previous_menu:
+            firstMenu.previous_id == null
+              ? {}
+              : {
+                  update: {
+                    data: {
+                      next_id: secondMenu.id,
+                    },
+                  },
+                },
+          next_menu:
+            firstMenu.next_id == null
+              ? {}
+              : {
+                  update: {
+                    data: {
+                      previous_id: secondMenu.id,
+                    },
+                  },
+                },
+        },
       });
       if (!updatedSecondMenuPreviousAndNextMenus) {
         return new Response(
-          JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() , location: "secondMenuNext&PreviousUpdate"}),
+          JSON.stringify({
+            message: ErrorMessages.UPDATE_FAILED_ERROR(),
+            location: "secondMenuNext&PreviousUpdate",
+          }),
           { status: 400 }
         );
       }
-      return new Response(JSON.stringify({ message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM() , firstMenu : updatedFirstMenuPreviousAndNextMenus, secondMenu: updatedSecondMenuPreviousAndNextMenus}));
+      return new Response(
+        JSON.stringify({
+          message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM(),
+          firstMenu: updatedFirstMenuPreviousAndNextMenus,
+          secondMenu: updatedSecondMenuPreviousAndNextMenus,
+        })
+      );
     } catch (error: any) {
       console.log(error);
       throw new Error(error);
@@ -192,20 +249,24 @@ export class MenuService extends BaseService {
   async sortMenus(data: any[]) {
     try {
       const sortedSubMenus = [];
-        // İlk öğeyi bulmak için previous_id'si null olan öğeyi bulun
-      const firstItem = data.find(item => item.previous_id === null);
-      
+      // İlk öğeyi bulmak için previous_id'si null olan öğeyi bulun
+      console.log(data);
+      const firstItem = data.find((item) => item.previous_id === null);
+      console.log(firstItem);
+
       if (firstItem) {
         sortedSubMenus.push(firstItem);
-        
+
         let currentItem = firstItem;
-        
+
         // Sonraki öğeleri next_id'leri kullanarak sıralayın
         while (currentItem.next_id) {
-          const nextItem = data.find(item => item.id === currentItem.next_id);
-          
+          console.log(currentItem.title, currentItem.next_id);
+          const nextItem = data.find((item) => item.id === currentItem.next_id);
+
           if (nextItem) {
-            if(data.length === sortedSubMenus.length) break;
+            console.log(data.length === sortedSubMenus.length);
+            if (data.length === sortedSubMenus.length) break;
             sortedSubMenus.push(nextItem);
             currentItem = nextItem;
           } else {
@@ -214,16 +275,15 @@ export class MenuService extends BaseService {
         }
       }
       return sortedSubMenus;
-    } catch (error : any) {
+    } catch (error: any) {
       console.log(error);
       throw new Error(error);
     }
   }
 
-
-  async getSortedMenus(){
+  async getSortedMenus() {
     const menus = await prisma.menu.findMany({
-      orderBy: { id: 'asc' },
+      orderBy: { id: "asc" },
     });
     if (!menus || menus.length === 0) {
       return new Response(
@@ -350,13 +410,13 @@ export class MenuService extends BaseService {
     !menuExist
       ? (msg = ErrorMessages.MENU_NOT_FOUND_ERROR())
       : data.type_id && !(await func.checkTypeExist(data.type_id))
-        ? (msg = ErrorMessages.TYPE_NOT_FOUND_ERROR())
-        : data.menu_belong_id &&
-            !(await func.checkMenuBelongExist(data.menu_belong_id))
-          ? (msg = ErrorMessages.MENU_NOT_FOUND_ERROR())
-          : data.title
-            ? (data.slug = data.slug ?? (await func.slugCreator(data.title)))
-            : (data.route = data.route ?? `/${data.slug}`);
+      ? (msg = ErrorMessages.TYPE_NOT_FOUND_ERROR())
+      : data.menu_belong_id &&
+        !(await func.checkMenuBelongExist(data.menu_belong_id))
+      ? (msg = ErrorMessages.MENU_NOT_FOUND_ERROR())
+      : data.title
+      ? (data.slug = data.slug ?? (await func.slugCreator(data.title)))
+      : (data.route = data.route ?? `/${data.slug}`);
 
     if (msg) {
       return new Response(JSON.stringify({ message: msg }), { status: 404 });
@@ -374,6 +434,130 @@ export class MenuService extends BaseService {
     }
 
     return new Response(JSON.stringify(updatedMenu));
+  }
+
+  async changeOrder(data: { from: number; to: number; submenu: boolean }) {
+    try {
+      // TODO: submenu true ise alt menuleri de degistir
+      // ayni itemse dur
+      if (data.from === data.to) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+
+      const fromMenu = await prisma.menu.findFirst({
+        where: { id: data.from },
+      });
+      const toMenu = await prisma.menu.findFirst({ where: { id: data.to } });
+
+      console.log(toMenu);
+
+      if (!fromMenu || !toMenu) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      // from ve to alt altaysa yine dur
+      if (
+        fromMenu.previous_id === toMenu.id ||
+        fromMenu.next_id === toMenu.id
+      ) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+      if (
+        toMenu.previous_id === fromMenu.id ||
+        toMenu.next_id === fromMenu.id
+      ) {
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      }
+
+      // once from menu
+      const fromMenuPrevious = await prisma.menu.findFirst({
+        where: { next_id: fromMenu.id },
+      });
+      const fromMenuNext = await prisma.menu.findFirst({
+        where: { previous_id: fromMenu.id },
+      });
+      // sonra to menu
+      const toMenuPrevious = await prisma.menu.findFirst({
+        where: { next_id: toMenu.id },
+      });
+      const toMenuNext = await prisma.menu.findFirst({
+        where: { previous_id: toMenu.id },
+      });
+
+      // from menunun prev id si to menunun prev id si olacak ve from menunun next id si to menunun id si olacak
+      const updatedFromMenu = await prisma.menu.update({
+        where: { id: fromMenu.id },
+        data: {
+          previous_id: toMenuPrevious ? toMenuPrevious.id : null,
+          next_id: toMenu.id,
+          menu_belong_id: toMenu.menu_belong_id,
+        },
+      });
+
+      // to menunun prev id si from menu olacak
+      const updatedToMenu = await prisma.menu.update({
+        where: { id: toMenu.id },
+        data: {
+          previous_id: fromMenu.id,
+          next_id: toMenuNext ? toMenuNext.id : null,
+        },
+      });
+
+      if (toMenuPrevious) {
+        // to menunun prev menusunun next id si from menu olacak
+        const updatedToMenuPrevious = await prisma.menu.update({
+          where: { id: toMenuPrevious.id },
+          data: {
+            next_id: fromMenu.id,
+          },
+        });
+      }
+
+      if (fromMenuPrevious) {
+        // from menunun prev menusunun next id si from menu next id si olacak
+        const updatedFromMenuPrevious = await prisma.menu.update({
+          where: { id: fromMenuPrevious.id },
+          data: {
+            next_id: fromMenuNext ? fromMenuNext.id : null,
+          },
+        });
+      }
+
+      // from menusunun next menusunun prev id si from menu prev id si olacak
+      if (fromMenuNext) {
+        const updatedFromMenuNext = await prisma.menu.update({
+          where: { id: fromMenuNext.id },
+          data: {
+            previous_id: fromMenuPrevious ? fromMenuPrevious.id : null,
+          },
+        });
+      }
+
+      return new Response(
+        JSON.stringify({
+          message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM(),
+          updatedFromMenu,
+          updatedToMenu,
+        })
+      );
+    } catch (error: any) {
+      console.log(error);
+      return new Response(
+        JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }),
+        { status: 400 }
+      );
+    }
   }
 
   async deleteMenu(id: number) {
