@@ -1001,30 +1001,26 @@ export class TableService extends BaseService {
       if (!tableNames) {
         return null;
       }
-      const tableNamesArray = Object.values(tableNames);
-
-      //if exist dont include
-      const existingTables = await prisma.database_table.findMany({
-        where: {
-          name: {
-            in: tableNamesArray.map((table) => table.table_name),
-          },
-        },
-      });
-
-      const filteredTableNamesArray = tableNamesArray.filter(
-        (table) =>
-          !existingTables.some(
-            (existingTable) => existingTable.name == table.table_name
-          )
-      );
 
       const result = await prisma.database_table.createMany({
-        data: filteredTableNamesArray.map((table) => ({
+        data: tableNames.map((table, index) => ({
           name: table.table_name,
           can_create: true,
           can_update: true,
           is_hidden: true,
+          order: index + 1,
+        })),
+        skipDuplicates: true,
+      });
+
+      const updatedResult = await prisma.database_table.updateMany({
+        where: {
+          name: {
+            in: tableNames.map((table) => table.table_name),
+          },
+        },
+        data: tableNames.map((table, index) => ({
+          order: index + 1,
         })),
       });
 
