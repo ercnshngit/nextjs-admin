@@ -14,10 +14,10 @@ export default function TextInput({
 }) {
   return (
     <input
-      className="rounded-md border w-full border-gray-300 p-2"
+      className="w-full p-2 border border-gray-300 rounded-md"
       type="text"
       id={propKey}
-      value={value}
+      defaultValue={value}
       onChange={(e) => setValue(e.target.value)}
       {...rest}
     />

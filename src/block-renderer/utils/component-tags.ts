@@ -1,3 +1,4 @@
+import Button from "../components/tags/Button";
 import CardGrid from "../components/tags/CardGrid";
 import Div from "../components/tags/Div";
 import HStack from "../components/tags/HStack";
@@ -9,17 +10,92 @@ import Title from "../components/tags/Title";
 import VStack from "../components/tags/VStack";
 import { ComponentTagsType } from "../types";
 
-export const componentTags: ComponentTagsType = {
-  Text: Text,
-  VStack: VStack,
-  HStack: HStack,
-  Image: Image,
-  Title: Title,
-  CardGrid: CardGrid,
-  Div: Div,
-  RichText: RichText,
-  ServicesComponent: ServicesComponent,
-};
+export const components = [
+  {
+    name: "Text",
+    component: Text,
+  },
+  {
+    name: "VStack",
+    component: VStack,
+  },
+  {
+    name: "HStack",
+    component: HStack,
+  },
+  {
+    name: "Image",
+    component: Image,
+  },
+  {
+    name: "Title",
+    component: Title,
+  },
+  {
+    name: "CardGrid",
+    component: CardGrid,
+  },
+  {
+    name: "Div",
+    component: Div,
+  },
+  {
+    name: "RichText",
+    component: RichText,
+  },
+  {
+    name: "Button",
+    component: Button,
+  },
+  {
+    name: "ServicesComponent",
+    component: ServicesComponent,
+    displayName: "Anasayfa Servisler",
+    props: [
+      {
+        name: "title",
+        type: "string",
+      },
+      {
+        name: "description",
+        type: "string",
+      },
+      {
+        name: "items",
+        type: "array",
+        props: [
+          {
+            name: "title",
+            type: "string",
+          },
+          {
+            name: "description",
+            type: "string",
+          },
+          {
+            name: "icon",
+            type: "string",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Button",
+    component: Button,
+  },
+];
+
+export const componentTags: ComponentTagsType = components.reduce(
+  (
+    acc: Record<string, any>,
+    { name, component }: { name: string; component: any }
+  ) => {
+    acc[name] = component;
+    return acc;
+  },
+  {}
+);
 
 export const getComponent = async (file: string) => {
   try {

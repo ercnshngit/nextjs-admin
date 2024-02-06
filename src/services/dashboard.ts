@@ -3,6 +3,7 @@ import { BlockDto } from "./dto/block.dto";
 import { MenuDto } from "./dto/menu.dto";
 import { CREATE_MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
 import { CreateComponentDto } from "./dto/component.dto";
+import { General } from "@/types/general";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -248,5 +249,5 @@ export const getGeneralBySlug = async (slug: string) => {
   const { data: responseData } = await axiosClient.get(
     "/general/get/byslug/" + slug
   );
-  return responseData;
+  return responseData as General[];
 };

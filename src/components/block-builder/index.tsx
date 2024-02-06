@@ -34,7 +34,7 @@ export default function BlockBuilder({ dragDrop }: { dragDrop: boolean }) {
     >
       <div className="flex">
         <Designer dragDrop={dragDrop} />
-        <DesignerSidebar />
+        <DesignerSidebar dragDrop={dragDrop} />
       </div>
       <DragOverlayWrapper />
     </DndContext>

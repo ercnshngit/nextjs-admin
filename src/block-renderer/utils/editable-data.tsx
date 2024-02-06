@@ -1,27 +1,48 @@
+import { useDesigner } from "@/contexts/designer-context";
 import { getGeneralBySlug, getTable } from "@/services/dashboard";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
 export default function EditableData({
-  datasetInfo,
-  component,
+  description,
+  addPage,
+  children,
+  queryKey,
 }: {
-  datasetInfo: string;
-  component: any;
+  description: string;
+  children: React.ReactNode;
+  addPage: React.ReactNode;
+  queryKey: string;
 }) {
-  const [table, name, columnsString] =
-    datasetInfo !== "" ? datasetInfo.split("-") : [null, null, null];
-  const columns = columnsString?.split(",");
-  const { data } = useQuery(
-    [table, name],
-    () =>
-      name &&
-      (table === "table"
-        ? getTable({
-            tableName: name,
-          })
-        : getGeneralBySlug(name)),
-    { enabled: !!name }
+  const { selectedElement } = useDesigner();
+  const [isOpened, setIsOpened] = React.useState(false);
+
+  const queryClient = useQueryClient();
+
+  const open = () => {
+    setIsOpened(true);
+  };
+
+  const close = () => {
+    setIsOpened(false);
+    queryClient.invalidateQueries([queryKey]);
+  };
+
+  if (!selectedElement) return children;
+  return (
+    <>
+      <p>{description}</p>
+      {/* <button onClick={open}>Ekleme yerini ac</button>
+      {isOpened &&
+        createPortal(
+          <>
+            <div className="absolute inset-0 bg-black/70" onClick={close} />
+            <div className="absolute inset-0 w-[80%] mx-auto max-h-[80%] overflow-auto">
+              {addPage}
+            </div>
+          </>,
+          document.body
+        )} */}
+    </>
   );
-  return <>{data && component({ data, columns })}</>;
 }

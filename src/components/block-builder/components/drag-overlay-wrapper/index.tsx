@@ -32,7 +32,7 @@ function DragOverlayWrapper() {
     const Icon =
       (component.icon && Icons[component.icon as keyof typeof Icons]) || null;
     node = (
-      <div className="p-4 border aspect-square flex flex-col justify-center items-center gap-4 bg-white rounded-md mb-4 cursor-pointer">
+      <div className="flex flex-col items-center justify-center gap-4 p-4 mb-4 bg-white border rounded-md cursor-pointer aspect-square">
         {Icon && <Icon />}
         <h1 className="text-center">{component.name}</h1>
       </div>

@@ -38,8 +38,7 @@ export default function MediaPicker({
                 onClick={() => handleImageSelect(image)}
                 className="relative flex items-center justify-center w-32 h-32 bg-gray-200 rounded-lg"
               >
-                <Image
-                  fill
+                <img
                   className="object-contain"
                   src={
                     "https://" + process.env.NEXT_PUBLIC_FILE_URL + image.img

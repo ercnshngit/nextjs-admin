@@ -33,7 +33,7 @@ import TextInput from "../sidebar-input-factory/components/text-input";
 import Loading from "@/components/loading";
 import useSearchParams from "@/hooks/use-search-params";
 
-export default function DesignerSidebar() {
+export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
     ["components"],
     () => getComponents()
@@ -70,7 +70,7 @@ export default function DesignerSidebar() {
       });
     }
     console.log("block yok");
-  }, [block, form.reset, searchParams, form]);
+  }, [block, form.reset, form]);
 
   const onSubmit = (data: any) => {
     setUpdateBlockData({
@@ -93,7 +93,7 @@ export default function DesignerSidebar() {
   const [tab, setTab] = useState<"components" | "block">("block");
 
   useEffect(() => {
-    if (selectedElement) {
+    if (selectedElement && dragDrop) {
       setTab("components");
     } else {
       setTab("block");
@@ -105,8 +105,8 @@ export default function DesignerSidebar() {
   };
 
   return (
-    <div className="h-full min-h-screen min-w-[300px] bg-white px-4 py-10">
-      <div className="mb-2 flex items-center space-x-2">
+    <div className="h-full min-h-screen w-[300px] bg-white px-4 py-10">
+      <div className="flex items-center mb-2 space-x-2">
         <Switch
           id="preview-mode"
           checked={mode === "preview"}
@@ -122,23 +122,27 @@ export default function DesignerSidebar() {
         defaultValue={"block"}
         className="w-full"
       >
-        {" "}
         <TabsList>
-          <TabsTrigger value="components">Component</TabsTrigger>
+          {dragDrop && <TabsTrigger value="components">Component</TabsTrigger>}
           <TabsTrigger value="block">Block Settings</TabsTrigger>
         </TabsList>
-        <TabsContent value="components">
-          <div className="grid grid-cols-2 gap-2">
-            {sidebarComponents &&
-              sidebarComponents?.map((component) => {
-                return (
-                  <SidebarComponent component={component} key={component.id} />
-                );
-              })}
-          </div>
-        </TabsContent>
+        {dragDrop && (
+          <TabsContent value="components">
+            <div className="grid grid-cols-2 gap-2">
+              {sidebarComponents &&
+                sidebarComponents?.map((component) => {
+                  return (
+                    <SidebarComponent
+                      component={component}
+                      key={component.id}
+                    />
+                  );
+                })}
+            </div>
+          </TabsContent>
+        )}
         <TabsContent value="block">
-          <div className="flex w-full flex-col gap-2">
+          <div className="flex flex-col w-full gap-2">
             <h1 className="text-2xl font-bold">Properties</h1>
 
             <Form {...form}>

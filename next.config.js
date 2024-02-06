@@ -8,7 +8,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["localhost", "server.trakyateknopark.com.tr"],
+    domains: ["localhost"],
   },
 };
 

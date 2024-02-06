@@ -52,6 +52,7 @@ export default function ImagePickerInput({
           className="px-2 py-1 border border-gray-200 rounded-md "
           id={propKey}
           value={value}
+          onChange={(e) => setValue(e.target.value)}
         />
         <div>
           Dosya yükleme sistemine ulaşırken bir sorun oluştu. Resimleri link
@@ -68,7 +69,7 @@ export default function ImagePickerInput({
         value={value}
       />
       <Button
-        className="w-fit ml-2"
+        className="ml-2 w-fit"
         type={"button"}
         onClick={() => setMediaPickerOpen(true)}
         variant={"secondary"}
