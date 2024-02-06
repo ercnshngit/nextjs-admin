@@ -5,6 +5,7 @@ import { TypeDto } from "./type.dto";
 export interface DataBaseTableColumnDto {
   id: number;
   name: string;
+  description: string;
   is_primary: boolean | false;
   is_required: boolean | false;
   is_unique: boolean | false;

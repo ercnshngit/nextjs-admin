@@ -98,6 +98,7 @@ export default function TableConfig({
   const initialValues = {
     name: table?.name,
     icon: table?.icon || "",
+    order: table?.order || 0,
     display_column_id: Number(table?.display_column_id || 0),
     is_hidden: table?.is_hidden || false,
     can_create: table?.can_create || false,
@@ -106,6 +107,7 @@ export default function TableConfig({
       order: Number(column.order || 0),
       id: column.id || 0,
       name: column.name,
+      description: column.description || "",
       is_filterable: column.is_filterable || false,
       is_hidden: column.is_hidden || false,
       is_unique: column.is_unique || false,
@@ -190,6 +192,23 @@ export default function TableConfig({
             </FormItem>
           )}
         />
+        {/* Order */}
+        <FormField
+          control={form.control}
+          name="order"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{translate("CONFIG_ORDER_TITLE")}</FormLabel>
+              <FormControl>
+                <Input type="number" {...field} />
+              </FormControl>
+              <FormDescription>
+                {translate("CONFIG_ORDER_DESCRIPTION")}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="icon"
@@ -206,6 +225,7 @@ export default function TableConfig({
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="display_column_id"
@@ -244,7 +264,7 @@ export default function TableConfig({
           control={form.control}
           name="is_hidden"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
               <div className="space-y-0.5">
                 <FormLabel>
                   {translate("CONFIG_IS_TABLE_NOT_VISIBLE_IN_SIDEBAR_TITLE")}
@@ -268,7 +288,7 @@ export default function TableConfig({
           control={form.control}
           name="can_create"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
               <div className="space-y-0.5">
                 <FormLabel>
                   {translate("CONFIG_NEW_ITEM_CREATE_ALLOWED_TITLE")}
@@ -291,7 +311,7 @@ export default function TableConfig({
           control={form.control}
           name="can_update"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
               <div className="space-y-0.5">
                 <FormLabel>
                   {translate("CONFIG_ITEM_UPDATE_ALLOWED_TITLE")}
@@ -330,7 +350,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.is_hidden`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate(
@@ -358,7 +378,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.is_filterable`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_IS_COLUMN_FILTERABLE_TITLE")}
@@ -382,7 +402,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.is_searchable`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_IS_COLUMN_SEARCHABLE_TITLE")}
@@ -406,7 +426,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.is_sortable`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_IS_COLUMN_SORTABLE_TITLE")}
@@ -430,7 +450,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.is_unique`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_IS_COLUMN_UNIQUE_TITLE")}
@@ -454,7 +474,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.is_required`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
@@ -478,7 +498,7 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.input_type_id`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-col  gap-4  p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-col  gap-4  p-3 border rounded-lg shadow-sm bg-white">
                             <div className="w-full flex gap-4 items-center justify-between">
                               <div className="space-y-0.5">
                                 <FormLabel>
@@ -537,13 +557,35 @@ export default function TableConfig({
                         control={form.control}
                         name={`columns.${index}.order`}
                         render={({ field }) => (
-                          <FormItem className="flex flex-row gap-4 items-center justify-between p-3 border rounded-lg shadow-sm">
+                          <FormItem className="flex flex-row gap-4 items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                             <div className="space-y-0.5">
                               <FormLabel>
                                 {translate("CONFIG_COLUMN_ORDER")}
                               </FormLabel>
                               <FormDescription>
                                 {translate("CONFIG_COLUMN_ORDER_DESCRIPTION")}
+                              </FormDescription>
+                            </div>
+
+                            <Input {...field} />
+
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`columns.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row col-span-2 gap-4 items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                            <div className="space-y-0.5">
+                              <FormLabel>
+                                {translate("CONFIG_COLUMN_DESCRIPTION_TITLE")}
+                              </FormLabel>
+                              <FormDescription>
+                                {translate(
+                                  "CONFIG_COLUMN_DESCRIPTION_DESCRIPTION"
+                                )}
                               </FormDescription>
                             </div>
 

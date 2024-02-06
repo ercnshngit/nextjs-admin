@@ -7,6 +7,7 @@ export interface DatabaseTableDto {
   display_column_id?: number;
   display_column?: DataBaseTableColumnDto;
   icon?: string;
+  order: number;
   is_hidden?: boolean;
   can_create?: boolean;
   can_update?: boolean;
