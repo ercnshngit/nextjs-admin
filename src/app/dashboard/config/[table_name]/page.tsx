@@ -38,7 +38,7 @@ import { type } from "@prisma/client";
 import { useTranslate } from "@/langs";
 import { CrudOptionCreateDto } from "@/services/dto/crud-option.dto";
 import { PlusCircle } from "lucide-react";
-import IconSelect from "@/components/icon-select";
+import IconSelect from "@/libs/lucide-icons";
 export default function TableConfig({
   params,
 }: {

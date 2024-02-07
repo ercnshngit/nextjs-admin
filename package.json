@@ -17,6 +17,7 @@
     "create-table-relations": "ts-node ./src/scripts/create-table-relations.script.ts",
     "create-translations": "ts-node ./src/scripts/create-translations.script.ts",
     "migrate-table-configs": "ts-node ./src/scripts/migrate-table-configs.script.ts",
+    "create-demo-data": "ts-node ./src/scripts/create-demo-data.script.ts",
     "gen-prisma": "npx prisma generate",
     "gen-mig": "npx prisma migrate dev --create-only --name ",
     "run-mig": "npx prisma migrate deploy",

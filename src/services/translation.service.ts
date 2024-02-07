@@ -91,12 +91,25 @@ export class TranslationService extends BaseService {
 
   async createAllBasicTranslations() {
     try {
+      //delete existing
+      await prisma.translation.deleteMany({});
+      await prisma.language.deleteMany({});
       const resultLanguage = await prisma.$queryRawUnsafe(
         TranslationConstants.LANGUAGE_QUERY
       );
-      const resultTranslation = await prisma.$queryRawUnsafe(
-        TranslationConstants.TRANSLATION_QUERY
-      );
+
+      const resultTranslation = await prisma.translation.createMany({
+        data: TranslationConstants.TRANSLATIONS_ARRAY.map(
+          (translation, index) => {
+            return Object.entries(translation.langs).map((lang, i) => ({
+              key: translation.key,
+              language_code: lang[0],
+              translated_text: lang[1],
+            }));
+          }
+        ).flat(),
+      });
+      console.log("resultLanguage : ", resultTranslation);
       return resultLanguage && resultTranslation
         ? { resultLanguage, resultTranslation }
         : null;

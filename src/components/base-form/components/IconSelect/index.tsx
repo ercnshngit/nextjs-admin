@@ -23,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { iconNames } from "../../../../../constants";
+import { iconNames } from "../../../../libs/lucide-icons";
 import { cn } from "@/libs/utils";
 import { Button } from "@/components/ui/button";
 import { CaretSortIcon } from "@radix-ui/react-icons";

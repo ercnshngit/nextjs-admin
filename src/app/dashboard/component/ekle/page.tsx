@@ -1,6 +1,6 @@
 "use client";
 import CreatePage from "@/components/create-page";
-import IconSelect from "@/components/icon-select";
+import IconSelect from "@/libs/lucide-icons";
 import { Button } from "@/components/ui/button";
 import {
   Form,
