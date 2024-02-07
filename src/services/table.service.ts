@@ -1013,17 +1013,6 @@ export class TableService extends BaseService {
         skipDuplicates: true,
       });
 
-      const updatedResult = await prisma.database_table.updateMany({
-        where: {
-          name: {
-            in: tableNames.map((table) => table.table_name),
-          },
-        },
-        data: tableNames.map((table, index) => ({
-          order: index + 1,
-        })),
-      });
-
       if (!result) {
         return null;
       }
