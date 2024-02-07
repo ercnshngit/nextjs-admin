@@ -4,10 +4,10 @@ import { cn } from "@/libs/utils";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { useEffect, useState } from "react";
-import { componentTags } from "../../../../block-renderer/utils/component-tags";
 import { handleDragEnd } from "../../utils/drag-helpers";
 import { createTree } from "../../utils/tree-operations";
 import ComponentWrapper from "../component-wrapper";
+import { Component } from "@/block-renderer/utils/component-tags";
 
 export default function Designer({ dragDrop }: { dragDrop: boolean }) {
   const {
@@ -64,20 +64,16 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
         key={component.code}
       >
         {component.children?.map((child) => {
-          if (child.component.tag.name in componentTags) {
-            return renderComponentWrapper(child);
-          }
-          return renderUnsupported(child);
+          return renderComponentWrapper(child);
         })}
       </ComponentWrapper>
     );
   };
 
-  const renderPreview = (component: BlockComponentDto) => {
-    const Component = componentTags[component.component.tag.name];
-
+  const renderPreview = (component: BlockComponentDto): React.ReactNode => {
     return (
       <Component
+        name={component.component.tag.name}
         {...Object.fromEntries(
           component.props.map((prop) => [prop.prop.key, prop.value])
         )}
@@ -85,10 +81,7 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
         id={component.code}
       >
         {component.children?.map((child) => {
-          if (child.component.tag.name in componentTags) {
-            renderPreview(child);
-          }
-          return renderUnsupported(child);
+          renderPreview(child);
         })}
       </Component>
     );
@@ -111,14 +104,11 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
         </Button>
         <div className="w-full border-b border-red-400"></div>
         {component.children?.map((child) => {
-          if (child.component.tag.name in componentTags) {
-            return mode === "preview"
-              ? renderPreview(component)
-              : mode === "ui"
-              ? renderComponentWrapper(component)
-              : null;
-          }
-          return renderUnsupported(child);
+          return mode === "preview"
+            ? renderPreview(component)
+            : mode === "ui"
+            ? renderComponentWrapper(component)
+            : null;
         })}
       </div>
     );
@@ -153,14 +143,11 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
           {elements.length > 0 && (
             <div className="flex flex-col w-full gap-2 p-4">
               {tree.map((component) => {
-                if (component.component.tag.name in componentTags) {
-                  return mode === "preview"
-                    ? renderPreview(component)
-                    : mode === "ui"
-                    ? renderComponentWrapper(component)
-                    : null;
-                }
-                return renderUnsupported(component);
+                return mode === "preview"
+                  ? renderPreview(component)
+                  : mode === "ui"
+                  ? renderComponentWrapper(component)
+                  : null;
               })}
             </div>
           )}

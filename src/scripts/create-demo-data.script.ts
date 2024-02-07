@@ -10,13 +10,20 @@ export async function createDemoData() {
   const menu = await prisma.database_table.findFirst({
     where: { name: "menu" },
   });
+  const component = await prisma.database_table.findFirst({
+    where: { name: "component" },
+  });
+  const prop = await prisma.database_table.findFirst({
+    where: { name: "prop" },
+  });
 
-  if (!block || !menu) {
+  if (!block || !menu || !component || !prop) {
     console.log("Block table not found.");
     return;
   }
   // add types for block
   await prisma.type.createMany({
+    skipDuplicates: true,
     data: [
       {
         name: "Page",
@@ -57,6 +64,78 @@ export async function createDemoData() {
         name: "Ana Menü",
         language_code: "tr",
         table_id: menu.id,
+      },
+      {
+        name: "Page Component",
+        table_id: component.id,
+      },
+      {
+        name: "Slider Component",
+        table_id: component.id,
+      },
+      {
+        name: "Form Component",
+        table_id: component.id,
+      },
+      {
+        name: "checkbox",
+        table_id: prop.id,
+      },
+      {
+        name: "date",
+        table_id: prop.id,
+      },
+      {
+        name: "hidden",
+        table_id: prop.id,
+      },
+      {
+        name: "slugify",
+        table_id: prop.id,
+      },
+      {
+        name: "image",
+        table_id: prop.id,
+      },
+      {
+        name: "file",
+        table_id: prop.id,
+      },
+      {
+        name: "multi-select",
+        table_id: prop.id,
+      },
+      {
+        name: "number",
+        table_id: prop.id,
+      },
+      {
+        name: "relation",
+        table_id: prop.id,
+      },
+      {
+        name: "select",
+        table_id: prop.id,
+      },
+      {
+        name: "icon-select",
+        table_id: prop.id,
+      },
+      {
+        name: "textarea",
+        table_id: prop.id,
+      },
+      {
+        name: "icon-select",
+        table_id: prop.id,
+      },
+      {
+        name: "richtext",
+        table_id: prop.id,
+      },
+      {
+        name: "text",
+        table_id: prop.id,
       },
     ],
   });

@@ -1,18 +1,23 @@
+"use client";
 import { z } from "zod";
 import EditableContent from "../../../utils/editable-content";
-
+import { motion } from "framer-motion";
 type RichTextProps = z.infer<typeof propsSchema>;
 
 export default function RichText({ className, content }: RichTextProps) {
   return (
-    <div className="">
-      <EditableContent propName={"content"} propValue={content}>
+    <motion.div className="">
+      <EditableContent
+        typeName="richtext"
+        propName={"content"}
+        propValue={content}
+      >
         <div
           className={className}
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </EditableContent>
-    </div>
+    </motion.div>
   );
 }
 export const defaultProps = {

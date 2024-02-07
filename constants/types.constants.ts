@@ -1,5 +1,8 @@
 export class TypeCategories {
   static RELATION_TYPE = "column_relation";
+  static COMPONENT_TYPE = "component";
+  static PROP_TYPE = "prop";
+  static BLOCK_TYPE = "block";
   static INPUT_TYPE = "database_table_column";
 }
 

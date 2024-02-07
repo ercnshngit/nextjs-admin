@@ -5,7 +5,7 @@ import { PageComponent } from "@/types/page-component";
 import { createChildrenTree } from "../../utils/tree-operations";
 import { Icons } from "../../utils/icons";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
-import { componentTags } from "../../../../block-renderer/utils/component-tags";
+import { Component } from "@/block-renderer/utils/component-tags";
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);
@@ -51,57 +51,51 @@ function DragOverlayWrapper() {
           componentWithoutChildren,
           elements
         );
-        const Component = componentTags[component.component.tag.name];
 
-        if (component.component.tag.name in componentTags) {
-          if (component.children && component.children.length > 0) {
-            return (
-              <Component
-                {...Object.fromEntries(
-                  component.props.map((prop) => [prop.prop.key, prop.value])
-                )}
-                key={component.code}
-                id={component.code}
-              >
-                {component.children.map((child) => {
-                  if (child.component.tag.name in componentTags) {
-                    const ChildComponent =
-                      componentTags[child.component.tag.name];
-
-                    return (
-                      <ChildComponent
-                        key={child.code}
-                        id={child.code}
-                        {...Object.fromEntries(
-                          child.props.map((prop) => [prop.prop.key, prop.value])
-                        )}
-                      />
-                    );
-                  }
-                  return null;
-                })}
-              </Component>
-            );
-          }
-
+        if (component.children && component.children.length > 0) {
           return (
             <Component
-              key={component.code}
-              id={component.code}
+              name={component.component.tag.name}
               {...Object.fromEntries(
                 component.props.map((prop) => [prop.prop.key, prop.value])
               )}
-            />
+              key={component.code}
+              id={component.code}
+            >
+              {component.children.map((child) => {
+                return (
+                  <Component
+                    name={child.component.tag.name}
+                    key={child.code}
+                    id={child.code}
+                    {...Object.fromEntries(
+                      child.props.map((prop) => [prop.prop.key, prop.value])
+                    )}
+                  />
+                );
+              })}
+            </Component>
           );
         }
-      };
 
-      node = (
-        <div className="flex bg-white border rounded-md w-full py-2 px-4 opacity-90 min-h-[100px] pointer pointer-events-none">
-          {getComponent(component)}
-        </div>
-      );
+        return (
+          <Component
+            name={component.component.tag.name}
+            key={component.code}
+            id={component.code}
+            {...Object.fromEntries(
+              component.props.map((prop) => [prop.prop.key, prop.value])
+            )}
+          />
+        );
+      };
     }
+
+    node = (
+      <div className="flex bg-white border rounded-md w-full py-2 px-4 opacity-90 min-h-[100px] pointer pointer-events-none">
+        <Component name={component!.component.tag.name} />
+      </div>
+    );
   }
 
   return <DragOverlay>{node}</DragOverlay>;

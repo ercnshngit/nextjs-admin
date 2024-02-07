@@ -9,11 +9,13 @@ import {
   Pencil2Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import React, { Suspense, useCallback } from "react";
+import React, { Suspense, useCallback, useMemo } from "react";
 import { PlusIcon } from "lucide-react";
-import { componentTags } from "../../../../block-renderer/utils/component-tags";
+
 import { ImSpinner2 } from "react-icons/im";
 import Loading from "@/components/loading";
+import dynamic from "next/dynamic";
+import { Component } from "@/block-renderer/utils/component-tags";
 export default function ComponentWrapper({
   hoveredElement,
   setHoveredElement,
@@ -58,7 +60,10 @@ export default function ComponentWrapper({
     },
   });
 
-  const Component = componentTags[component.component.tag.name];
+  // const Component = componentTags[component.component.tag.name];
+
+  const Components = <Component name={component.component.tag.name} />;
+
   const duplicateElement = useCallback(
     (component: BlockComponentDto, parentCode?: string) => {
       const code = crypto.randomUUID();
@@ -76,9 +81,7 @@ export default function ComponentWrapper({
         addElement(component.order + 2, newElement);
       }
       component.children?.forEach((child) => {
-        if (child.component.tag.name in componentTags) {
-          duplicateElement(child, code);
-        }
+        duplicateElement(child, code);
       });
     },
     [addElement]
@@ -188,7 +191,7 @@ export default function ComponentWrapper({
           <div className="absolute w-full rounded-md top-1/3 h-1/3 bg-primary " />
         )}
         <div className="p-2" id={component.code}>
-          <Component {...props} />
+          <Component name={component.component.tag.name} {...props} />
         </div>
         {dragDrop &&
           component.hasChildren &&
