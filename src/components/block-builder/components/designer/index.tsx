@@ -73,7 +73,7 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
   const renderPreview = (component: BlockComponentDto): React.ReactNode => {
     return (
       <Component
-        name={component.component.tag.name}
+        component={component}
         {...Object.fromEntries(
           component.props.map((prop) => [prop.prop.key, prop.value])
         )}
@@ -87,35 +87,8 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
     );
   };
 
-  const renderUnsupported = (component: BlockComponentDto) => {
-    return (
-      <div className="text-center text-red-400 bg-red-100">
-        {component.component.tag.name}
-        <p className="text-red-400">Desteklenmeyen bileşen lütfen silin</p>
-        <Button
-          variant={"destructive"}
-          size={"sm"}
-          onClick={(e) => {
-            e.stopPropagation();
-            removeElement(component.code);
-          }}
-        >
-          Sil
-        </Button>
-        <div className="w-full border-b border-red-400"></div>
-        {component.children?.map((child) => {
-          return mode === "preview"
-            ? renderPreview(component)
-            : mode === "ui"
-            ? renderComponentWrapper(component)
-            : null;
-        })}
-      </div>
-    );
-  };
-
   return (
-    <div className="flex w-full h-full ">
+    <div className="flex w-full min-h-40 mb-16 pb-16 ">
       <div
         className="w-full h-full p-4 "
         onClick={() => {

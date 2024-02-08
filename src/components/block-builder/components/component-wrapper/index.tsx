@@ -62,7 +62,7 @@ export default function ComponentWrapper({
 
   // const Component = componentTags[component.component.tag.name];
 
-  const Components = <Component name={component.component.tag.name} />;
+  const Components = <Component component={component} />;
 
   const duplicateElement = useCallback(
     (component: BlockComponentDto, parentCode?: string) => {
@@ -116,22 +116,26 @@ export default function ComponentWrapper({
             : "border-gray-400 border-dashed"
         )}
       >
+        <div className="p-2 z-50" id={component.code}>
+          <Component component={component} {...props} />
+        </div>
         {dragDrop && (
           <>
             <div
               ref={topHalf.setNodeRef}
-              className="absolute w-full h-1/3 rounded-t-md"
+              className="absolute w-full h-1/4 rounded-t-md"
             />
 
             <div
               ref={bottomHalf.setNodeRef}
-              className="absolute bottom-0 w-full h-1/3 rounded-b-md"
+              className="absolute bottom-0 w-full h-1/4 rounded-b-md"
             />
           </>
         )}
+
         <div
           className={cn(
-            "absolute top-0 right-0 gap-1 z-40 bg-gray-900 flex rounded py-1 px-2 items-center",
+            "absolute top-0 right-0 gap-1 z-30 bg-gray-900 flex rounded py-1 px-2 items-center",
             hoveredElement[hoveredElement.length - 1] === component.code
               ? "flex"
               : "hidden"
@@ -184,15 +188,13 @@ export default function ComponentWrapper({
             <Pencil2Icon />
           </Button>
         </div>
+
         {dragDrop && topHalf.isOver && (
           <div className="absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none" />
         )}
         {dragDrop && children.isOver && (
           <div className="absolute w-full rounded-md top-1/3 h-1/3 bg-primary " />
         )}
-        <div className="p-2" id={component.code}>
-          <Component name={component.component.tag.name} {...props} />
-        </div>
         {dragDrop &&
           component.hasChildren &&
           component.children?.length === 0 && (

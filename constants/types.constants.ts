@@ -19,6 +19,7 @@ export class InputTypes {
   static 10 = "date";
   static 11 = "richtext";
   static 12 = "slugify";
+  static 13 = "file";
 
   static HIDDEN = 1;
   static IMAGE = 2;
@@ -32,6 +33,7 @@ export class InputTypes {
   static DATE = 10;
   static RICHTEXT = 11;
   static SLUGIFY = 12;
+  static FILE = 13;
 
   static INPUT_TYPES = [
     {
@@ -94,6 +96,11 @@ export class InputTypes {
       id: InputTypes.SLUGIFY,
       table_name: TypeCategories.INPUT_TYPE,
     },
+    {
+      name: InputTypes[13],
+      id: InputTypes.FILE,
+      table_name: TypeCategories.INPUT_TYPE,
+    },
   ];
 }
 
@@ -139,6 +146,7 @@ export class TypeJsons {
     { name: InputTypes[10], table_name: TypeCategories.INPUT_TYPE },
     { name: InputTypes[11], table_name: TypeCategories.INPUT_TYPE },
     { name: InputTypes[12], table_name: TypeCategories.INPUT_TYPE },
+    { name: InputTypes[13], table_name: TypeCategories.INPUT_TYPE },
   ];
   static RELATION_TYPES = [
     { name: RelationTypes[1], table_name: TypeCategories.RELATION_TYPE },

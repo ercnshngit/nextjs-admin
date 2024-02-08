@@ -1,21 +1,24 @@
 import { useDesigner } from "@/contexts/designer-context";
-import { getGeneralBySlug, getTable } from "@/services/dashboard";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { createPortal } from "react-dom";
+import TableWrapper from "./components/table";
+import CreateFormBase from "@/components/base-form/create-form-base";
+import { useTable } from "@/hooks/use-database";
 
-export default function EditableData({
+export default function EditableData<T extends { id: number }>({
   description,
-  addPage,
   children,
-  queryKey,
+  tableName,
+  data,
 }: {
   description: string;
   children: React.ReactNode;
-  addPage: React.ReactNode;
-  queryKey: string;
+  tableName: string;
+  data: T[];
 }) {
   const { selectedElement } = useDesigner();
-  const [isOpened, setIsOpened] = React.useState(false);
+  const [isOpened, setIsOpened] = React.useState(true);
 
   const queryClient = useQueryClient();
 
@@ -25,24 +28,37 @@ export default function EditableData({
 
   const close = () => {
     setIsOpened(false);
-    queryClient.invalidateQueries([queryKey]);
+    queryClient.invalidateQueries([tableName]);
   };
+
+  const { table } = useTable(tableName);
+
+  if (!table) return children;
 
   if (!selectedElement) return children;
   return (
     <>
       <p>{description}</p>
-      {/* <button onClick={open}>Ekleme yerini ac</button>
+      <button onClick={open}>Ekleme yerini ac</button>
       {isOpened &&
         createPortal(
           <>
-            <div className="absolute inset-0 bg-black/70" onClick={close} />
-            <div className="absolute inset-0 w-[80%] mx-auto max-h-[80%] overflow-auto">
-              {addPage}
+            <div className=" inset-0 fixed bg-black/70" onClick={close} />
+            <div className=" inset-0 fixed p-10 z-40 w-[80%] bg-white rounded-md mx-auto max-h-[80%] my-auto overflow-auto">
+              <div className="flex gap-4">
+                <div className="w-full flex-1">
+                  <TableWrapper<T> data={data} />
+                </div>
+                <div className="flex w-1/3 flex-col h-full overflow-hidden ">
+                  <div className="rounded-md shadow-md overflow-auto p-4">
+                    <CreateFormBase table={table} />
+                  </div>
+                </div>
+              </div>
             </div>
           </>,
           document.body
-        )} */}
+        )}
     </>
   );
 }

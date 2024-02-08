@@ -10,7 +10,7 @@ import { columns } from "@/components/data-table/columns";
 import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
 
-import { DataTable } from "../data-table/data-table";
+import { DataTable } from "../../data-table/data-table";
 import useSearchParams from "@/hooks/use-search-params";
 import { Row } from "@tanstack/react-table";
 
@@ -32,7 +32,7 @@ export default function ListPage({
   const { table, filterables, searchables } = useTable(slug);
 
   const tableName = table?.name || "";
-  const tableColumns = columns(slug, table?.columns || [], buttons);
+  const tableColumns = columns(slug, table?.columns || [], buttons, table);
   const { translate } = useTranslate();
 
   const [tableData, setTableData] = useState(data);

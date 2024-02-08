@@ -64,12 +64,11 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
         title: block.title,
         slug: block.slug,
         description: block.description,
-        type_id: block.type_id || searchParams.getQueryString("type_id"),
+        type_id: block.type_id || searchParams.getQueryString("type_id") || 0,
         image_url: block.image_url,
-        background_image_url: block.background_image_url,
+        background_image_url: block.background_image_url || "",
       });
     }
-    console.log("block yok");
   }, [block, form.reset, form]);
 
   const onSubmit = (data: any) => {
@@ -78,8 +77,10 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
       title: data.title || "İsimsiz",
       slug: data.slug || "isimsiz",
       description: data.description || "",
-      status: Number(data.status || 0),
-      type_id: Number(data.type_id || 0),
+      status: Number(data.status || 1),
+      type_id: Number(
+        data.type_id || searchParams.getQueryString("type_id") || 0
+      ),
       image_url: data.image_url || "",
       background_image_url: data.background_image_url || "",
     });
@@ -105,7 +106,7 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
   };
 
   return (
-    <div className="h-full min-h-screen w-[300px] bg-white px-4 py-10">
+    <div className=" min-h-screen h-max w-[300px] bg-white px-4 py-10">
       <div className="flex items-center mb-2 space-x-2">
         <Switch
           id="preview-mode"

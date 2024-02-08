@@ -55,7 +55,7 @@ function DragOverlayWrapper() {
         if (component.children && component.children.length > 0) {
           return (
             <Component
-              name={component.component.tag.name}
+              component={component}
               {...Object.fromEntries(
                 component.props.map((prop) => [prop.prop.key, prop.value])
               )}
@@ -65,7 +65,7 @@ function DragOverlayWrapper() {
               {component.children.map((child) => {
                 return (
                   <Component
-                    name={child.component.tag.name}
+                    component={child}
                     key={child.code}
                     id={child.code}
                     {...Object.fromEntries(
@@ -80,7 +80,7 @@ function DragOverlayWrapper() {
 
         return (
           <Component
-            name={component.component.tag.name}
+            component={component}
             key={component.code}
             id={component.code}
             {...Object.fromEntries(
@@ -90,12 +90,15 @@ function DragOverlayWrapper() {
         );
       };
     }
-
-    node = (
-      <div className="flex bg-white border rounded-md w-full py-2 px-4 opacity-90 min-h-[100px] pointer pointer-events-none">
-        <Component name={component!.component.tag.name} />
-      </div>
-    );
+    if (!component) {
+      node = <div>Element not found!</div>;
+    } else {
+      node = (
+        <div className="flex bg-white border rounded-md w-full py-2 px-4 opacity-90 min-h-[100px] pointer pointer-events-none">
+          <Component component={component} />
+        </div>
+      );
+    }
   }
 
   return <DragOverlay>{node}</DragOverlay>;

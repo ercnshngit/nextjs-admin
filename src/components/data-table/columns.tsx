@@ -17,8 +17,9 @@ export type ColumnDefWithName<TData> =
 export const columns: (
   slug: string,
   columns: DataBaseTableColumnDto[],
-  buttons?: (row: Row<any>) => React.ReactNode
-) => ColumnDefWithName<any>[] = (slug, columns, buttons) => {
+  buttons?: (row: Row<any>) => React.ReactNode,
+  table?: any
+) => ColumnDefWithName<any>[] = (slug, columns, buttons, table) => {
   return [
     {
       id: "select",
@@ -74,7 +75,12 @@ export const columns: (
       cell: ({ row }) => {
         return (
           <div className="flex justify-end">
-            <DataTableRowActions row={row} slug={slug} buttons={buttons} />
+            <DataTableRowActions
+              row={row}
+              slug={slug}
+              buttons={buttons}
+              table={table}
+            />
           </div>
         );
       },
