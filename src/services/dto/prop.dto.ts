@@ -1,6 +1,5 @@
 import { TypeDto } from "./type.dto";
 
-//TODO: bunun aynısı başka yerde de var check it bu doğru olan
 export interface ComponentPropDto {
   prop: {
     id: number;

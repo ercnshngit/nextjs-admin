@@ -1,10 +1,8 @@
 import { prisma } from "@/libs/prisma";
-import { TranslationDto } from "./dto/translation.dto";
-import { LogService } from "./log.service";
 import { getErrorMessage } from "@/utils/error-resolver";
 import { TranslationConstants } from "../../constants/translation.constants";
-import { stringify } from "querystring";
 import { BaseService } from "./base.service";
+import { TranslationDto } from "./dto/translation.dto";
 
 export class TranslationService extends BaseService {
   constructor(request?: any) {

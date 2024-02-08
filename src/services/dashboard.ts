@@ -1,10 +1,8 @@
 import axiosClient from "@/libs/axios";
+import { general } from "@prisma/client";
 import { BlockDto } from "./dto/block.dto";
-import { MenuDto } from "./dto/menu.dto";
-import { CREATE_MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
-import { CreateComponentDto } from "./dto/component.dto";
-import { General } from "@/types/general";
 import { BlockComponentDto } from "./dto/block_component.dto";
+import { CreateComponentDto } from "./dto/component.dto";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -23,15 +21,6 @@ export const getTableInputTypes = async () => {
 
 export const getComponents = async () => {
   const { data } = await axiosClient.get("/component");
-  return data;
-};
-
-export const getComponentsFromFolder = async () => {
-  const { data } = await axiosClient.get("/component/file-system-api");
-  return data;
-};
-export const createComponentsFromFolder = async () => {
-  const { data } = await axiosClient.post("/component/file-system-api", {});
   return data;
 };
 
@@ -148,19 +137,9 @@ export const getTypes = async (table_name: string) => {
   return data;
 };
 
-export const getMenu = async () => {
-  const { data } = await axiosClient.get("/menu/get/all");
-  return data;
-};
-
 export const deleteMenu = async (id: number) => {
   const { data } = await axiosClient.delete(`/menu/delete/${id}`);
   return data;
-};
-
-export const createMenu = async (data: { id: number; data: any }) => {
-  const { data: responseData } = await axiosClient.post("/menu/create", data);
-  return responseData;
 };
 
 export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
@@ -255,5 +234,5 @@ export const getGeneralBySlug = async (slug: string) => {
   const { data: responseData } = await axiosClient.get(
     "/general/get/byslug/" + slug
   );
-  return responseData as General[];
+  return responseData as general[];
 };

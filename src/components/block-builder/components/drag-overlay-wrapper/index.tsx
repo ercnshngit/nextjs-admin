@@ -1,11 +1,10 @@
+import { Component } from "@/block-renderer/utils/component-tags";
+import { useDesigner } from "@/contexts/designer-context";
+import { BlockComponentDto } from "@/services/dto/block_component.dto";
 import { Active, DragOverlay, useDndMonitor } from "@dnd-kit/core";
 import { useState } from "react";
-import { useDesigner } from "@/contexts/designer-context";
-import { PageComponent } from "@/types/page-component";
-import { createChildrenTree } from "../../utils/tree-operations";
 import { Icons } from "../../utils/icons";
-import { BlockComponentDto } from "@/services/dto/block_component.dto";
-import { Component } from "@/block-renderer/utils/component-tags";
+import { createChildrenTree } from "../../utils/tree-operations";
 
 function DragOverlayWrapper() {
   const [draggedItem, setDraggedItem] = useState<Active | null>(null);

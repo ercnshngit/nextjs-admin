@@ -2,7 +2,7 @@
 import BaseForm from "@/components/base-form";
 import useSearchParams from "@/hooks/use-search-params";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
-import { createTableItem } from "@/services/panel";
+import { createTableItem } from "@/services/common-table-api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
