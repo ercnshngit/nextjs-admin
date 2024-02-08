@@ -1,5 +1,5 @@
 "use client";
-import CreatePage from "@/components/create-page";
+import CreatePage from "@/components/dynamic-crud-layouts/create-page";
 import IconSelect from "@/libs/lucide-icons";
 import { Button } from "@/components/ui/button";
 import {

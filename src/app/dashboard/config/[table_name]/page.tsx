@@ -39,6 +39,7 @@ import { useTranslate } from "@/langs";
 import { CrudOptionCreateDto } from "@/services/dto/crud-option.dto";
 import { PlusCircle } from "lucide-react";
 import IconSelect from "@/libs/lucide-icons";
+import Link from "next/link";
 export default function TableConfig({
   params,
 }: {
@@ -174,438 +175,453 @@ export default function TableConfig({
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate("CONFIG_TABLENAME_TITLE")}</FormLabel>
-              <FormControl>
-                <Input readOnly {...field} />
-              </FormControl>
-              <FormDescription>
-                {translate("CONFIG_TABLENAME_DESCRIPTION")}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* Order */}
-        <FormField
-          control={form.control}
-          name="order"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate("CONFIG_ORDER_TITLE")}</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} />
-              </FormControl>
-              <FormDescription>
-                {translate("CONFIG_ORDER_DESCRIPTION")}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="icon"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate("CONFIG_ICON_TITLE")}</FormLabel>
-              <FormControl>
-                <IconSelect form={form} field={field} />
-              </FormControl>
-              <FormDescription>
-                {translate("CONFIG_ICON_DESCRIPTION")}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="display_column_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate("CONFIG_DISPLAY_COLUMN_TITLE")}</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={String(field.value)}
-              >
+    <div className="flex flex-col gap-4">
+      <Button asChild>
+        <Link href="/dashboard/config">Geri</Link>
+      </Button>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{translate("CONFIG_TABLENAME_TITLE")}</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      placeholder={translate(
-                        "CONFIG_DISPLAY_COLUMN_PLACEHOLDER"
-                      )}
-                    />
-                  </SelectTrigger>
+                  <Input readOnly {...field} />
                 </FormControl>
-                <SelectContent>
-                  {tableColumnsOrdered?.map((column) => (
-                    <SelectItem key={column.id} value={String(column.id)}>
-                      {translate(column.name)}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormDescription>
-                {translate("CONFIG_DISPLAY_COLUMN_DESCRIPTION")}
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="is_hidden"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-              <div className="space-y-0.5">
-                <FormLabel>
-                  {translate("CONFIG_IS_TABLE_NOT_VISIBLE_IN_SIDEBAR_TITLE")}
-                </FormLabel>
                 <FormDescription>
-                  {translate(
-                    "CONFIG_IS_TABLE_NOT_VISIBLE_IN_SIDEBAR_DESCRIPTION"
-                  )}
+                  {translate("CONFIG_TABLENAME_DESCRIPTION")}
                 </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="can_create"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-              <div className="space-y-0.5">
-                <FormLabel>
-                  {translate("CONFIG_NEW_ITEM_CREATE_ALLOWED_TITLE")}
-                </FormLabel>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          {/* Order */}
+          <FormField
+            control={form.control}
+            name="order"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{translate("CONFIG_ORDER_TITLE")}</FormLabel>
+                <FormControl>
+                  <Input type="number" {...field} />
+                </FormControl>
                 <FormDescription>
-                  {translate("CONFIG_NEW_ITEM_CREATE_ALLOWED_DESCRIPTION")}
+                  {translate("CONFIG_ORDER_DESCRIPTION")}
                 </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="icon"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{translate("CONFIG_ICON_TITLE")}</FormLabel>
+                <FormControl>
+                  <IconSelect form={form} field={field} />
+                </FormControl>
+                <FormDescription>
+                  {translate("CONFIG_ICON_DESCRIPTION")}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="can_update"
-          render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-              <div className="space-y-0.5">
+          <FormField
+            control={form.control}
+            name="display_column_id"
+            render={({ field }) => (
+              <FormItem>
                 <FormLabel>
-                  {translate("CONFIG_ITEM_UPDATE_ALLOWED_TITLE")}
+                  {translate("CONFIG_DISPLAY_COLUMN_TITLE")}
                 </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={String(field.value)}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={translate(
+                          "CONFIG_DISPLAY_COLUMN_PLACEHOLDER"
+                        )}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {tableColumnsOrdered?.map((column) => (
+                      <SelectItem key={column.id} value={String(column.id)}>
+                        {translate(column.name)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormDescription>
-                  {translate("CONFIG_ITEM_UPDATE_ALLOWED_DESCRIPTION")}
+                  {translate("CONFIG_DISPLAY_COLUMN_DESCRIPTION")}
                 </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <Accordion type="single" collapsible className="w-full">
-          {fields.map((column, index) => {
-            //column relation
-            const columnId = tableColumnsOrdered?.find(
-              (c) => c.name === column.name
-            )?.id;
-            return (
-              <AccordionItem className="" value={column.id} key={column.id}>
-                <div className="bg-gray-100 rounded px-4 ">
-                  <AccordionTrigger className="flex items-center ">
-                    <h1 className=" text-lg font-bold">
-                      {translate("COLUMN_NAME")}: {translate(column.name)}
-                    </h1>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <hr className="mb-4" />
-                    <div className="grid grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.is_hidden`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_TITLE"
-                                )}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={(event) => {
-                                  field.onChange(event);
-                                }}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.is_filterable`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_IS_COLUMN_FILTERABLE_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_FILTERABLE_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.is_searchable`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_IS_COLUMN_SEARCHABLE_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_SEARCHABLE_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.is_sortable`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_IS_COLUMN_SORTABLE_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_SORTABLE_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.is_unique`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_IS_COLUMN_UNIQUE_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_UNIQUE_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                // onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.is_required`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_IS_COLUMN_REQUIRED_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-                            <FormControl>
-                              <Switch
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
-                              />
-                            </FormControl>
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.input_type_id`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-col  gap-4  p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="w-full flex gap-4 items-center justify-between">
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="is_hidden"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    {translate("CONFIG_IS_TABLE_NOT_VISIBLE_IN_SIDEBAR_TITLE")}
+                  </FormLabel>
+                  <FormDescription>
+                    {translate(
+                      "CONFIG_IS_TABLE_NOT_VISIBLE_IN_SIDEBAR_DESCRIPTION"
+                    )}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="can_create"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    {translate("CONFIG_NEW_ITEM_CREATE_ALLOWED_TITLE")}
+                  </FormLabel>
+                  <FormDescription>
+                    {translate("CONFIG_NEW_ITEM_CREATE_ALLOWED_DESCRIPTION")}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="can_update"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    {translate("CONFIG_ITEM_UPDATE_ALLOWED_TITLE")}
+                  </FormLabel>
+                  <FormDescription>
+                    {translate("CONFIG_ITEM_UPDATE_ALLOWED_DESCRIPTION")}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <Accordion type="single" collapsible className="w-full">
+            {fields.map((column, index) => {
+              //column relation
+              const columnId = tableColumnsOrdered?.find(
+                (c) => c.name === column.name
+              )?.id;
+              return (
+                <AccordionItem className="" value={column.id} key={column.id}>
+                  <div className="bg-gray-100 rounded px-4 ">
+                    <AccordionTrigger className="flex items-center ">
+                      <h1 className=" text-lg font-bold">
+                        {translate("COLUMN_NAME")}: {translate(column.name)}
+                      </h1>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <hr className="mb-4" />
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.is_hidden`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
                               <div className="space-y-0.5">
                                 <FormLabel>
-                                  {translate("CONFIG_COLUMN_INPUT_TYPE_TITLE")}
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_TITLE"
+                                  )}
                                 </FormLabel>
                                 <FormDescription>
                                   {translate(
-                                    "CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION"
+                                    "CONFIG_IS_COLUMN_NOT_VISIBLE_IN_ALL_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={(event) => {
+                                    field.onChange(event);
+                                  }}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.is_filterable`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_FILTERABLE_TITLE"
+                                  )}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_FILTERABLE_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.is_searchable`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_SEARCHABLE_TITLE"
+                                  )}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_SEARCHABLE_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.is_sortable`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate("CONFIG_IS_COLUMN_SORTABLE_TITLE")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_SORTABLE_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.is_unique`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate("CONFIG_IS_COLUMN_UNIQUE_TITLE")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_UNIQUE_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  // onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.is_required`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate("CONFIG_IS_COLUMN_REQUIRED_TITLE")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_IS_COLUMN_REQUIRED_DESCRIPTION"
+                                  )}
+                                </FormDescription>
+                              </div>
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  onCheckedChange={field.onChange}
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.input_type_id`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-col  gap-4  p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="w-full flex gap-4 items-center justify-between">
+                                <div className="space-y-0.5">
+                                  <FormLabel>
+                                    {translate(
+                                      "CONFIG_COLUMN_INPUT_TYPE_TITLE"
+                                    )}
+                                  </FormLabel>
+                                  <FormDescription>
+                                    {translate(
+                                      "CONFIG_COLUMN_INPUT_TYPE_DESCRIPTION"
+                                    )}
+                                  </FormDescription>
+                                </div>
+
+                                <Select
+                                  onValueChange={field.onChange}
+                                  defaultValue={String(field.value)}
+                                >
+                                  <FormControl>
+                                    <SelectTrigger>
+                                      <SelectValue
+                                        placeholder={translate(
+                                          "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
+                                        )}
+                                      />
+                                    </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                    {input_types?.map((input_type) => (
+                                      <SelectItem
+                                        key={input_type.id}
+                                        value={String(input_type.id)}
+                                      >
+                                        {translate(input_type.name)}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <FormMessage />
+
+                              {input_types?.find((input_type) => {
+                                return (
+                                  String(input_type.id) === String(field.value)
+                                );
+                              })?.name === "select" && (
+                                <div className="flex flex-col gap-2">
+                                  <h2>{translate("SELECT_OPTIONS")}</h2>
+                                  <Options index={index} form={form} />
+                                </div>
+                              )}
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.order`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row gap-4 items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate("CONFIG_COLUMN_ORDER")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate("CONFIG_COLUMN_ORDER_DESCRIPTION")}
+                                </FormDescription>
+                              </div>
+
+                              <Input {...field} />
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`columns.${index}.description`}
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row col-span-2 gap-4 items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                              <div className="space-y-0.5">
+                                <FormLabel>
+                                  {translate("CONFIG_COLUMN_DESCRIPTION_TITLE")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {translate(
+                                    "CONFIG_COLUMN_DESCRIPTION_DESCRIPTION"
                                   )}
                                 </FormDescription>
                               </div>
 
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={String(field.value)}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue
-                                      placeholder={translate(
-                                        "CONFIG_COLUMN_INPUT_TYPE_PLACEHOLDER"
-                                      )}
-                                    />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {input_types?.map((input_type) => (
-                                    <SelectItem
-                                      key={input_type.id}
-                                      value={String(input_type.id)}
-                                    >
-                                      {translate(input_type.name)}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </div>
+                              <Input {...field} />
 
-                            <FormMessage />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </AccordionContent>
+                  </div>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
 
-                            {input_types?.find((input_type) => {
-                              return (
-                                String(input_type.id) === String(field.value)
-                              );
-                            })?.name === "select" && (
-                              <div className="flex flex-col gap-2">
-                                <h2>{translate("SELECT_OPTIONS")}</h2>
-                                <Options index={index} form={form} />
-                              </div>
-                            )}
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.order`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row gap-4 items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_COLUMN_ORDER")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate("CONFIG_COLUMN_ORDER_DESCRIPTION")}
-                              </FormDescription>
-                            </div>
-
-                            <Input {...field} />
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`columns.${index}.description`}
-                        render={({ field }) => (
-                          <FormItem className="flex flex-row col-span-2 gap-4 items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
-                            <div className="space-y-0.5">
-                              <FormLabel>
-                                {translate("CONFIG_COLUMN_DESCRIPTION_TITLE")}
-                              </FormLabel>
-                              <FormDescription>
-                                {translate(
-                                  "CONFIG_COLUMN_DESCRIPTION_DESCRIPTION"
-                                )}
-                              </FormDescription>
-                            </div>
-
-                            <Input {...field} />
-
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                  </AccordionContent>
-                </div>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
-
-        <Button type="submit">{translate("CONFIG_TABLE_UPDATE_BUTTON")}</Button>
-      </form>
-    </Form>
+          <Button type="submit">
+            {translate("CONFIG_TABLE_UPDATE_BUTTON")}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }
 

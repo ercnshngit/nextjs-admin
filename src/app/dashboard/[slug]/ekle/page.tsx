@@ -10,7 +10,7 @@ import { getTableItem } from "@/services/panel";
 import { useTranslate } from "@/langs";
 import { useTable } from "@/hooks/use-database";
 import useSearchParams from "@/hooks/use-search-params";
-import CreatePage from "@/components/create-page";
+import CreatePage from "@/components/dynamic-crud-layouts/create-page";
 
 export default function Ekle({ params }: { params: { slug: string } }) {
   const { slug } = params;

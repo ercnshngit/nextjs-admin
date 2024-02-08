@@ -75,7 +75,7 @@ export default function BaseForm(props: {
               control={control}
               {...(formType === "update_crud_option"
                 ? {
-                    defaultValue: data[0][field.name] || field.name,
+                    defaultValue: data[0][field.name] || "",
                   }
                 : { defaultValue: allParams[field.name] || "" })}
             />

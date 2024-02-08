@@ -1,5 +1,5 @@
 "use client";
-import ListPage from "@/components/list-page";
+import ListPage from "@/components/dynamic-crud-layouts/list-page";
 import { Button } from "@/components/ui/button";
 import { getTypes } from "@/services/dashboard";
 import { useQuery } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 "use client";
-import ListPage from "@/components/list-page";
+import ListPage from "@/components/dynamic-crud-layouts/list-page";
 import { Button } from "@/components/ui/button";
 import { createComponentsFromFolder } from "@/services/dashboard";
 import { getTable } from "@/services/panel";

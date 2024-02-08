@@ -1,6 +1,6 @@
 import React from "react";
-import { Card, CardContent } from "../ui/card";
-import { Button } from "../ui/button";
+import { Card, CardContent } from "../../ui/card";
+import { Button } from "../../ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 import { useTranslate } from "@/langs";
 import Link from "next/link";
@@ -28,7 +28,6 @@ export default function CreatePage({
                 query: searchParams.getAllQueryString(),
               }}
             >
-              {" "}
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Geri Dön
             </Link>
