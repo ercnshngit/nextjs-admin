@@ -18,6 +18,7 @@ export default function CardGrid({
     <div className={cn("flex bg-gray-100 rounded-md p-4", className)}>
       <EditableData description="fsdfsdfsd" tableName={tableName} data={data}>
         <div>sdfdsf</div>
+        {JSON.stringify(data)}
       </EditableData>
     </div>
   );

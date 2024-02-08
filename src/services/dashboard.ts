@@ -4,6 +4,7 @@ import { MenuDto } from "./dto/menu.dto";
 import { CREATE_MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
 import { CreateComponentDto } from "./dto/component.dto";
 import { General } from "@/types/general";
+import { BlockComponentDto } from "./dto/block_component.dto";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -134,6 +135,11 @@ export const getBlockComponents = async (id: number) => {
   const { data } = await axiosClient.get(`/block/component/get/${id}`);
 
   return data;
+};
+export const getBlockComponentsBySlug = async (slug: string) => {
+  const { data } = await axiosClient.get(`/block/component/get/byslug/${slug}`);
+
+  return data as BlockComponentDto[];
 };
 
 export const getTypes = async (table_name: string) => {
