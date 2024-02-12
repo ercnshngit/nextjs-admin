@@ -554,6 +554,7 @@ export class TableService extends BaseService {
               read_crud_option: true,
               update_crud_option: true,
               options: true,
+              description: true,
             },
           },
         },
@@ -596,6 +597,7 @@ export class TableService extends BaseService {
                 read_crud_option_id: column.read_crud_option_id,
                 update_crud_option_id: column.update_crud_option_id,
                 order: column.order,
+                description: column.description,
                 options:
                   column.options == undefined
                     ? undefined
@@ -631,6 +633,8 @@ export class TableService extends BaseService {
                 is_searchable: column.is_searchable,
                 is_sortable: column.is_sortable,
                 is_primary: column.is_primary,
+                order: column.order,
+                description: column.description,
                 input_type: {
                   connect: {
                     id: column.input_type_id,

@@ -9,9 +9,11 @@ import useSearchParams from "@/hooks/use-search-params";
 export default function CreatePage({
   tableName,
   children,
+  goBackUrl,
 }: {
   tableName: string;
   children: React.ReactNode;
+  goBackUrl?: string;
 }) {
   const { translate } = useTranslate();
   const searchParams = useSearchParams();
@@ -24,7 +26,7 @@ export default function CreatePage({
           <Button asChild>
             <Link
               href={{
-                pathname: "/dashboard/" + tableName,
+                pathname: goBackUrl ? goBackUrl : "/dashboard/" + tableName,
                 query: searchParams.getAllQueryString(),
               }}
             >
