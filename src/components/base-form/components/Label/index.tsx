@@ -14,9 +14,19 @@ export default function Label({
 
   if (field?.name?.split("/")[0] === "relation") {
     return (
-      <label htmlFor={field.name}>{translate(field.name.split("/")[3])}</label>
+      <div>
+        <label htmlFor={field.name}>
+          {translate(field.name.split("/")[3])}
+        </label>
+        <p className="text-xs text-gray-400">{translate(field.description)}</p>
+      </div>
     );
   } else {
-    return <label htmlFor={field.name}>{translate(field.name)}</label>;
+    return (
+      <div>
+        <label htmlFor={field.name}>{translate(field.name)}</label>
+        <p className="text-xs text-gray-400">{translate(field.description)}</p>
+      </div>
+    );
   }
 }
