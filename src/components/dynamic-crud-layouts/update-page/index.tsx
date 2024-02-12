@@ -14,13 +14,17 @@ export default function UpdatePage({
   id,
   tableName,
   children,
+  goBackUrl,
 }: {
   id: string;
   tableName: string;
   children: React.ReactNode;
+  goBackUrl?: string;
 }) {
   const { translate } = useTranslate();
   const [open, setOpen] = React.useState(false);
+
+  const searchParams = useSearchParams();
 
   return (
     <div className="container py-10 mx-auto">
@@ -28,7 +32,12 @@ export default function UpdatePage({
         <h3 className="text-lg font-medium">{translate(tableName)} Düzenle</h3>
         <div>
           <Button asChild>
-            <Link href={"/dashboard/" + tableName}>
+            <Link
+              href={{
+                pathname: goBackUrl ? goBackUrl : "/dashboard/" + tableName,
+                query: searchParams.getAllQueryString(),
+              }}
+            >
               <ArrowLeftIcon className="w-4 h-4 mr-2" />
               Geri Dön
             </Link>

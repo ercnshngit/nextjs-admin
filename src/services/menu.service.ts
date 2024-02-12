@@ -388,7 +388,8 @@ export class MenuService extends BaseService {
 
     if (data.title) {
       data.slug = data.slug ?? (await func.slugCreator(data.title));
-      data.route = data.route ?? `/${data.slug}`;
+      data.route =
+        data.route || data.route === "" ? `/${data.slug}` : data.route;
     }
 
     let lastMenuItem = null;
@@ -505,6 +506,7 @@ export class MenuService extends BaseService {
       const toMenu = await prisma.menu.findFirst({ where: { id: data.to } });
 
       console.log(toMenu);
+      console.log(fromMenu);
 
       if (!fromMenu || !toMenu) {
         return new Response(
@@ -513,22 +515,71 @@ export class MenuService extends BaseService {
         );
       }
       // from ve to alt altaysa yine dur
-      if (
-        fromMenu.previous_id === toMenu.id ||
-        fromMenu.next_id === toMenu.id
-      ) {
+      if (fromMenu.previous_id === toMenu.id) {
+        // switch
+        await prisma.menu.update({
+          where: { id: fromMenu.id },
+          data: { previous_id: toMenu.previous_id, next_id: toMenu.id },
+        });
+        await prisma.menu.update({
+          where: { id: toMenu.id },
+          data: { previous_id: fromMenu.id, next_id: fromMenu.next_id },
+        });
+        if (fromMenu.next_id) {
+          await prisma.menu.update({
+            where: { id: fromMenu.next_id },
+            data: {
+              previous_id: toMenu.id,
+            },
+          });
+        }
+        if (toMenu.previous_id) {
+          await prisma.menu.update({
+            where: { id: toMenu.previous_id },
+            data: {
+              next_id: fromMenu.id,
+            },
+          });
+        }
+
         return new Response(
-          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-          { status: 404 }
+          JSON.stringify({
+            message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM(),
+          })
         );
       }
-      if (
-        toMenu.previous_id === fromMenu.id ||
-        toMenu.next_id === fromMenu.id
-      ) {
+
+      if (fromMenu.next_id === toMenu.id) {
+        // switch
+        await prisma.menu.update({
+          where: { id: fromMenu.id },
+          data: { previous_id: toMenu.id, next_id: toMenu.next_id },
+        });
+        await prisma.menu.update({
+          where: { id: toMenu.id },
+          data: { previous_id: fromMenu.previous_id, next_id: fromMenu.id },
+        });
+        if (fromMenu.previous_id) {
+          await prisma.menu.update({
+            where: { id: fromMenu.previous_id },
+            data: {
+              next_id: toMenu.id,
+            },
+          });
+        }
+        if (toMenu.next_id) {
+          await prisma.menu.update({
+            where: { id: toMenu.next_id },
+            data: {
+              previous_id: fromMenu.id,
+            },
+          });
+        }
+
         return new Response(
-          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-          { status: 404 }
+          JSON.stringify({
+            message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM(),
+          })
         );
       }
 
