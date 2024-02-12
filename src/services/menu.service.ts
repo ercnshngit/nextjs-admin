@@ -420,6 +420,8 @@ export class MenuService extends BaseService {
       menu = await prisma.menu.create({
         data: {
           ...data,
+          menu_belong_id:
+            data.menu_belong_id === 0 ? null : data.menu_belong_id,
         },
       });
     } else {
@@ -427,6 +429,8 @@ export class MenuService extends BaseService {
         data: {
           ...data,
           previous_id: lastMenuItem.id,
+          menu_belong_id:
+            data.menu_belong_id === 0 ? null : data.menu_belong_id,
         },
       });
       // update previous last item
