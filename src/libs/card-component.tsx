@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ConvalIcon } from "../../public/assets/conval";
+import { ConvalIcon } from "../block-renderer/components/assets/conval";
 
 export default function CardComponent({
   title,
