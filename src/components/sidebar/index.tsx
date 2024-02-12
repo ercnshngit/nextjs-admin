@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTable, getTypes } from "@/services/dashboard";
 import { TypeDto } from "@/services/dto/type.dto";
 import useSearchParams from "@/hooks/use-search-params";
+import { useLanguage } from "@/contexts/language-context";
 
 export function Sidebar({ className }: { className?: string }) {
   const { translate } = useTranslate();
@@ -22,6 +23,8 @@ export function Sidebar({ className }: { className?: string }) {
     getTypes("block")
   );
 
+  const { language } = useLanguage();
+
   return (
     <div className={cn("pb-12", className)}>
       <div className="py-4 space-y-4">
@@ -33,29 +36,31 @@ export function Sidebar({ className }: { className?: string }) {
             Tablolar
           </h2>
           <div className="flex flex-col space-y-1">
-            {blockTypes?.map((item) => (
-              <Button
-                key={item.id}
-                asChild
-                variant={
-                  Object.values(getAllQueryString()).includes(String(item.id))
-                    ? "default"
-                    : "ghost"
-                }
-                className="justify-start "
-              >
-                <Link
-                  href={{
-                    pathname: "/dashboard/block",
-                    query: { type_id: item.id },
-                  }}
+            {blockTypes
+              ?.filter((t) => t.language_code === language)
+              .map((item) => (
+                <Button
+                  key={item.id}
+                  asChild
+                  variant={
+                    Object.values(getAllQueryString()).includes(String(item.id))
+                      ? "default"
+                      : "ghost"
+                  }
+                  className="justify-start "
                 >
-                  <List className="w-5 h-5 mr-2" />
+                  <Link
+                    href={{
+                      pathname: "/dashboard/block",
+                      query: { type_id: item.id },
+                    }}
+                  >
+                    <List className="w-5 h-5 mr-2" />
 
-                  {translate(item.name)}
-                </Link>
-              </Button>
-            ))}
+                    {translate(item.name)}
+                  </Link>
+                </Button>
+              ))}
 
             <Button
               asChild
