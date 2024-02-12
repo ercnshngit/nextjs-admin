@@ -415,30 +415,31 @@ export class MenuService extends BaseService {
         },
       });
     }
-
+    let menu;
     if (!lastMenuItem) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
+      menu = await prisma.menu.create({
+        data: {
+          ...data,
+        },
+      });
+    } else {
+      menu = await prisma.menu.create({
+        data: {
+          ...data,
+          previous_id: lastMenuItem.id,
+        },
+      });
+      // update previous last item
+
+      const updatedLastMenuItem = await prisma.menu.update({
+        where: {
+          id: lastMenuItem.id,
+        },
+        data: {
+          next_id: menu.id,
+        },
+      });
     }
-
-    const menu = await prisma.menu.create({
-      data: {
-        ...data,
-        previous_id: lastMenuItem.id,
-      },
-    });
-
-    // update previous last item
-    const updatedLastMenuItem = await prisma.menu.update({
-      where: {
-        id: lastMenuItem.id,
-      },
-      data: {
-        next_id: menu.id,
-      },
-    });
 
     if (!menu) {
       return new Response(
