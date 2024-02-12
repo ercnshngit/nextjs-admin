@@ -1,5 +1,5 @@
 import { useTranslate } from "@/langs";
-import { getTable } from "@/services/panel";
+import { getTable } from "@/services/common-table-api";
 import { useQuery } from "@tanstack/react-query";
 import { PlusCircle } from "lucide-react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";

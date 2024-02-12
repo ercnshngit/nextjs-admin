@@ -1209,10 +1209,10 @@ export class TableService extends BaseService {
                 },
               },
             })),
-            delete:
+            deleteMany:
               deletedColumns.map != undefined
                 ? deletedColumns?.map((column: any) => ({
-                    id: column.id,
+                    id: column.id == null ? 0 : column.id,
                   }))
                 : { id: 0 },
           },

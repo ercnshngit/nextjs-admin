@@ -4,7 +4,7 @@ import React from "react";
 import { FieldErrors, RegisterOptions, UseFormRegister } from "react-hook-form";
 import FormInputFactory from "./form-input-factory";
 import { useQuery } from "@tanstack/react-query";
-import { getTableItem } from "@/services/panel";
+import { getTableItem } from "@/services/common-table-api";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import useSearchParams from "@/hooks/use-search-params";
 
@@ -75,7 +75,7 @@ export default function BaseForm(props: {
               control={control}
               {...(formType === "update_crud_option"
                 ? {
-                    defaultValue: data[0][field.name] || field.name,
+                    defaultValue: data[0][field.name] || "",
                   }
                 : { defaultValue: allParams[field.name] || "" })}
             />

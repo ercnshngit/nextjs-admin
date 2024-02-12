@@ -55,8 +55,8 @@ export default function BuilderPage() {
   return (
     <div
       className={cn(
-        " flex h-full w-full flex-col  bg-gray-700",
-        fullscreen && "absolute inset-0"
+        " flex w-full flex-col  bg-gray-700",
+        fullscreen && "absolute right-0 left-0 top-0 h-auto"
       )}
     >
       <div className="bg-gray-900">

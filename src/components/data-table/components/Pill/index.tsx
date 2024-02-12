@@ -1,10 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { getTable } from "@/services/dashboard";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
-import { checkError } from "@/utils/error-handling";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import React from "react";
 
 export default function Pill({
   value,

@@ -3,7 +3,6 @@ import { useTable } from "@/hooks/use-database";
 import { getTable, getTableWhere } from "@/services/dashboard";
 import { DataBaseTableColumnDto } from "@/services/dto/database-table-column.dto";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
-import { Option } from "@/types/config";
 import { useQuery } from "@tanstack/react-query";
 
 export default function RelationOptions({
@@ -41,7 +40,7 @@ function Options({
     { enabled: !!joinedTable }
   );
 
-  const options: Option[] =
+  const options: { label: string; value: string }[] =
     data !== ""
       ? field.column_relations[0].referenced_table.name === "language"
         ? data?.map((item: any) => {

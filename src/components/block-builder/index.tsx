@@ -32,7 +32,7 @@ export default function BlockBuilder({ dragDrop }: { dragDrop: boolean }) {
       sensors={sensors}
       collisionDetection={customCollisionDetectionAlgorithm}
     >
-      <div className="flex">
+      <div className="grid grid-cols-[70%_1fr] h-full">
         <Designer dragDrop={dragDrop} />
         <DesignerSidebar dragDrop={dragDrop} />
       </div>

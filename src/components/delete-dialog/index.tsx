@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useTranslate } from "@/langs";
-import { DELETE_TABLE_ITEM } from "@/types/panel";
+import { DELETE_TABLE_ITEM } from "@/types/common-table-api";
 import { deleteTableItem } from "@/services/dashboard";
 export default function DeleteItem({ open, setOpen, tableName, id }: any) {
   const { translate } = useTranslate();

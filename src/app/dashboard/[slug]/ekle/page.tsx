@@ -6,11 +6,11 @@ import Link from "next/link";
 import React from "react";
 import CreateFormBase from "../../../../components/base-form/create-form-base";
 import { useQuery } from "@tanstack/react-query";
-import { getTableItem } from "@/services/panel";
+import { getTableItem } from "@/services/common-table-api";
 import { useTranslate } from "@/langs";
 import { useTable } from "@/hooks/use-database";
 import useSearchParams from "@/hooks/use-search-params";
-import CreatePage from "@/components/create-page";
+import CreatePage from "@/components/dynamic-crud-layouts/create-page";
 
 export default function Ekle({ params }: { params: { slug: string } }) {
   const { slug } = params;
