@@ -99,6 +99,7 @@ export default function CreateFormBase({
     });
     if (customCreateMutation) {
       customCreateMutation.mutate(data);
+      reset();
     } else {
       createMutation.mutate(data);
     }

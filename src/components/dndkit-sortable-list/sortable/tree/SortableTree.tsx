@@ -183,7 +183,9 @@ export function SortableTree({
                 ? () => handleCollapse(id)
                 : undefined
             }
-            onRemove={removable ? () => handleRemove(id) : undefined}
+            onRemove={
+              removable ? () => handleRemove(id, Number(uniqueId)) : undefined
+            }
           />
         ))}
         {createPortal(
@@ -282,8 +284,8 @@ export function SortableTree({
     document.body.style.setProperty("cursor", "");
   }
 
-  function handleRemove(id: UniqueIdentifier) {
-    if (onRemove(id) === true) {
+  function handleRemove(id: UniqueIdentifier, uniqueId: number) {
+    if (onRemove(uniqueId) === true) {
       setItems((items) => removeItem(items, id));
     }
   }
