@@ -2,10 +2,10 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    './pages/*/.{ts,tsx}',
+    './components/*/.{ts,tsx}',
+    './app/*/.{ts,tsx}',
+    './src/*/.{ts,tsx}',
 	],
   theme: {
     container: {
@@ -16,7 +16,17 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: {
+        "5xl": ["3.125rem", "1"],
+      },
+
       colors: {
+        "primary-blue": "#002080",
+        "secondary-blue": "#1d428a",
+        "text-black": "#000000B3",
+        "text-black-dark": "#000000E6",
+        "icon-blue": "#407ec9",
+     
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

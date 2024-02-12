@@ -10,32 +10,34 @@ export default function EditableContent({
   children,
 }: {
   propName: string;
-  propValue: string;
+  propValue: any;
   typeName: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   const { updateElement, selectedElement } = useDesigner();
   if (!selectedElement) return children;
   return (
-    <SidebarInputFactory
-      key={propName}
-      propKey={propName}
-      typeName={typeName}
-      setValue={(value: string) =>
-        updateElement(selectedElement.code, {
-          ...selectedElement,
-          props: selectedElement.props.map((p) => {
-            if (p.prop.key === propName) {
-              return {
-                ...p,
-                value: value,
-              };
-            }
-            return p;
-          }),
-        })
-      }
-      value={propValue}
-    />
+    <div className="z-30">
+      <SidebarInputFactory
+        key={propName}
+        propKey={propName}
+        typeName={typeName}
+        setValue={(value: string) =>
+          updateElement(selectedElement.code, {
+            ...selectedElement,
+            props: selectedElement.props.map((p) => {
+              if (p.prop.key === propName) {
+                return {
+                  ...p,
+                  value: value,
+                };
+              }
+              return p;
+            }),
+          })
+        }
+        value={propValue}
+      />
+    </div>
   );
 }
