@@ -1,12 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: [
-    './pages/*/.{ts,tsx}',
-    './components/*/.{ts,tsx}',
-    './app/*/.{ts,tsx}',
-    './src/*/.{ts,tsx}',
-	],
+  content: ["./src/**/*.{ts,tsx}"],
   theme: {
     container: {
       center: true,
@@ -26,7 +21,7 @@ module.exports = {
         "text-black": "#000000B3",
         "text-black-dark": "#000000E6",
         "icon-blue": "#407ec9",
-     
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -83,4 +78,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
