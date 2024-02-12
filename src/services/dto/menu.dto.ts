@@ -6,6 +6,8 @@ export interface MenuDto {
   menu_belong_id?: number;
   type_id: number;
   status: number;
+  next_id?: number;
+  previous_id?: number;
   submenus?: MenuDto[];
 }
 

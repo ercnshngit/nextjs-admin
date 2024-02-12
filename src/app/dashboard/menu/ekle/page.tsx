@@ -13,6 +13,7 @@ import useSearchParams from "@/hooks/use-search-params";
 import CreatePage from "@/components/dynamic-crud-layouts/create-page";
 import { toast } from "react-toastify";
 import { createMenu } from "@/services/dashboard";
+import { MenuDto } from "@/services/dto/menu.dto";
 
 export default function Ekle() {
   const { table } = useTable("menu");
@@ -21,7 +22,15 @@ export default function Ekle() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation(
-    (data: {}) => createMenu({ data }),
+    (data: any) =>
+      createMenu({
+        data: {
+          ...data,
+          type_id: Number(data.type_id),
+          status: Number(data.status),
+          menu_belong_id: Number(data.menu_belong_id),
+        },
+      }),
 
     {
       onSuccess: () => {
