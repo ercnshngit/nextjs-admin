@@ -105,7 +105,6 @@ function handleIsSidebarComponentDroppingOverDesignerDropArea({
   elements: BlockComponentDto[];
   addElement: (index: number, element: BlockComponentDto) => void;
 }) {
-  console.log("1");
   const sidebarComponent = draggedElement?.component as ComponentDto;
   const newElement = {
     ...sidebarComponent,

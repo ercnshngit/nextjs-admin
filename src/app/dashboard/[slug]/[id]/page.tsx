@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslate } from "@/langs";
-import { getTableItem } from "@/services/panel";
+import { getTableItem } from "@/services/common-table-api";
 import { ArrowLeftIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";

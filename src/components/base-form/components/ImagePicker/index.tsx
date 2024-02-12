@@ -1,10 +1,6 @@
 import MediaPicker from "@/components/media-picker";
 import { Button } from "@/components/ui/button";
-import {
-  getMedia,
-  getMediaFromServer,
-  uploadMediaToServer,
-} from "@/services/media";
+import { getMediaFromServer, uploadMediaToServer } from "@/services/media";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";

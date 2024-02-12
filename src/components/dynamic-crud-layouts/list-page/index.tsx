@@ -7,12 +7,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { columns } from "@/components/data-table/columns";
-import { useTable } from "@/hooks/use-database";
+import { useDatabase, useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
 
 import { DataTable } from "../../data-table/data-table";
 import useSearchParams from "@/hooks/use-search-params";
 import { Row } from "@tanstack/react-table";
+import { DatabaseTableDto } from "@/services/dto/database-table.dto";
+import { useQuery } from "@tanstack/react-query";
+import { getTable } from "@/services/dashboard";
 
 export default function ListPage({
   slug,
@@ -28,12 +31,17 @@ export default function ListPage({
   const searchParams = useSearchParams();
   const allParams = searchParams.getAllQueryString();
   const page = Number(allParams?.["page"]) || 1;
-
   const { table, filterables, searchables } = useTable(slug);
+  const { translate } = useTranslate();
 
   const tableName = table?.name || "";
-  const tableColumns = columns(slug, table?.columns || [], buttons, table);
-  const { translate } = useTranslate();
+  const tableColumns = columns(
+    slug,
+    table?.columns || [],
+    buttons,
+    table,
+    translate
+  );
 
   const [tableData, setTableData] = useState(data);
 

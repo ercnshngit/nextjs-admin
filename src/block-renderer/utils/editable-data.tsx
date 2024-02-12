@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import TableWrapper from "./components/table";
 import CreateFormBase from "@/components/base-form/create-form-base";
 import { useTable } from "@/hooks/use-database";
+import UpdateFormBase from "@/components/base-form/update-form-base";
 
 export default function EditableData<T extends { id: number }>({
   description,
@@ -19,6 +20,9 @@ export default function EditableData<T extends { id: number }>({
 }) {
   const { selectedElement } = useDesigner();
   const [isOpened, setIsOpened] = React.useState(true);
+  const [selectedItemId, setSelectedItemId] = React.useState<number | null>(
+    null
+  );
 
   const queryClient = useQueryClient();
 
@@ -45,13 +49,27 @@ export default function EditableData<T extends { id: number }>({
           <>
             <div className=" inset-0 fixed bg-black/70" onClick={close} />
             <div className=" inset-0 fixed p-10 z-40 w-[80%] bg-white rounded-md mx-auto max-h-[80%] my-auto overflow-auto">
-              <div className="flex gap-4">
-                <div className="w-full flex-1">
-                  <TableWrapper<T> data={data} />
+              <div className="grid grid-cols-[60%_1fr] gap-6 grid-rows-2  max-h-full">
+                <div className="  row-span-2 ">
+                  <TableWrapper<T>
+                    table={table}
+                    data={data}
+                    setSelectedItemId={setSelectedItemId}
+                  />
                 </div>
-                <div className="flex w-1/3 flex-col h-full overflow-hidden ">
-                  <div className="rounded-md shadow-md overflow-auto p-4">
+                <div className="h-full p-4">
+                  <h2 className="mb-4 font-semibold text-lg">Ekle</h2>
+                  <div className="rounded-md shadow-md overflow-auto h-full p-4 ">
                     <CreateFormBase table={table} />
+                  </div>
+                </div>
+                <div className="h-full p-4">
+                  <h2 className="mb-4 font-semibold text-lg">Duzenle</h2>
+                  <div className="rounded-md shadow-md overflow-auto h-full p-4 ">
+                    {!selectedItemId && <p>Secili bir kayit yok</p>}
+                    {selectedItemId && (
+                      <UpdateFormBase table={table} id={selectedItemId} />
+                    )}
                   </div>
                 </div>
               </div>

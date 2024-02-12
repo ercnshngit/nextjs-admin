@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import ListPage from "@/components/dynamic-crud-layouts/list-page";
-import { getTable } from "@/services/panel";
+import { getTable } from "@/services/common-table-api";
 import { useTable } from "@/hooks/use-database";
 import { useEffect } from "react";
 

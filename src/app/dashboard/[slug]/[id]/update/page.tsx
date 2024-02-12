@@ -1,3 +1,4 @@
+"use client";
 import UpdateFormBase from "@/components/base-form/update-form-base";
 import UpdatePage from "@/components/dynamic-crud-layouts/update-page";
 import { useTable } from "@/hooks/use-database";

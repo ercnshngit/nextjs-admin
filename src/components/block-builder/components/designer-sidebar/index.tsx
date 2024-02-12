@@ -18,7 +18,12 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDesigner } from "@/contexts/designer-context";
 import { useTranslate } from "@/langs";
-import { getComponents, getTypes } from "@/services/dashboard";
+import {
+  getBlockComponentsBySlug,
+  getComponents,
+  getTable,
+  getTypes,
+} from "@/services/dashboard";
 import { ComponentDto } from "@/services/dto/component.dto";
 import { TypeDto } from "@/services/dto/type.dto";
 import { slugify } from "@/utils/slugify";
@@ -32,6 +37,8 @@ import RichTextEditor from "../sidebar-input-factory/components/rich-text";
 import TextInput from "../sidebar-input-factory/components/text-input";
 import Loading from "@/components/loading";
 import useSearchParams from "@/hooks/use-search-params";
+import BlocksDropdown from "../blocks-dropdown";
+import { BlockDto } from "@/services/dto/block.dto";
 
 export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
   const { data: sidebarComponents } = useQuery<ComponentDto[]>(
@@ -45,6 +52,8 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
     setMode,
     updateElement,
     setUpdateBlockData,
+    addElement,
+    elements,
   } = useDesigner();
 
   const { data: blockTypes } = useQuery<TypeDto[]>(["blockTypes"], () =>
@@ -105,8 +114,57 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
     setTab(value as any);
   };
 
+  const { data: blocks } = useQuery<BlockDto[]>(["blocks"], () =>
+    getTable({
+      tableName: "block",
+    })
+  );
+  const [selectedForCopyBlockSlug, setSelectedForCopyBlockSlug] =
+    useState<string>("");
+
+  const handleCopyBlock = async (value: string) => {
+    const allComponentsOfBlock = await getBlockComponentsBySlug(value);
+    //change block component codes
+    const newCodes: { oldCode: string; newCode: string }[] = [];
+    allComponentsOfBlock.forEach((component) => {
+      if (component.belong_block_component_code === null) {
+        const newElement = {
+          ...component,
+          code: crypto.randomUUID(),
+          block: {
+            id: 0,
+            title: "deneme block",
+            type_id: 1,
+          },
+        };
+        newCodes.push({ oldCode: component.code, newCode: newElement.code });
+
+        addElement(elements.length, newElement);
+      }
+    });
+    allComponentsOfBlock.forEach((component) => {
+      if (component.belong_block_component_code !== null) {
+        const newElement = {
+          ...component,
+          code:
+            newCodes.find(
+              (c) => c.oldCode === component.belong_block_component_code
+            )?.newCode || crypto.randomUUID(),
+          block: {
+            id: 0,
+            title: "deneme block",
+            type_id: 1,
+          },
+        };
+        newCodes.push({ oldCode: component.code, newCode: newElement.code });
+
+        addElement(0, newElement);
+      }
+    });
+  };
+
   return (
-    <div className=" min-h-screen h-max w-[300px] bg-white px-4 py-10">
+    <div className=" min-h-screen h-max w-full bg-white px-4 py-10">
       <div className="flex items-center mb-2 space-x-2">
         <Switch
           id="preview-mode"
@@ -129,6 +187,18 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
         </TabsList>
         {dragDrop && (
           <TabsContent value="components">
+            <div className="mb-4">
+              <BlocksDropdown
+                value={selectedForCopyBlockSlug}
+                setValue={(value) => handleCopyBlock(value)}
+                blocks={
+                  blocks?.map((block) => ({
+                    label: block.title,
+                    value: block.slug || "",
+                  })) || []
+                }
+              />
+            </div>
             <div className="grid grid-cols-2 gap-2">
               {sidebarComponents &&
                 sidebarComponents?.map((component) => {

@@ -176,11 +176,17 @@ export default function TableConfig({
 
   return (
     <div className="flex flex-col gap-4">
-      <Button asChild>
-        <Link href="/dashboard/config">Geri</Link>
-      </Button>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
+          <div className="flex justify-between">
+            <Button asChild variant="secondary">
+              <Link href="/dashboard/config">Geri</Link>
+            </Button>
+
+            <Button type="submit">
+              {translate("CONFIG_TABLE_UPDATE_BUTTON")}
+            </Button>
+          </div>
           <FormField
             control={form.control}
             name="name"
@@ -615,10 +621,6 @@ export default function TableConfig({
               );
             })}
           </Accordion>
-
-          <Button type="submit">
-            {translate("CONFIG_TABLE_UPDATE_BUTTON")}
-          </Button>
         </form>
       </Form>
     </div>

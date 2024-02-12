@@ -1,14 +1,12 @@
 "use client";
-import { BlockComponentDto } from "@/services/dto/block_component.dto";
-import { PageComponent } from "@/types/page-component";
 import {
   Dispatch,
   ReactNode,
   SetStateAction,
   createContext,
+  useContext,
   useState,
 } from "react";
-import { useContext } from "react";
 
 type LanguageContextType = {
   language: string;

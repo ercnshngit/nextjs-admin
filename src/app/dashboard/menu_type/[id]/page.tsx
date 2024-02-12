@@ -7,21 +7,17 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 
-import { getTableItem } from "@/services/panel";
-import { MENU_TYPE } from "@/types/menu_types";
-import { MENU_ITEM, UPDATE_MENU_ITEM } from "@/types/menus";
+import Loading from "@/components/loading";
+import { getTableItem } from "@/services/common-table-api";
+import { changeMenuOrder, getMenuItems } from "@/services/dashboard";
+import { MENU_ITEM } from "@/types/menus";
+import { menu } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import MenuList from "../menu-list";
-import {
-  changeMenuOrder,
-  getMenuItems,
-  updateMenu,
-} from "@/services/dashboard";
-import Loading from "@/components/loading";
 
 export default function MenuType({ params }: { params: { id: string } }) {
   const id = params.id;
-  const { data: menu_type, error: isError } = useQuery<MENU_TYPE, Error>(
+  const { data: menu_type, error: isError } = useQuery<menu, Error>(
     ["menu_type", id],
     () => getTableItem({ id: Number(id), tableName: "type" }),
     { enabled: !!id }
