@@ -391,7 +391,54 @@ export class MenuService extends BaseService {
       data.route = data.route ?? `/${data.slug}`;
     }
 
-    const menu = await prisma.menu.create({ data });
+    let lastMenuItem = null;
+    // next_id prev_id islemleri
+    if (data.menu_belong_id) {
+      lastMenuItem = await prisma.menu.findFirst({
+        where: {
+          menu_belong_id: data.menu_belong_id,
+          next_id: null,
+          type_id: data.type_id,
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+    } else {
+      lastMenuItem = await prisma.menu.findFirst({
+        where: {
+          next_id: null,
+          type_id: data.type_id,
+        },
+        orderBy: {
+          created_at: "desc",
+        },
+      });
+    }
+
+    if (!lastMenuItem) {
+      return new Response(
+        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
+        { status: 404 }
+      );
+    }
+
+    const menu = await prisma.menu.create({
+      data: {
+        ...data,
+        previous_id: lastMenuItem.id,
+      },
+    });
+
+    // update previous last item
+    const updatedLastMenuItem = await prisma.menu.update({
+      where: {
+        id: lastMenuItem.id,
+      },
+      data: {
+        next_id: menu.id,
+      },
+    });
 
     if (!menu) {
       return new Response(
@@ -582,7 +629,51 @@ export class MenuService extends BaseService {
         );
       }
     }
+
+    if (checkMenuExist.previous_id) {
+      if (checkMenuExist.next_id) {
+        // onceki itemin nextini suanki itemin nexti yaptik
+        await prisma.menu.update({
+          where: {
+            id: checkMenuExist.previous_id,
+          },
+          data: {
+            next_id: checkMenuExist.next_id,
+          },
+        });
+        await prisma.menu.update({
+          where: {
+            id: checkMenuExist.next_id,
+          },
+          data: {
+            previous_id: checkMenuExist.previous_id,
+          },
+        });
+      } else {
+        await prisma.menu.update({
+          where: {
+            id: checkMenuExist.previous_id,
+          },
+          data: {
+            next_id: null,
+          },
+        });
+      }
+    } else {
+      if (checkMenuExist.next_id) {
+        await prisma.menu.update({
+          where: {
+            id: checkMenuExist.next_id,
+          },
+          data: {
+            previous_id: null,
+          },
+        });
+      }
+    }
+
     const menu = await prisma.menu.delete({ where: { id } });
+
     if (!menu)
       return new Response(
         JSON.stringify({ message: ErrorMessages.DELETE_FAILED_ERROR() }),

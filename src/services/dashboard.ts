@@ -137,41 +137,6 @@ export const getTypes = async (table_name: string) => {
   return data;
 };
 
-export const deleteMenu = async (id: number) => {
-  const { data } = await axiosClient.delete(`/menu/delete/${id}`);
-  return data;
-};
-
-export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
-  const { data: responseData } = await axiosClient.post(
-    "/menu/get/byid/" + id,
-    data
-  );
-  return responseData;
-};
-
-export const changeMenuOrder = async (data: any) => {
-  const { data: responseData } = await axiosClient.post(
-    "/menu/change-order",
-    data
-  );
-  return responseData;
-};
-
-export const getMenuItems = async ({ typeId }: { typeId: number }) => {
-  const { data } = await axiosClient.get(`/menu/get/bytype/${typeId}`);
-  return data;
-};
-export const getMenuBySlug = async ({ slug }: { slug: string }) => {
-  const { data } = await axiosClient.get(`/menu/get/byslug/${slug}`);
-  return data;
-};
-
-export const getMenuByTypeId = async (type_id: number) => {
-  const { data } = await axiosClient.get(`/menu/type/${type_id}`);
-  return data;
-};
-
 export const deleteTableItem = async ({
   tableName,
   id,
@@ -235,4 +200,44 @@ export const getGeneralBySlug = async (slug: string) => {
     "/general/get/byslug/" + slug
   );
   return responseData as general[];
+};
+
+export const createMenu = async ({ data }: { data: any }) => {
+  const res = await axiosClient.post("/menu", data);
+  return res;
+};
+
+export const deleteMenu = async (id: number) => {
+  const { data } = await axiosClient.get(`/menu/delete/${id}`);
+  return data;
+};
+
+export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
+  const { data: responseData } = await axiosClient.post(
+    "/menu/get/byid/" + id,
+    data
+  );
+  return responseData;
+};
+
+export const changeMenuOrder = async (data: any) => {
+  const { data: responseData } = await axiosClient.post(
+    "/menu/change-order",
+    data
+  );
+  return responseData;
+};
+
+export const getMenuItems = async ({ typeId }: { typeId: number }) => {
+  const { data } = await axiosClient.get(`/menu/get/bytype/${typeId}`);
+  return data;
+};
+export const getMenuBySlug = async ({ slug }: { slug: string }) => {
+  const { data } = await axiosClient.get(`/menu/get/byslug/${slug}`);
+  return data;
+};
+
+export const getMenuByTypeId = async (type_id: number) => {
+  const { data } = await axiosClient.get(`/menu/type/${type_id}`);
+  return data;
 };

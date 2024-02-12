@@ -3,12 +3,22 @@ import BaseForm from "@/components/base-form";
 import useSearchParams from "@/hooks/use-search-params";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { createTableItem } from "@/services/common-table-api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  UseMutationResult,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-export default function CreateFormBase({ table }: { table: DatabaseTableDto }) {
+export default function CreateFormBase({
+  table,
+  customCreateMutation,
+}: {
+  table: DatabaseTableDto;
+  customCreateMutation?: UseMutationResult<any, unknown, {}, unknown>;
+}) {
   const {
     register,
     handleSubmit,
@@ -87,7 +97,11 @@ export default function CreateFormBase({ table }: { table: DatabaseTableDto }) {
         parsedData[key] = value;
       }
     });
-    createMutation.mutate(data);
+    if (customCreateMutation) {
+      customCreateMutation.mutate(data);
+    } else {
+      createMutation.mutate(data);
+    }
   };
   const onSubmitAndGoBack: SubmitHandler<any> = (data) => {
     createAndGoBackMutation.mutate(data);
