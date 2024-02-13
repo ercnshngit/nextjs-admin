@@ -24,14 +24,15 @@ export default function CommentComponent({
       />
       <EditableContent typeName="text" propName={"fname"} propValue={fname} />
       <EditableContent typeName="text" propName={"lname"} propValue={lname} />
-      <EditableContent typeName="text" propName={"title"} propValue={title} />
       <EditableContent
         typeName="text"
         propName={"subtitle"}
         propValue={subtitle}
       />
       <div className="flex w-full flex-col ">
-        <Title>{title}</Title>
+        <EditableContent typeName="text" propName={"title"} propValue={title}>
+          <Title>{title}</Title>
+        </EditableContent>
         <div className=" mb-2 mt-2 w-full border-[1px] border-secondary-blue shadow-xl md:mb-8"></div>
       </div>
       <div className="-mr-5 mt-11 w-full self-stretch text-xl font-bold text-text-black max-md:mt-10 max-md:max-w-full lg:text-2xl ">

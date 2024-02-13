@@ -1,4 +1,7 @@
-import { breakpoints, useWindowSize } from "@/utils/breakpoints";
+import {
+  breakpoints,
+  useWindowSize,
+} from "@/block-renderer/components/utils/breakpoints";
 import * as React from "react";
 import { memo } from "react";
 
