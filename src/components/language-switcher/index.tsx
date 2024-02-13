@@ -9,22 +9,10 @@ export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <Tabs>
+    <Tabs value={language} onValueChange={setLanguage}>
       <TabsList>
-        <TabsTrigger
-          value="tr"
-          onClick={() => setLanguage("tr")}
-          className={language === "tr" ? "active" : ""}
-        >
-          TR
-        </TabsTrigger>
-        <TabsTrigger
-          value="en"
-          onClick={() => setLanguage("en")}
-          className={language === "en" ? "active" : ""}
-        >
-          EN
-        </TabsTrigger>
+        <TabsTrigger value="tr">TR</TabsTrigger>
+        <TabsTrigger value="en">EN</TabsTrigger>
       </TabsList>
     </Tabs>
   );

@@ -579,6 +579,9 @@ export class TableService extends BaseService {
           is_hidden: tableData.is_hidden,
           can_create: tableData.can_create,
           can_update: tableData.can_update,
+          can_delete: tableData.can_delete,
+          can_translate: tableData.can_translate,
+          order: tableData.order,
           display_column_id: tableData.display_column_id,
           columns: {
             upsert: data.columns?.map((column) => ({
@@ -1011,6 +1014,8 @@ export class TableService extends BaseService {
           name: table.table_name,
           can_create: true,
           can_update: true,
+          can_delete: true,
+          can_translate: false,
           is_hidden: true,
           order: index + 1,
         })),

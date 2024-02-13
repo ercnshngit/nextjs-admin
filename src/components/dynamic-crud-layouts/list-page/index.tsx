@@ -16,6 +16,8 @@ import { Row } from "@tanstack/react-table";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { useQuery } from "@tanstack/react-query";
 import { getTable } from "@/services/dashboard";
+import { useDataLanguageOfTable } from "@/utils/use-data-language";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function ListPage({
   slug,
@@ -43,11 +45,20 @@ export default function ListPage({
     translate
   );
 
-  const [tableData, setTableData] = useState(data);
+  const { dataIds, language } = useDataLanguageOfTable({ table_name: slug });
+  const [tableData, setTableData] = useState(
+    data?.filter((row: any) =>
+      table?.can_translate ? dataIds.includes(row.id) : true
+    )
+  );
 
   useEffect(() => {
-    setTableData(data);
-  }, [data]);
+    setTableData(
+      data?.filter((row: any) =>
+        table?.can_translate ? dataIds.includes(row.id) : true
+      )
+    );
+  }, [data, language]);
 
   const filterablesData = filterables?.map((filterable) => {
     if (data && Array.isArray(data)) {

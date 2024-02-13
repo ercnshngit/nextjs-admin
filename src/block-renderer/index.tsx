@@ -1,16 +1,15 @@
 import React from "react";
 import { BlockComponentDto } from "./types";
 import { createTree } from "./utils/tree-operations";
-import { getComponent } from "./utils/component-tags";
+import { Component } from "./utils/component-tags";
 
 export default function BlockRenderer({ blocks }: { blocks: any[] }) {
   const elementTree = createTree(blocks);
 
   const renderPreview = async (component: BlockComponentDto) => {
-    const Component = await getComponent(component.component.tag.name);
-
     return (
       <Component
+        component={component}
         {...Object.fromEntries(
           component.props.map((prop) => [prop.prop.key, prop.value])
         )}

@@ -16,6 +16,6 @@ export default function DynamicListPage({
 
   const { data, error } = useQuery([slug], () => getTable({ tableName: slug }));
 
-  if (error) return <div>error</div>;
+  if (error) return null;
   return <ListPage slug={slug} data={data} />;
 }

@@ -12,6 +12,7 @@
     "portkillstart-dev": "npm run portkill && npm run dev",
     "set-project": "npm install && npm run gen-prisma && npm run build",
     "set-table-configs": "ts-node ./src/scripts/database-table.script.ts",
+    "test": "ts-node ./src/scripts/test.ts",
     "create-demo-user": "ts-node ./src/scripts/create-demo-user.script.ts",
     "create-table-configs": "ts-node ./src/scripts/create-table-configs.script.ts",
     "create-table-relations": "ts-node ./src/scripts/create-table-relations.script.ts",

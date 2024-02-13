@@ -3,6 +3,8 @@ import { general } from "@prisma/client";
 import { BlockDto } from "./dto/block.dto";
 import { BlockComponentDto } from "./dto/block_component.dto";
 import { CreateComponentDto } from "./dto/component.dto";
+import { DataLanguageDto } from "./dto/data_language.dto";
+import { DatabaseTableDto } from "./dto/database-table.dto";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -82,7 +84,7 @@ export const getTableConfig = async ({
   table_name: string;
 }) => {
   const { data } = await axiosClient.get(`/table/${table_name}/config`);
-  return data;
+  return data as DatabaseTableDto;
 };
 
 export const getTable = async ({ tableName }: { tableName: string }) => {
@@ -240,4 +242,38 @@ export const getMenuBySlug = async ({ slug }: { slug: string }) => {
 export const getMenuByTypeId = async (type_id: number) => {
   const { data } = await axiosClient.get(`/menu/type/${type_id}`);
   return data;
+};
+
+// data_language
+export const getDataLanguages = async () => {
+  const { data } = await axiosClient.get("/data_language");
+  return data as DataLanguageDto[];
+};
+export const getDataLanguagesByTable = async ({
+  table_name,
+}: {
+  table_name: string;
+}) => {
+  const { data } = await axiosClient.get(`/data_language/table/${table_name}`);
+  return data as DataLanguageDto[];
+};
+
+export const getDataLanguage = async (id: number) => {
+  const { data } = await axiosClient.get(`/data_language/${id}`);
+  return data as DataLanguageDto;
+};
+
+export const createDataLanguage = async (data: DataLanguageDto) => {
+  const res = await axiosClient.post("/data_language", data);
+  return res;
+};
+
+export const updateDataLanguage = async (id: number, data: DataLanguageDto) => {
+  const res = await axiosClient.post(`/data_language/${id}`, data);
+  return res;
+};
+
+export const deleteDataLanguage = async (id: number) => {
+  const res = await axiosClient.get(`/data_language/delete/${id}`);
+  return res;
 };
