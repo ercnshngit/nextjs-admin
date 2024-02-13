@@ -6,33 +6,17 @@ import { DesktopIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 
 export default function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
   return (
-    <Tabs>
+    <Tabs value={theme} onValueChange={setTheme}>
       <TabsList>
-        <TabsTrigger
-          value="light"
-          onClick={() => setTheme("light")}
-          className={theme === "light" ? "active" : ""}
-        >
+        <TabsTrigger value="light">
           <SunIcon className="h-5 w-5" />
         </TabsTrigger>
-        <TabsTrigger
-          value="dark"
-          onClick={() => setTheme("dark")}
-          className={theme === "dark" ? "active" : ""}
-        >
+        <TabsTrigger value="dark">
           <MoonIcon className="h-5 w-5" />
         </TabsTrigger>
-        <TabsTrigger
-          value="system"
-          onClick={() => setTheme("system")}
-          className={theme === "system" ? "active" : ""}
-        >
+        <TabsTrigger value="system">
           <DesktopIcon className="h-5 w-5" />
         </TabsTrigger>
       </TabsList>

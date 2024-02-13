@@ -30,29 +30,16 @@ export async function createDemoData() {
         language_code: "en",
         table_id: block.id,
       },
-      {
-        name: "Sayfa",
-        language_code: "tr",
-        table_id: block.id,
-      },
+
       {
         name: "Slider",
         language_code: "en",
         table_id: block.id,
       },
-      {
-        name: "Slayt",
-        language_code: "tr",
-        table_id: block.id,
-      },
+
       {
         name: "Form",
         language_code: "en",
-        table_id: block.id,
-      },
-      {
-        name: "Form",
-        language_code: "tr",
         table_id: block.id,
       },
       {

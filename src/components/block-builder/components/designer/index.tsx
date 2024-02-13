@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Component } from "@/block-renderer/utils/component-tags";
 import { useDesigner } from "@/contexts/designer-context";
 import { cn } from "@/libs/utils";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import { handleDragEnd } from "../../utils/drag-helpers";
 import { createTree } from "../../utils/tree-operations";
 import ComponentWrapper from "../component-wrapper";
-import { Component } from "@/block-renderer/utils/component-tags";
 
 export default function Designer({ dragDrop }: { dragDrop: boolean }) {
   const {

@@ -6,6 +6,7 @@ import useSearchParams from "@/hooks/use-search-params";
 import { cn } from "@/libs/utils";
 import { createComponentsInBlock } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
+import { useDataLanguageMutation } from "@/utils/use-data-language";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,11 +18,16 @@ export default function BuilderPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const { dataLanguageMutation } = useDataLanguageMutation({
+    table_name: "block",
+  });
+
   const createBlocks = useMutation(
     (data: CreateBlockComponentsDto) => createComponentsInBlock({ data: data }),
     {
       onSuccess: async (data) => {
         console.log(JSON.stringify(data));
+        dataLanguageMutation.mutate(data);
         toast.success("Blok başarıyla güncellendi");
         const route =
           "/dashboard/block" + searchParams.createSearchParamsForUrl();

@@ -104,6 +104,8 @@ export default function TableConfig({
     is_hidden: table?.is_hidden || false,
     can_create: table?.can_create || false,
     can_update: table?.can_update || false,
+    can_delete: table?.can_delete || false,
+    can_translate: table?.can_translate || false,
     columns: tableColumnsOrdered.map((column) => ({
       order: Number(column.order || 0),
       id: column.id || 0,
@@ -331,6 +333,51 @@ export default function TableConfig({
                   </FormLabel>
                   <FormDescription>
                     {translate("CONFIG_ITEM_UPDATE_ALLOWED_DESCRIPTION")}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="can_delete"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    {translate("CONFIG_ITEM_DELETE_ALLOWED_TITLE")}
+                  </FormLabel>
+                  <FormDescription>
+                    {translate("CONFIG_ITEM_DELETE_ALLOWED_DESCRIPTION")}
+                  </FormDescription>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="can_translate"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between p-3 border rounded-lg shadow-sm bg-white">
+                <div className="space-y-0.5">
+                  <FormLabel>
+                    {translate("CONFIG_ITEM_TRANSLATE_ALLOWED_TITLE")}
+                  </FormLabel>
+                  <FormDescription>
+                    {translate("CONFIG_ITEM_TRANSLATE_ALLOWED_DESCRIPTION")}
                   </FormDescription>
                 </div>
                 <FormControl>

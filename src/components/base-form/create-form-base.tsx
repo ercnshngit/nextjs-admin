@@ -11,6 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useDataLanguageMutation } from "@/utils/use-data-language";
 
 export default function CreateFormBase({
   table,
@@ -29,6 +30,10 @@ export default function CreateFormBase({
     formState: { errors },
   } = useForm<any>({});
 
+  const { dataLanguageMutation } = useDataLanguageMutation({
+    table_name: "block",
+  });
+
   const queryClient = useQueryClient();
   const createMutation = useMutation(
     (data: {}) =>
@@ -46,7 +51,10 @@ export default function CreateFormBase({
           .filter((item) => item !== null),
       }),
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        if (table.can_translate) {
+          dataLanguageMutation.mutate(data);
+        }
         queryClient.invalidateQueries([table.name]);
         toast.success("Kayıt başarıyla oluşturuldu");
         reset();

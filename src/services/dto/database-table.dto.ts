@@ -11,6 +11,8 @@ export interface DatabaseTableDto {
   is_hidden?: boolean;
   can_create?: boolean;
   can_update?: boolean;
+  can_delete?: boolean;
+  can_translate?: boolean;
   columns?: DataBaseTableColumnDto[];
   column_relations?: any[];
   referenced_column_relations?: any[];
