@@ -2,6 +2,7 @@
 import {
   createTableConfig,
   deleteTableConfig,
+  getTable,
   getTableConfig,
   getTableItemByColumnAndValue,
   getTablesConfigs,
@@ -58,6 +59,27 @@ export function useTableDataByColumnAndValue({
   );
 
   return { item, isLoading, error };
+}
+
+export function useTableData({
+  tableName,
+
+  options,
+}: {
+  tableName: string;
+
+  options?: any;
+}) {
+  const { data, error, isLoading } = useQuery(
+    [tableName],
+    () =>
+      getTable({
+        tableName,
+      }),
+    options
+  );
+
+  return { data, error };
 }
 
 export const useConfigs = () => {
