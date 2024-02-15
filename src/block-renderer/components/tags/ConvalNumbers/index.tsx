@@ -70,6 +70,7 @@ export default function ConvalNumbers({
               data={data}
               description="Genel kismindan duzenlenir."
               tableName="general"
+              queryKey={["numbers"]}
             >
               {data.map((item) => (
                 <AnimatedCounter
