@@ -54,7 +54,13 @@ export class TableService extends BaseService {
 
   async getTable(table_name: string) {
     try {
-      const query = "SELECT * FROM `" + table_name + "`";
+      const query =
+        "SELECT * FROM `" +
+        table_name
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;") +
+        "`";
       const table = await prisma.$queryRawUnsafe(`${query}`);
 
       if (!table) {
@@ -75,13 +81,24 @@ export class TableService extends BaseService {
 
   async getTableById(table_name: string, id: number) {
     try {
-      if (typeof id === "number") {
+      if (typeof id !== "number") {
         // do something
         return new Response(
           JSON.stringify({ message: "id değeri girilmedi." })
         );
       }
-      const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(table_name, id);
+      const query = SqlConstants.SELECT_ALL_WITH_ID_QUERRY(
+        table_name
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;"),
+        Number(
+          String(id)
+            .replaceAll("`", "")
+            .replaceAll("\\", "")
+            .replaceAll("'", "&apos;")
+        )
+      );
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
         return new Response(
@@ -109,9 +126,18 @@ export class TableService extends BaseService {
   }) {
     try {
       const query = SqlConstants.SELECT_ALL_WITH_COLUMN_NAME_QUERY({
-        tableName: table_name,
-        value,
-        column,
+        tableName: table_name
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;"),
+        value: value
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;"),
+        column: column
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;"),
       });
       const table = await prisma.$queryRawUnsafe(`${query}`);
       if (!table) {
@@ -129,8 +155,13 @@ export class TableService extends BaseService {
     }
   }
 
-  async updateTableWithId(table_name: string, id: number, data: any) {
+  async updateTableWithId(tablename: string, id: number, data: any) {
+    //TODO: sanitize
     try {
+      const table_name = tablename
+        .replaceAll("`", "")
+        .replaceAll("\\", "")
+        .replaceAll("'", "&apos;");
       let set: string = "";
       data.forEach((element: { key: string; value: string }) => {
         set += table_name + "." + element.key + " = '" + element.value + "' , ";
@@ -158,8 +189,24 @@ export class TableService extends BaseService {
       let columns = " (";
       let values = " (";
       data.forEach((element: { key: string; value: string }) => {
-        columns += table_name + "." + element.key + ", ";
-        values += "'" + element.value.replaceAll("'","&apos;") + "', ";
+        columns +=
+          table_name
+            .replaceAll("`", "")
+            .replaceAll("\\", "")
+            .replaceAll("'", "&apos;") +
+          "." +
+          element.key
+            .replaceAll("`", "")
+            .replaceAll("\\", "")
+            .replaceAll("'", "&apos;") +
+          ", ";
+        values +=
+          "'" +
+          element.value
+            .replaceAll("`", "")
+            .replaceAll("\\", "")
+            .replaceAll("'", "&apos;") +
+          "', ";
       });
       columns = columns.substring(0, columns.length - 2) + ") ";
       values = values.substring(0, values.length - 2) + ") ";
@@ -219,7 +266,18 @@ export class TableService extends BaseService {
 
   async deleteTableWithId(table_name: string, id: number) {
     try {
-      const query = SqlConstants.DELETE_QUERY_WITH_ID(table_name, id);
+      const query = SqlConstants.DELETE_QUERY_WITH_ID(
+        table_name
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;"),
+        Number(
+          String(id)
+            .replaceAll("`", "")
+            .replaceAll("\\", "")
+            .replaceAll("'", "&apos;")
+        )
+      );
       const result = await prisma.$queryRawUnsafe(`${query}`);
       if (!result) {
         return new Response(
@@ -291,7 +349,10 @@ export class TableService extends BaseService {
         "SELECT table_name as 'name' , JSON_ARRAYAGG(JSON_OBJECT('name',column_name , 'type' , data_type)) as 'columns' from information_schema.columns WHERE table_schema ='" +
         process.env.DB_NAME +
         "' AND table_name = '" +
-        table_name +
+        table_name
+          .replaceAll("`", "")
+          .replaceAll("\\", "")
+          .replaceAll("'", "&apos;") +
         "' GROUP BY table_name";
       const result = await prisma.$queryRawUnsafe(query);
       Object.assign(new_result, result);
