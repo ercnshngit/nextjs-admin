@@ -436,6 +436,16 @@ export class TableService extends BaseService {
           name: table_name,
         },
         include: {
+          column_relations: {
+            include: {
+              table: true,
+              referenced_table: true,
+              pivot_table: true,
+              column: true,
+              referenced_column: true,
+              relation_type: true,
+            },
+          },
           columns: {
             orderBy: {
               order: "asc",
@@ -1101,7 +1111,7 @@ export class TableService extends BaseService {
             return;
           }
 
-          await prisma.column_relation.create({
+          const created = await prisma.column_relation.create({
             data: {
               table_id: tableNameId.id,
               column_id: columnNameId.id,
@@ -1120,6 +1130,7 @@ export class TableService extends BaseService {
           });
         }
       });
+      return true;
     } catch (error) {
       console.log(error);
       await this.createLog(error);
