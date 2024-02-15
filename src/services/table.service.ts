@@ -159,7 +159,7 @@ export class TableService extends BaseService {
       let values = " (";
       data.forEach((element: { key: string; value: string }) => {
         columns += table_name + "." + element.key + ", ";
-        values += "'" + element.value + "', ";
+        values += "'" + element.value.replaceAll("'","&apos;") + "', ";
       });
       columns = columns.substring(0, columns.length - 2) + ") ";
       values = values.substring(0, values.length - 2) + ") ";
