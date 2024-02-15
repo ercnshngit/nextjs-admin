@@ -12,11 +12,13 @@ export default function EditableData<T extends { id: number }>({
   children,
   tableName,
   data,
+  queryKey,
 }: {
   description: string;
   children: React.ReactNode;
   tableName: string;
   data: T[];
+  queryKey: string[];
 }) {
   const { selectedElement } = useDesigner();
   const [isOpened, setIsOpened] = React.useState(true);
@@ -32,7 +34,7 @@ export default function EditableData<T extends { id: number }>({
 
   const close = () => {
     setIsOpened(false);
-    queryClient.invalidateQueries([tableName]);
+    queryClient.invalidateQueries(queryKey);
   };
 
   const { table } = useTable(tableName);
