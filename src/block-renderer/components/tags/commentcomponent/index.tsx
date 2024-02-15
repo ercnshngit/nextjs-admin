@@ -18,13 +18,6 @@ export default function CommentComponent({
   return (
     <div className="container flex flex-col">
       <EditableContent
-        typeName="richtext"
-        propName={"content"}
-        propValue={content}
-      />
-      <EditableContent typeName="text" propName={"fname"} propValue={fname} />
-      <EditableContent typeName="text" propName={"lname"} propValue={lname} />
-      <EditableContent
         typeName="text"
         propName={"subtitle"}
         propValue={subtitle}
@@ -38,11 +31,19 @@ export default function CommentComponent({
       <div className="-mr-5 mt-11 w-full self-stretch text-xl font-bold text-text-black max-md:mt-10 max-md:max-w-full lg:text-2xl ">
         {subtitle}
       </div>
-      <div className="-mr-5 mt-11 w-full self-stretch text-justify text-xs text-text-black max-md:mt-10 max-md:max-w-full md:text-xl">
-        {content}
-      </div>
+      <EditableContent
+        typeName="richtext"
+        propName={"content"}
+        propValue={content}
+      >
+        <div className="-mr-5 mt-11 w-full self-stretch text-justify text-xs text-text-black max-md:mt-10 max-md:max-w-full md:text-xl">
+          {content}
+        </div>
+      </EditableContent>
 
       <div className=" mt-8 flex flex-col items-start gap-2 text-base font-bold lg:mt-16 lg:text-xl">
+        <EditableContent typeName="text" propName={"fname"} propValue={fname} />
+        <EditableContent typeName="text" propName={"lname"} propValue={lname} />
         <p className="whitespace-nowrap text-text-black">
           {fname}
           {lname.split(" ")[1].charAt(0)}.
