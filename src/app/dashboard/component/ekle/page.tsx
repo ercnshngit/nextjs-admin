@@ -27,6 +27,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { PlusCircle, Trash2Icon } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
+import { parseProperties } from "@/utils/component-helper";
 
 export default function AddComponentPage() {
   const { table } = useTable("component");
@@ -39,6 +41,42 @@ export default function AddComponentPage() {
   const { data: propTypes } = useQuery<TypeDto[]>(["propTypes"], () =>
     getTypes("prop")
   );
+
+  useEffect(() => {
+    document.addEventListener("paste", function (event) {
+      const clipText = event.clipboardData?.getData("Text");
+      if (!clipText) return;
+      const properties = parseProperties(clipText);
+
+      properties.forEach((property) => {
+        const type = propTypes?.find((item) => item.name === property.type);
+        if (type) {
+          if (
+            !form.getValues().props.some((item) => item.key === property.name)
+          ) {
+            console.log(property);
+            insert(
+              form.getValues().props.length,
+              {
+                key: property.name,
+                type: {
+                  id: type.id,
+                  name: type.name,
+                },
+              },
+              { shouldFocus: false }
+            );
+          }
+        }
+      });
+    });
+    return () => {
+      document.removeEventListener("paste", function (event) {
+        const clipText = event.clipboardData?.getData("Text");
+        console.log(clipText);
+      });
+    };
+  }, []);
 
   const componentMutation = useMutation(
     (data: CreateComponentDto) => {
@@ -80,7 +118,7 @@ export default function AddComponentPage() {
     defaultValues: initialValues,
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, insert } = useFieldArray({
     control: form.control,
     name: "props",
   });
