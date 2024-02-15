@@ -1,3 +1,4 @@
+import { ColumnRelationDto } from "./column-relation.dto";
 import { DataBaseTableColumnDto } from "./database-table-column.dto";
 import { prisma } from "@/libs/prisma";
 
@@ -14,7 +15,7 @@ export interface DatabaseTableDto {
   can_delete?: boolean;
   can_translate?: boolean;
   columns?: DataBaseTableColumnDto[];
-  column_relations?: any[];
+  column_relations?: ColumnRelationDto[];
   referenced_column_relations?: any[];
   pivoted_column_relations?: any[];
 }

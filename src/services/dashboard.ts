@@ -277,3 +277,8 @@ export const deleteDataLanguage = async (id: number) => {
   const res = await axiosClient.get(`/data_language/delete/${id}`);
   return res;
 };
+
+export const createTableRelations = async (table_name: string) => {
+  const res = await axiosClient.get(`/table/${table_name}/config/relations`);
+  return res;
+};

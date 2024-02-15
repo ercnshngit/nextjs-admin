@@ -30,6 +30,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCrudOption,
+  createTableRelations,
   getTableInputTypes,
   updateTableConfig,
 } from "@/services/dashboard";
@@ -55,6 +56,17 @@ export default function TableConfig({
   const { translate } = useTranslate();
 
   const queryClient = useQueryClient();
+  const createRelations = useMutation(
+    (data: any) => {
+      return createTableRelations(table_name);
+    },
+    {
+      onSuccess: () => {
+        toast.success("Iliskiler oluşturuldu");
+        queryClient.invalidateQueries(["configs"]);
+      },
+    }
+  );
   const updateConfig = useMutation(
     (data: any) => {
       return updateTableConfig({
@@ -177,7 +189,7 @@ export default function TableConfig({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mb-12">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 ">
           <div className="flex justify-between">
@@ -670,6 +682,35 @@ export default function TableConfig({
           </Accordion>
         </form>
       </Form>
+      <div className="flex flex-col rounded-md bg-gray-100 p-4">
+        <div className="flex justify-between w-full items-center">
+          <h1 className="text-lg font-bold p-4">
+            {translate("CONFIG_RELATIONS_TITLE")}
+          </h1>
+          <Button
+            type="button"
+            onClick={() => createRelations.mutate(table_name)}
+            className="p-4"
+          >
+            {translate("CONFIG_RELATIONS_CREATE")}
+          </Button>
+        </div>
+        {table.column_relations?.map((relation, index) => {
+          return (
+            <div key={index} className="flex bg-white rounded-md gap-4 p-4">
+              <h1 className="font-semibold">{relation.foreign_key_name}</h1>
+              <p>
+                Ana tablo: {relation.referenced_table.name} tablosu &gt;{" "}
+                {relation.referenced_column.name} sutunu
+              </p>
+              <p>
+                Referans: {relation.table.name} tablosu &gt;{" "}
+                {relation.column.name} sutunu
+              </p>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
