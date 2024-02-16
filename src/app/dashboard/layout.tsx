@@ -14,8 +14,8 @@ export default function DashboardLayout({
       <div className="w-1/5 min-h-full shadow">
         <Sidebar className="flex-shrink hidden sm:block" />
       </div>
-      <div className="flex flex-col flex-1 w-4/5 min-h-screen bg-gray-200 ">
-        <div className="flex flex-col min-h-screen min-w-full bg-background ">
+      <div className="flex flex-col flex-1 w-4/5 min-h-screen bg-background ">
+        <div className="flex flex-col min-h-screen min-w-full  ">
           <nav className="flex justify-between border-b border-border h-14 px-4 py-2">
             <Logo />
             <div className="flex gap-2">

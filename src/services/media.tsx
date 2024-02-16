@@ -26,8 +26,3 @@ export const uploadMediaToServer = async ({
     },
   });
 };
-
-export const getMedia = async ({ directory }: { directory: string }) => {
-  const { data: responseData } = await axiosClient.get("/media/" + directory);
-  return responseData;
-};
