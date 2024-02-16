@@ -1,14 +1,11 @@
-import React from "react";
-import { Card, CardContent, CardHeader } from "../../ui/card";
-import { Button } from "../../ui/button";
-import { ArrowLeftIcon } from "lucide-react";
-import { useTranslate } from "@/langs";
-import Link from "next/link";
-import useSearchParams from "@/hooks/use-search-params";
 import DeleteItem from "@/components/delete-dialog";
-import UpdateFormBase from "@/components/base-form/update-form-base";
-import { DatabaseTableDto } from "@/services/dto/database-table.dto";
-import { useTable } from "@/hooks/use-database";
+import useSearchParams from "@/hooks/use-search-params";
+import { useTranslate } from "@/langs";
+import { ArrowLeftIcon } from "lucide-react";
+import Link from "next/link";
+import React from "react";
+import { Button } from "../../ui/button";
+import { Card, CardContent, CardHeader } from "../../ui/card";
 
 export default function UpdatePage({
   id,

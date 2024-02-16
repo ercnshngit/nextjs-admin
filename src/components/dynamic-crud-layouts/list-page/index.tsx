@@ -18,6 +18,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getTable } from "@/services/dashboard";
 import { useDataLanguageOfTable } from "@/utils/use-data-language";
 import { useLanguage } from "@/contexts/language-context";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
 
 export default function ListPage({
   slug,
@@ -30,6 +33,7 @@ export default function ListPage({
   addButtonHref?: any;
   buttons?: (row: Row<any>) => React.ReactNode;
 }) {
+  const [noLangMode, setNoLangMode] = useState(false);
   const searchParams = useSearchParams();
   const allParams = searchParams.getAllQueryString();
   const page = Number(allParams?.["page"]) || 1;
@@ -55,10 +59,10 @@ export default function ListPage({
   useEffect(() => {
     setTableData(
       data?.filter((row: any) =>
-        table?.can_translate ? dataIds.includes(row.id) : true
+        table?.can_translate && !noLangMode ? dataIds.includes(row.id) : true
       )
     );
-  }, [data, language]);
+  }, [data, language, noLangMode]);
 
   const filterablesData = filterables?.map((filterable) => {
     if (data && Array.isArray(data)) {
@@ -79,7 +83,7 @@ export default function ListPage({
 
   const searchablesData = searchables;
   return (
-    <>
+    <Card className="p-8">
       <div className="flex justify-between mb-4">
         <h3 className="text-lg font-medium">{translate(tableName)}</h3>
         {table?.can_create !== false && (
@@ -103,6 +107,18 @@ export default function ListPage({
         )}
       </div>
       <div className="w-full py-10">
+        {table?.can_translate && (
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="noLang-mode"
+              checked={noLangMode}
+              onCheckedChange={() => setNoLangMode(!noLangMode)}
+            />
+            <Label htmlFor="noLang-mode">
+              Dil belirlenmemis verileri goster
+            </Label>
+          </div>
+        )}
         {tableData && (
           <DataTable
             tableName={tableName}
@@ -126,6 +142,6 @@ export default function ListPage({
           />
         )}
       </div>
-    </>
+    </Card>
   );
 }

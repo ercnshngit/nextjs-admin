@@ -105,7 +105,7 @@ export function DataTable<TData, TValue>({
         searchables={searchables}
         databaseTableColumns={databaseTableColumns}
       />
-      <div className="bg-white border rounded-md">
+      <div className=" border rounded-md">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

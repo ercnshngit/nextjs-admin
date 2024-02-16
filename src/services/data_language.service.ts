@@ -60,7 +60,23 @@ export class DataLanguageService extends BaseService {
 
   async createDataLanguage(data: DataLanguageDto) {
     try {
-      const data_language = await prisma.data_language.create({ data });
+      console.log(data);
+      const isExist = await prisma.data_language.findFirst({
+        where: {
+          database_table_id: data.database_table_id,
+          data_id: data.data_id,
+        },
+      });
+      let data_language = null;
+      if (isExist) {
+        data_language = await prisma.data_language.update({
+          where: { id: isExist.id },
+          data,
+        });
+      } else {
+        data_language = await prisma.data_language.create({ data });
+      }
+
       if (!data_language) {
         return new Response(
           JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),

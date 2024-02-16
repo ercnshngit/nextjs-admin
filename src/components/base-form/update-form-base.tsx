@@ -1,17 +1,15 @@
 "use client";
-import { useTranslate } from "@/langs";
-import React, { useEffect } from "react";
 
-import { useForm, SubmitHandler } from "react-hook-form";
 import BaseForm from "@/components/base-form";
-import { useMutation } from "@tanstack/react-query";
-import { updateTableItem } from "@/services/common-table-api";
-import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
-import { UPDATE_TABLE_ITEM } from "@/types/common-table-api";
-import { useRouter } from "next/navigation";
 import { queryClient } from "@/libs/react-query";
+import { updateTableItem } from "@/services/common-table-api";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
+import { UPDATE_TABLE_ITEM } from "@/types/common-table-api";
+import { useDataLanguageMutation } from "@/utils/use-data-language";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 export default function UpdateFormBase({
   table,
@@ -48,7 +46,10 @@ export default function UpdateFormBase({
           .filter((item) => item !== null),
       }),
     {
-      onSuccess: async () => {
+      onSuccess: async (data) => {
+        if (table.can_translate) {
+          dataLanguageMutation.mutate(data);
+        }
         await queryClient.invalidateQueries({
           queryKey: [table.name, table.name + "/" + id],
         });
@@ -57,6 +58,9 @@ export default function UpdateFormBase({
       },
     }
   );
+  const { dataLanguageMutation } = useDataLanguageMutation({
+    table_name: table.name,
+  });
 
   const updateRelationMutation = useMutation(
     (data: UPDATE_TABLE_ITEM) =>
