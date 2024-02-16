@@ -353,7 +353,7 @@ model reference {
 
 model client_voice {
   id      Int    @id @default(autoincrement())
-  message String
+  message String @db.Text
   author  String
 }
 
@@ -370,7 +370,7 @@ model contact {
   phone     String
   email     String
   subject   String
-  message   String
+  message   String @db.LongText
   form_slug String
 }
 
@@ -384,14 +384,14 @@ model brochure {
 model regulation {
   id        Int    @id @default(autoincrement())
   title     String
-  content   String
+  content   String @db.LongText
   image_url String
 }
 
 model job {
   id          Int    @id @default(autoincrement())
   title       String
-  description String
+  description String @db.LongText
 
   cv cv[]
 }
@@ -403,7 +403,7 @@ model cv {
   firstname String
   lastname  String
   cv_url    String
-  notes     String
+  notes     String @db.LongText
 
   job job? @relation(fields: [jobId], references: [id])
 }
