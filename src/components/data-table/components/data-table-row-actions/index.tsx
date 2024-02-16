@@ -53,7 +53,7 @@ export function DataTableRowActions({
         </>
       )}
 
-      {table?.can_update && (
+      {table?.can_delete && (
         <>
           <Button
             variant={"destructive"}

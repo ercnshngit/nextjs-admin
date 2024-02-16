@@ -52,6 +52,7 @@ export default function CreateFormBase({
       }),
     {
       onSuccess: (data) => {
+        console.log("data", data);
         if (table.can_translate) {
           dataLanguageMutation.mutate(data);
         }

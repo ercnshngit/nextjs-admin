@@ -40,7 +40,7 @@ export function useTableDataByColumnAndValue({
 }: {
   tableName: string;
   column: string;
-  value: string;
+  value: string | number;
   options?: any;
 }) {
   const {

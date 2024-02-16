@@ -10,6 +10,8 @@ import { BaseService } from "./base.service";
 import { ColumnRelationCreateDto } from "./dto/column-relation.dto";
 import { CrudOptionCreateDto } from "./dto/crud-option.dto";
 import { DatabaseTableDto } from "./dto/database-table.dto";
+import { Prisma } from "@prisma/client";
+import { DefaultArgs } from "@prisma/client/runtime/library";
 
 config();
 export class TableService extends BaseService {
@@ -81,7 +83,7 @@ export class TableService extends BaseService {
 
   async getTableById(table_name: string, id: number) {
     try {
-      if (typeof id !== "number") {
+      if (typeof Number(id) !== "number") {
         // do something
         return new Response(
           JSON.stringify({ message: "id değeri girilmedi." })
@@ -158,24 +160,27 @@ export class TableService extends BaseService {
   async updateTableWithId(tablename: string, id: number, data: any) {
     //TODO: sanitize
     try {
-      const table_name = tablename
-        .replaceAll("`", "")
-        .replaceAll("\\", "")
-        .replaceAll("'", "&apos;");
-      let set: string = "";
-      data.forEach((element: { key: string; value: string }) => {
-        set += table_name + "." + element.key + " = '" + element.value + "' , ";
+      const response = await (
+        prisma[tablename as Prisma.ModelName] as any
+      ).update({
+        where: {
+          id: Number(id),
+        },
+        data: data.reduce((acc: any, item: any) => {
+          acc[item.key] = item.value;
+          return acc;
+        }, {}),
       });
-      set = set.substring(0, set.length - 2);
+      // TODO: burayi duz prismaya gecirdim bi bakmak lazim
 
-      const query = SqlConstants.UPDATE_QUERRY_WITH_ID(table_name, set, id);
-      const result = await prisma.$queryRawUnsafe(`${query}`);
-      return new Response(
-        JSON.stringify({
-          message: ConfirmMessages.TABLE_UPDATE_SUCCESS_CONFIRM(),
-        }),
-        { status: 200 }
-      );
+      if (!response) {
+        return new Response(
+          JSON.stringify({
+            message: ErrorMessages.TABLE_CANNOT_CREATED_ERROR(),
+          })
+        );
+      }
+      return new Response(JSON.stringify(response), { status: 200 });
     } catch (error) {
       await this.createLog({ error });
       return new Response(JSON.stringify({ status: "error", message: error }), {
@@ -217,17 +222,25 @@ export class TableService extends BaseService {
         columns +
         SqlConstants.VALUES +
         values;
-      console.log(query);
-      const table = await prisma.$queryRawUnsafe(`${query}`);
-      console.log(table);
-      if (!table) {
+
+      const response = await (
+        prisma[table_name as Prisma.ModelName] as any
+      ).create({
+        data: data.reduce((acc: any, item: any) => {
+          acc[item.key] = item.value;
+          return acc;
+        }, {}),
+      });
+      // TODO: burayi duz prismaya gecirdim bi bakmak lazim
+      // const table = await prisma.$queryRawUnsafe(`${query}`);
+      if (!response) {
         return new Response(
           JSON.stringify({
             message: ErrorMessages.TABLE_CANNOT_CREATED_ERROR(),
           })
         );
       }
-      return new Response(JSON.stringify(table), { status: 200 });
+      return new Response(JSON.stringify(response), { status: 200 });
     } catch (error) {
       await this.createLog({ error });
       console.log(error);
