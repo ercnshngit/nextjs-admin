@@ -1,4 +1,4 @@
-import MediaPicker from "@/components/media-picker";
+import MediaList from "@/components/media-picker";
 import { Button } from "@/components/ui/button";
 import { FormLabel } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
@@ -27,12 +27,13 @@ export default function ImagePickerInput({
     })
   );
   const handleImageSelect = (image: any) => {
-    setValue(image.img);
+    setValue(image.path);
     setMediaPickerOpen(false);
   };
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (file: File) => uploadMediaToServer({ file, route: "images" }),
+    mutationFn: (file: File) =>
+      uploadMediaToServer({ file, route: "media/block" }),
     onSuccess: (response) => {
       setStatus("success");
       queryClient.invalidateQueries(["media"]);
@@ -77,9 +78,9 @@ export default function ImagePickerInput({
         Medya Kütüphanesini Aç
       </Button>
       {mediaPickerOpen && (
-        <MediaPicker
+        <MediaList
           handleImageSelect={handleImageSelect}
-          images={data.images}
+          images={data}
           status={status}
           setMediaPickerOpen={setMediaPickerOpen}
           handleUpload={(file: File) => mutation.mutate(file)}

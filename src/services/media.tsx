@@ -5,9 +5,7 @@ export const getMediaFromServer = async ({
 }: {
   directory: string;
 }) => {
-  const { data: responseData } = await axiosFileClient.get(
-    "/media/" + directory
-  );
+  const { data: responseData } = await axiosClient.get("/media");
   return responseData;
 };
 
@@ -20,14 +18,9 @@ export const uploadMediaToServer = async ({
 }) => {
   const formData = new FormData();
   formData.append("file", file);
-  return axiosFileClient.post("/media/upload/" + route, formData, {
+  return axiosClient.post("/media/" + route, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
-};
-
-export const getMedia = async ({ directory }: { directory: string }) => {
-  const { data: responseData } = await axiosClient.get("/media/" + directory);
-  return responseData;
 };
