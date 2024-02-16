@@ -31,7 +31,7 @@ export default function CreateFormBase({
   } = useForm<any>({});
 
   const { dataLanguageMutation } = useDataLanguageMutation({
-    table_name: "block",
+    table_name: table.name,
   });
 
   const queryClient = useQueryClient();
