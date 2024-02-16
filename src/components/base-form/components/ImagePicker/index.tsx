@@ -1,4 +1,4 @@
-import MediaPicker from "@/components/media-picker";
+import MediaList from "@/components/media-picker";
 import { Button } from "@/components/ui/button";
 import { getMediaFromServer, uploadMediaToServer } from "@/services/media";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,12 +35,13 @@ export default function ImagePicker({
   );
 
   const handleImageSelect = (image: any) => {
-    setValue(image.img);
+    setValue(image.path);
     setMediaPickerOpen(false);
   };
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (file: File) => uploadMediaToServer({ file, route: "images" }),
+    mutationFn: (file: File) =>
+      uploadMediaToServer({ file, route: "media/" + table.name }),
     onSuccess: (response) => {
       setStatus("success");
       queryClient.invalidateQueries(["media"]);
@@ -95,9 +96,9 @@ export default function ImagePicker({
         Medya Kütüphanesini Aç
       </Button>
       {mediaPickerOpen && (
-        <MediaPicker
+        <MediaList
           handleImageSelect={handleImageSelect}
-          images={data?.images}
+          images={data}
           setMediaPickerOpen={setMediaPickerOpen}
           status={status}
           handleUpload={(file: File) => mutation.mutate(file)}
