@@ -70,6 +70,10 @@ export default function ConvalNumbers({
               data={data}
               description="Genel kismindan duzenlenir."
               tableName="general"
+              formConfig={{
+                show: ["title", "description", "slug"],
+                defaultValues: { slug: "numbers" },
+              }}
               queryKey={["numbers"]}
             >
               {data.map((item) => (
