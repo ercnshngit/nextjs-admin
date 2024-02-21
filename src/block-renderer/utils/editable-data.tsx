@@ -61,6 +61,10 @@ export default function EditableData<T extends { id: number }>({
               <div className="grid grid-cols-[60%_1fr] gap-6 grid-rows-2  max-h-full">
                 <div className="  row-span-2 ">
                   <TableWrapper<T>
+                    columns={{
+                      show: formConfig.show,
+                      hidden: formConfig.hidden,
+                    }}
                     table={table}
                     data={data}
                     setSelectedItemId={setSelectedItemId}
