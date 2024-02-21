@@ -59,8 +59,8 @@ export default function EditableData<T extends { id: number }>({
           <>
             <div className=" inset-0 fixed bg-black/70" onClick={close} />
             <div className=" inset-0 fixed p-10 z-40 w-[80%] bg-white rounded-md mx-auto max-h-[80%] my-auto overflow-auto">
-              <div className="flex justify-between">
-                <h2>Veriler</h2>
+              <div className="flex justify-between mb-6">
+                <h2 className="font-semiBold text-lg">Veriler</h2>
                 <button onClick={close}>
                   <X />
                 </button>
