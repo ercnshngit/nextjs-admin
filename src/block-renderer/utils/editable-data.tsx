@@ -6,6 +6,7 @@ import TableWrapper from "./components/table";
 import CreateFormBase from "@/components/base-form/create-form-base";
 import { useTable } from "@/hooks/use-database";
 import UpdateFormBase from "@/components/base-form/update-form-base";
+import { X } from "lucide-react";
 
 export default function EditableData<T extends { id: number }>({
   description,
@@ -58,6 +59,12 @@ export default function EditableData<T extends { id: number }>({
           <>
             <div className=" inset-0 fixed bg-black/70" onClick={close} />
             <div className=" inset-0 fixed p-10 z-40 w-[80%] bg-white rounded-md mx-auto max-h-[80%] my-auto overflow-auto">
+              <div className="flex justify-between">
+                <h2>Veriler</h2>
+                <button onClick={close}>
+                  <X />
+                </button>
+              </div>
               <div className="grid grid-cols-[60%_1fr] gap-6 grid-rows-2  max-h-full">
                 <div className="  row-span-2 ">
                   <TableWrapper<T>
