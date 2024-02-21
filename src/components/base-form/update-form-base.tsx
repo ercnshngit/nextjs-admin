@@ -14,9 +14,16 @@ import { toast } from "react-toastify";
 export default function UpdateFormBase({
   table,
   id,
+  config,
 }: {
   table: DatabaseTableDto;
   id: number;
+  config: {
+    show?: string[];
+    hidden?: string[];
+    readonly?: string[];
+    defaultValues?: { [key: string]: any };
+  };
 }) {
   const {
     register,
