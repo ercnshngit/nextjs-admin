@@ -13,10 +13,12 @@ export default function TableWrapper<T extends { id: number }>({
   data,
   setSelectedItemId,
   table,
+  columns,
 }: {
   data: T[];
   setSelectedItemId: (id: number) => void;
   table: DatabaseTableDto;
+  columns?: { show?: string[]; hidden?: string[] };
 }) {
   if (!data || data.length === 0) {
     return <p>Veri bulunamadi sag taraftan yeni ekleyebilirsiniz</p>;
@@ -28,13 +30,17 @@ export default function TableWrapper<T extends { id: number }>({
         <TableRow>
           {data &&
             data.length > 0 &&
-            Object.keys(data[0]).map((key) => {
-              if (
-                table.columns?.find((column) => column.name === key)?.is_hidden
+            Object.keys(data[0])
+              .filter(
+                (key) =>
+                  !table.columns?.find((column) => column.name === key)
+                    ?.is_hidden ||
+                  columns?.show?.includes(key) ||
+                  !columns?.hidden?.includes(key)
               )
-                return null;
-              return <TableHead key={key}>{key}</TableHead>;
-            })}
+              .map((key) => {
+                return <TableHead key={key}>{key}</TableHead>;
+              })}
         </TableRow>
       </TableHeader>
       <TableBody>
