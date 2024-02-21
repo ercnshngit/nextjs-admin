@@ -26,6 +26,7 @@ type FormInputFactoryProps = {
   setValue: any;
   watch?: any;
   control: any;
+  readOnly?: boolean;
   customInput?: {
     for: string;
     component: React.FC<any>;

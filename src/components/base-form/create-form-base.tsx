@@ -16,9 +16,16 @@ import { useDataLanguageMutation } from "@/utils/use-data-language";
 export default function CreateFormBase({
   table,
   customCreateMutation,
+  config,
 }: {
   table: DatabaseTableDto;
   customCreateMutation?: UseMutationResult<any, unknown, {}, unknown>;
+  config?: {
+    show?: string[];
+    hidden?: string[];
+    readonly?: string[];
+    defaultValues?: { [key: string]: any };
+  };
 }) {
   const {
     register,
@@ -120,6 +127,7 @@ export default function CreateFormBase({
   return (
     <>
       <BaseForm
+        config={config}
         control={control}
         setValue={setValue}
         handleSubmit={handleSubmit}

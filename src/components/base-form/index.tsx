@@ -23,6 +23,12 @@ export default function BaseForm(props: {
     for: string;
     component: React.FC<any>;
   }[];
+  config?: {
+    show?: string[];
+    hidden?: string[];
+    readonly?: string[];
+    defaultValues?: { [key: string]: any };
+  };
 }) {
   const { translate } = useTranslate();
 
@@ -39,6 +45,7 @@ export default function BaseForm(props: {
     customInput,
     watch,
     control,
+    config,
   } = props;
 
   const { data, error } = useQuery(
@@ -59,6 +66,15 @@ export default function BaseForm(props: {
       {table?.columns &&
         table.columns
           .filter((field) => (field.is_hidden ? false : true))
+          .filter((field) => {
+            if (config?.show) {
+              return config.show.includes(field.name);
+            }
+            if (config?.hidden) {
+              return !config.hidden.includes(field.name);
+            }
+            return true;
+          })
           .map((field) => (
             <FormInputFactory
               key={field.name}
@@ -72,7 +88,10 @@ export default function BaseForm(props: {
               setValue={setValue}
               customInput={customInput}
               control={control}
-              {...(formType === "update_crud_option"
+              readOnly={config?.readonly?.includes(field.name)}
+              {...(config?.defaultValues
+                ? { defaultValue: config.defaultValues[field.name] }
+                : formType === "update_crud_option"
                 ? {
                     defaultValue: data?.[0]?.[field.name] || "",
                   }

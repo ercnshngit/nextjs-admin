@@ -13,15 +13,22 @@ export default function EditableData<T extends { id: number }>({
   tableName,
   data,
   queryKey,
+  formConfig,
 }: {
   description: string;
   children: React.ReactNode;
   tableName: string;
   data: T[];
   queryKey: string[];
+  formConfig: {
+    show?: string[];
+    hidden?: string[];
+    readonly?: string[];
+    defaultValues?: { [key: string]: any };
+  };
 }) {
   const { selectedElement } = useDesigner();
-  const [isOpened, setIsOpened] = React.useState(true);
+  const [isOpened, setIsOpened] = React.useState(false);
   const [selectedItemId, setSelectedItemId] = React.useState<number | null>(
     null
   );
@@ -62,7 +69,7 @@ export default function EditableData<T extends { id: number }>({
                 <div className="h-full p-4">
                   <h2 className="mb-4 font-semibold text-lg">Ekle</h2>
                   <div className="rounded-md shadow-md overflow-auto h-full p-4 ">
-                    <CreateFormBase table={table} />
+                    <CreateFormBase table={table} config={formConfig} />
                   </div>
                 </div>
                 <div className="h-full p-4">
@@ -70,7 +77,11 @@ export default function EditableData<T extends { id: number }>({
                   <div className="rounded-md shadow-md overflow-auto h-full p-4 ">
                     {!selectedItemId && <p>Secili bir kayit yok</p>}
                     {selectedItemId && (
-                      <UpdateFormBase table={table} id={selectedItemId} />
+                      <UpdateFormBase
+                        table={table}
+                        id={selectedItemId}
+                        config={formConfig}
+                      />
                     )}
                   </div>
                 </div>
