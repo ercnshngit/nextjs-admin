@@ -167,6 +167,74 @@ export class BlockComponentService extends BaseService {
     }
   }
 
+  async getBlockComponentsByType(typeName: string) {
+    try {
+      const type = await prisma.type.findFirst({
+        where: { name: typeName },
+        select: { id: true },
+      });
+
+      if (!type) {
+        return new Response(
+          JSON.stringify({
+            message: ErrorMessages.TYPE_NOT_FOUND_ERROR(),
+          }),
+          { status: 404 }
+        );
+      }
+
+      const block = await prisma.block.findMany({
+        where: { type_id: type.id },
+      });
+      const blocks: any = [];
+
+      for (let i = 0; i < block.length; i++) {
+        const blockComponent = await prisma.block_component.findMany({
+          where: { block: { id: block[i].id } },
+          include: {
+            component: {
+              include: {
+                tag: true,
+                type: true,
+              },
+            },
+            block: true,
+            block_component_prop: {
+              include: {
+                prop: { include: { type: true } },
+              },
+            },
+          },
+        });
+
+        const result = blockComponent.map((item) => {
+          const block_component_prop = item.block_component_prop.map(
+            (propItem) => {
+              return { prop: propItem.prop, value: propItem.value };
+            }
+          );
+          return {
+            component: item.component,
+            block: item.block,
+            belong_block_component_code: item.belong_block_component_code,
+            depth: item.depth,
+            order: item.order,
+            code: item.code,
+            hasChildren: item.hasChildren,
+            props: block_component_prop,
+          };
+        });
+        blocks.push(result);
+      }
+      return new Response(JSON.stringify(blocks), { status: 200 });
+    } catch (error) {
+      await this.createLog({ error });
+      return new Response(JSON.stringify({ status: "error", message: error }), {
+        status: 500,
+      });
+    }
+  }
+
   async createBlockComponent(data: CreateBlockComponentsDto) {
     try {
       // Delete all "block components" and "children" connected to the "block id"

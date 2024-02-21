@@ -10,8 +10,17 @@ export interface BlockComponentDto {
   order: number;
   code: string;
   hasChildren?: boolean;
-  props: BlockComponentPropDto[];
+  props: ComponentPropDto[];
   children?: BlockComponentDto[];
+}
+
+export interface ComponentPropDto {
+  prop: {
+    id: number;
+    key: string;
+    type: TypeDto;
+  };
+  value: string;
 }
 
 export interface ComponentDto {
@@ -53,5 +62,11 @@ export interface BlockDto {
   id: number;
   title: string;
   type_id: number;
-  slug: string;
+  description?: string;
+  image_url?: string;
+  background_image_url?: string;
+  created_at?: string;
+  updated_at?: string;
+  slug?: string;
+  status?: number;
 }

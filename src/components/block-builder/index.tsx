@@ -10,6 +10,8 @@ import Designer from "./components/designer";
 import DesignerSidebar from "./components/designer-sidebar";
 import DragOverlayWrapper from "./components/drag-overlay-wrapper";
 import { customCollisionDetectionAlgorithm } from "./utils/colision-detection";
+import { useDesigner } from "@/contexts/designer-context";
+import { cn } from "@/libs/utils";
 
 export default function BlockBuilder({ dragDrop }: { dragDrop: boolean }) {
   const mouseSensor = useSensor(MouseSensor, {
@@ -27,14 +29,18 @@ export default function BlockBuilder({ dragDrop }: { dragDrop: boolean }) {
 
   const sensors = useSensors(mouseSensor, touchSensor);
 
+  const { mode } = useDesigner();
+
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={customCollisionDetectionAlgorithm}
     >
-      <div className="grid grid-cols-[70%_1fr] h-full">
+      <div
+        className={cn(" h-full", mode === "ui" && "grid grid-cols-[70%_1fr]")}
+      >
         <Designer dragDrop={dragDrop} />
-        <DesignerSidebar dragDrop={dragDrop} />
+        {mode === "ui" && <DesignerSidebar dragDrop={dragDrop} />}
       </div>
       <DragOverlayWrapper />
     </DndContext>

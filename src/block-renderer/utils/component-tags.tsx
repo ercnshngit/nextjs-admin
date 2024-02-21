@@ -1,10 +1,10 @@
 import dynamic from "next/dynamic";
-import { useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useDesigner } from "@/contexts/designer-context";
 import { Button } from "@/components/ui/button";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
 
-export function Component({
+function Component({
   component,
   children,
   ...rest
@@ -26,7 +26,7 @@ export function Component({
             }
           ),
         {
-          loading: () => <p>Loading...</p>,
+          loading: () => <p>Loading..</p>,
         }
       );
     } catch (error) {
@@ -34,13 +34,17 @@ export function Component({
       setIsError(true);
       return ErrorComponent;
     }
-  }, [name]);
+  }, [component.component.tag.name]);
 
   if (isError) return <ErrorComponent component={component} />;
   if (children) return <Component {...rest}>{children}</Component>;
 
   return <Component {...rest} />;
 }
+const Memo = memo(Component);
+
+export { Memo as Component };
+
 const ErrorComponent = ({
   component,
 }: {

@@ -1,6 +1,8 @@
 "use client";
 import BlockBuilder from "@/components/block-builder";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useDesigner } from "@/contexts/designer-context";
 import useSearchParams from "@/hooks/use-search-params";
 import { cn } from "@/libs/utils";
@@ -8,13 +10,19 @@ import { createComponentsInBlock } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useDataLanguageMutation } from "@/utils/use-data-language";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
+import {
+  ArrowLeftCircleIcon,
+  FullscreenIcon,
+  PlayIcon,
+  Save,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function BuilderPage() {
-  const { elements, setElements, setBlock, updateBlockData } = useDesigner();
+  const { elements, setElements, setBlock, updateBlockData, mode, setMode } =
+    useDesigner();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -84,7 +92,19 @@ export default function BuilderPage() {
             >
               <FullscreenIcon className="h-5 w-5" />
             </Button>
+            <Button
+              onClick={() =>
+                setMode((p) => (p === "preview" ? "ui" : "preview"))
+              }
+              variant="secondary"
+              className={cn(mode === "preview" && "bg-green-500")}
+            >
+              <PlayIcon
+                className={cn("h-5 w-5", mode === "preview" && "stroke-white")}
+              />
+            </Button>
           </div>
+
           <div className="flex items-center space-x-2">
             <div className="text-sm text-white">Kaydet</div>
             <Button onClick={handleSave} variant="secondary">

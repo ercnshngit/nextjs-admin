@@ -127,6 +127,11 @@ export const getBlockComponents = async (id: number) => {
 
   return data;
 };
+export const getBlockComponentsByType = async (type: string) => {
+  const { data } = await axiosClient.get(`/block/component/bytype/${type}`);
+
+  return data as BlockComponentDto[][];
+};
 export const getBlockComponentsBySlug = async (slug: string) => {
   const { data } = await axiosClient.get(`/block/component/get/byslug/${slug}`);
 

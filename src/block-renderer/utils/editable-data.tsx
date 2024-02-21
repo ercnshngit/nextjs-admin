@@ -21,7 +21,7 @@ export default function EditableData<T extends { id: number }>({
   tableName: string;
   data: T[];
   queryKey: string[];
-  formConfig: {
+  formConfig?: {
     show?: string[];
     hidden?: string[];
     readonly?: string[];
@@ -69,8 +69,8 @@ export default function EditableData<T extends { id: number }>({
                 <div className="  row-span-2 ">
                   <TableWrapper<T>
                     columns={{
-                      show: formConfig.show,
-                      hidden: formConfig.hidden,
+                      show: formConfig?.show || [],
+                      hidden: formConfig?.hidden || [],
                     }}
                     table={table}
                     data={data}

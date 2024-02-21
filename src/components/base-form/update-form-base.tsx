@@ -18,7 +18,7 @@ export default function UpdateFormBase({
 }: {
   table: DatabaseTableDto;
   id: number;
-  config: {
+  config?: {
     show?: string[];
     hidden?: string[];
     readonly?: string[];

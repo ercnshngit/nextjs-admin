@@ -3,8 +3,12 @@ import { BlockComponentDto } from "./types";
 import { createTree } from "./utils/tree-operations";
 import { Component } from "./utils/component-tags";
 
-export default function BlockRenderer({ blocks }: { blocks: any[] }) {
-  const elementTree = createTree(blocks);
+export default function BlockRenderer({
+  components,
+}: {
+  components: BlockComponentDto[];
+}) {
+  const elementTree = createTree(components);
 
   const renderPreview = async (component: BlockComponentDto) => {
     return (

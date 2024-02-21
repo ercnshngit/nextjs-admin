@@ -9,26 +9,24 @@ import {
   Pencil2Icon,
   TrashIcon,
 } from "@radix-ui/react-icons";
-import React, { Suspense, useCallback, useMemo } from "react";
 import { PlusIcon } from "lucide-react";
+import React, { Suspense, useCallback, useMemo } from "react";
 
-import { ImSpinner2 } from "react-icons/im";
-import Loading from "@/components/loading";
-import dynamic from "next/dynamic";
 import { Component } from "@/block-renderer/utils/component-tags";
+import Loading from "@/components/loading";
 export default function ComponentWrapper({
   hoveredElement,
   setHoveredElement,
   component,
-  tag: string,
   dragDrop,
+  children,
   ...props
 }: {
   hoveredElement: string[];
   setHoveredElement: React.Dispatch<React.SetStateAction<string[]>>;
   component: BlockComponentDto;
   dragDrop: boolean;
-  [key: string]: any;
+  children?: any;
 }) {
   const { removeElement, setSelectedElement, addElement } = useDesigner();
   const topHalf = useDroppable({
@@ -45,7 +43,7 @@ export default function ComponentWrapper({
       isBottomHalf: true,
     },
   });
-  const children = useDroppable({
+  const childrenDrop = useDroppable({
     id: component.code + "-children",
     data: {
       component: component,
@@ -59,10 +57,6 @@ export default function ComponentWrapper({
       isComponent: true,
     },
   });
-
-  // const Component = componentTags[component.component.tag.name];
-
-  const Components = <Component component={component} />;
 
   const duplicateElement = useCallback(
     (component: BlockComponentDto, parentCode?: string) => {
@@ -87,6 +81,18 @@ export default function ComponentWrapper({
     [addElement]
   );
 
+  const renderComponent = useCallback(() => {
+    if (component.hasChildren) {
+      return (
+        <Component component={component} {...props}>
+          {children}
+        </Component>
+      );
+    } else {
+      return <Component component={component} {...props} />;
+    }
+  }, [component, props]);
+
   if (draggable.isDragging) return null; // temporary remove the element from designer
 
   return (
@@ -99,16 +105,18 @@ export default function ComponentWrapper({
         ref={dragDrop ? draggable.setNodeRef : undefined}
         onMouseEnter={() => {
           setHoveredElement((prev) => [...prev, component.code]);
+          console.log("hovered", component.code);
         }}
         onClick={(e) => {
           e.stopPropagation();
           setSelectedElement(component);
         }}
-        onMouseLeave={() =>
+        onMouseLeave={() => {
           setHoveredElement((prev) =>
             prev.filter((item) => item !== component.code)
-          )
-        }
+          );
+          console.log("unhovered", component.code);
+        }}
         className={cn(
           "relative border min-h-[100px]  rounded-md group",
           hoveredElement[hoveredElement.length - 1] === component.code
@@ -116,8 +124,8 @@ export default function ComponentWrapper({
             : "border-gray-400 border-dashed"
         )}
       >
-        <div className="p-2 z-50" id={component.code}>
-          <Component component={component} {...props} />
+        <div className="z-50 p-2" id={component.code}>
+          {renderComponent()}
         </div>
         {dragDrop && (
           <>
@@ -192,15 +200,15 @@ export default function ComponentWrapper({
         {dragDrop && topHalf.isOver && (
           <div className="absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none" />
         )}
-        {dragDrop && children.isOver && (
+        {dragDrop && childrenDrop.isOver && (
           <div className="absolute w-full rounded-md top-1/3 h-1/3 bg-primary " />
         )}
         {dragDrop &&
           component.hasChildren &&
           component.children?.length === 0 && (
             <div
-              ref={children.setNodeRef}
-              className="absolute w-full h-1/3 px-2 bottom-1/3 "
+              ref={childrenDrop.setNodeRef}
+              className="absolute w-full px-2 h-1/3 bottom-1/3 "
             >
               <div className="border border-dashed hover:border-blue-500 hover:border-collapse">
                 <PlusIcon className="w-6 h-6 m-auto text-gray-400 hover:text-blue-500" />

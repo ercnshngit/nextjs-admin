@@ -38,8 +38,12 @@ export default function TableWrapper<T extends { id: number }>({
                   columns?.show?.includes(key) ||
                   !columns?.hidden?.includes(key)
               )
-              .map((key) => {
-                return <TableHead key={key}>{key}</TableHead>;
+              .map((key, index) => {
+                if (typeof key === "string") {
+                  return <TableHead key={key}>{key}</TableHead>;
+                } else {
+                  return <div key={index}>{JSON.stringify(key)}</div>;
+                }
               })}
         </TableRow>
       </TableHeader>
@@ -48,14 +52,25 @@ export default function TableWrapper<T extends { id: number }>({
           data.length > 0 &&
           data.map((item) => (
             <TableRow key={item.id} onClick={() => setSelectedItemId(item.id)}>
-              {Object.entries(item).map((value) => {
-                if (
-                  table.columns?.find((column) => column.name === value[0])
-                    ?.is_hidden
+              {Object.entries(item)
+                .filter(
+                  ([key, value]) =>
+                    !table.columns?.find((column) => column.name === key)
+                      ?.is_hidden ||
+                    columns?.show?.includes(key) ||
+                    !columns?.hidden?.includes(key)
                 )
-                  return null;
-                return <TableCell key={value[0]}>{value[1]}</TableCell>;
-              })}
+                .map(([key, value]) => {
+                  if (typeof value === "string") {
+                    return <TableCell key={key}>{value}</TableCell>;
+                  } else {
+                    return (
+                      <div key={JSON.stringify(key)}>
+                        {JSON.stringify(value)}
+                      </div>
+                    );
+                  }
+                })}
             </TableRow>
           ))}
       </TableBody>

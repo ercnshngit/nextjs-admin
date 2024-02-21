@@ -45,16 +45,8 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
     ["components"],
     () => getComponents()
   );
-  const {
-    block,
-    selectedElement,
-    mode,
-    setMode,
-    updateElement,
-    setUpdateBlockData,
-    addElement,
-    elements,
-  } = useDesigner();
+  const { block, selectedElement, setUpdateBlockData, addElement, elements } =
+    useDesigner();
 
   const { data: blockTypes } = useQuery<TypeDto[]>(["blockTypes"], () =>
     getTypes("block")
@@ -164,17 +156,7 @@ export default function DesignerSidebar({ dragDrop }: { dragDrop: boolean }) {
   };
 
   return (
-    <div className=" min-h-screen h-max w-full bg-white px-4 py-10">
-      <div className="flex items-center mb-2 space-x-2">
-        <Switch
-          id="preview-mode"
-          checked={mode === "preview"}
-          onCheckedChange={() => {
-            setMode((p) => (p === "preview" ? "ui" : "preview"));
-          }}
-        />
-        <Label htmlFor="preview-mode">Preview Mode</Label>
-      </div>
+    <div className=" min-h-screen h-full w-full bg-white px-4 py-10">
       <Tabs
         value={tab}
         onValueChange={onTabChange}
