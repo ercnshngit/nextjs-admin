@@ -16,7 +16,17 @@ module.exports = {
       },
     },
     extend: {
+      fontSize: {
+        "5xl": ["3.125rem", "1"],
+      },
+
       colors: {
+        "primary-blue": "#002080",
+        "secondary-blue": "#1d428a",
+        "text-black": "#000000B3",
+        "text-black-dark": "#000000E6",
+        "icon-blue": "#407ec9",
+
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
