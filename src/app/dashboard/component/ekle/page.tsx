@@ -86,7 +86,11 @@ export default function AddComponentPage() {
     },
     {
       onSuccess: () => {
+        form.reset();
         toast.success("Bileşen oluşturuldu");
+      },
+      onError: (error) => {
+        toast.error((error as any).message.TR);
       },
     }
   );

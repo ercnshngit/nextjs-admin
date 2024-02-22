@@ -69,7 +69,6 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.log("hata : ", error);
     return Promise.reject(error);
   }
 );
