@@ -86,8 +86,29 @@ export default function AddComponentPage() {
     },
     {
       onSuccess: () => {
-        form.reset();
         toast.success("Bileşen oluşturuldu");
+        form.reset({
+          name: "",
+          tag: {
+            name: "",
+          },
+          type: {
+            id: null,
+            name: "",
+            table_id: null,
+          },
+          icon: "",
+          props: [
+            {
+              key: "",
+              type: {
+                id: null,
+                name: "",
+                table_id: null,
+              },
+            },
+          ],
+        });
       },
       onError: (error) => {
         toast.error((error as any).message.TR);
