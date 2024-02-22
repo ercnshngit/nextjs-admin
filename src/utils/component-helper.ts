@@ -26,6 +26,7 @@ export function parseProperties(inputString: string) {
 
     switch (name) {
       case "children":
+        resultArray.push({ name: "children", type: "ReactNode" });
         break;
       case "className":
         break;

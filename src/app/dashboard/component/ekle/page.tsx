@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/select";
 import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
-import { createComponent, getTypes } from "@/services/dashboard";
 import { CreateComponentDto } from "@/services/dto/component.dto";
 import { TypeDto } from "@/services/dto/type.dto";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -29,6 +28,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { parseProperties } from "@/utils/component-helper";
+import { createComponent, getTypes } from "@/services/dashboard";
 
 export default function AddComponentPage() {
   const { table } = useTable("component");

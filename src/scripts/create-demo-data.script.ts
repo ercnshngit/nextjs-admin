@@ -113,7 +113,7 @@ export async function createDemoData() {
         table_id: prop.id,
       },
       {
-        name: "icon-select",
+        name: "ReactNode",
         table_id: prop.id,
       },
       {
