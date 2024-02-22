@@ -21,6 +21,11 @@ export const getTableInputTypes = async () => {
   return data;
 };
 
+export const getComponent = async (id: number) => {
+  const { data } = await axiosClient.get("/component/" + id);
+  return data;
+};
+
 export const getComponents = async () => {
   const { data } = await axiosClient.get("/component");
   return data;
@@ -37,6 +42,16 @@ export const createComponent = async ({
   data: CreateComponentDto;
 }) => {
   const res = await axiosClient.post("/component", data);
+  return res;
+};
+export const updateComponent = async ({
+  id,
+  data,
+}: {
+  id: number;
+  data: CreateComponentDto;
+}) => {
+  const res = await axiosClient.post("/component/" + id, data);
   return res;
 };
 

@@ -20,8 +20,14 @@ import {
 } from "@/components/ui/select";
 import { useTable } from "@/hooks/use-database";
 import { useTranslate } from "@/langs";
-import { createComponent, getTypes } from "@/services/dashboard";
-import { CreateComponentDto } from "@/services/dto/component.dto";
+import {
+  createComponent,
+  getComponent,
+  getComponents,
+  getTypes,
+  updateComponent,
+} from "@/services/dashboard";
+import { ComponentDto, CreateComponentDto } from "@/services/dto/component.dto";
 import { TypeDto } from "@/services/dto/type.dto";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PlusCircle, Trash2Icon } from "lucide-react";
@@ -29,11 +35,19 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { parseProperties } from "@/utils/component-helper";
+import UpdatePage from "@/components/dynamic-crud-layouts/update-page";
 
-export default function AddComponentPage() {
+export default function UpdateComponentPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const id = Number(params?.id);
+  const { data: component } = useQuery<ComponentDto>(["component", id], () =>
+    getComponent(id)
+  );
   const { table } = useTable("component");
   const tableName = table?.name || "";
-  const { translate } = useTranslate();
 
   const { data: componentTypes } = useQuery<TypeDto[]>(["componentTypes"], () =>
     getTypes("component")
@@ -80,42 +94,38 @@ export default function AddComponentPage() {
 
   const componentMutation = useMutation(
     (data: CreateComponentDto) => {
-      return createComponent({
+      return updateComponent({
+        id: id,
         data: data,
       });
     },
     {
       onSuccess: () => {
-        form.reset();
-        toast.success("Bileşen oluşturuldu");
-      },
-      onError: (error) => {
-        toast.error((error as any).message.TR);
+        toast.success("Bileşen guncellendi");
       },
     }
   );
 
   const initialValues = {
-    name: "",
+    name: component?.name || "",
     tag: {
-      name: "",
+      name: component?.tag.name || "",
     },
     type: {
-      id: null,
-      name: "",
-      table_id: null,
+      id: component?.type.id || null,
+      name: component?.type.name || "",
+      table_id: component?.type.table_id || null,
     },
-    icon: "",
-    props: [
-      {
-        key: "",
+    icon: component?.icon || "",
+    props:
+      component?.props.map((prop) => ({
+        key: prop.key,
         type: {
-          id: null,
-          name: "",
-          table_id: null,
+          id: prop.type.id,
+          name: prop.type.name,
+          table_id: prop.type.table_id,
         },
-      },
-    ],
+      })) || [],
   };
 
   const form = useForm<DefaultValues>({
@@ -178,7 +188,7 @@ export default function AddComponentPage() {
   };
 
   return (
-    <CreatePage tableName={tableName}>
+    <UpdatePage id={String(id)} tableName={tableName}>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -348,6 +358,6 @@ export default function AddComponentPage() {
           </Button>
         </form>
       </Form>
-    </CreatePage>
+    </UpdatePage>
   );
 }

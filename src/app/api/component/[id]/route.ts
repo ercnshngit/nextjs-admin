@@ -1,4 +1,4 @@
-import { BlockComponentService } from "@/services/block_component.service";
+import { ComponentService } from "@/services/component.service";
 import cors from "@/utils/cors";
 import { NextRequest } from "next/server";
 
@@ -7,25 +7,26 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const service = new BlockComponentService(req);
+  const id = Number(params.id);
+  const service = new ComponentService(req);
   try {
     await service.securiyCheck();
-    const res = await service.getBlockComponent(Number(params.id));
+    const res = await service.getComponent(id);
     return cors(req, res);
   } catch (error) {
     return await service.createLogAndResolveError(error);
   }
 }
-
 export async function POST(
   req: NextRequest,
   { params }: { params: { id: number } }
 ) {
-  const service = new BlockComponentService(req);
+  const service = new ComponentService(req);
+  const id = Number(params.id);
   try {
     await service.securiyCheck();
     const body = await req.json();
-    const res = await service.updateBlockComponent(Number(params.id), body);
+    const res = await service.updateComponent(id, body);
     return cors(req, res);
   } catch (error) {
     return await service.createLogAndResolveError(error);

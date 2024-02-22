@@ -25,12 +25,3 @@ export async function POST(req: NextRequest) {
     return await service.createLogAndResolveError(error);
   }
 }
-
-export async function OPTIONS(request: Request) {
-  return cors(
-    request,
-    new Response(null, {
-      status: 204,
-    })
-  );
-}
