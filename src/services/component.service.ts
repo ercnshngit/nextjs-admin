@@ -8,7 +8,6 @@ import { LogService } from "./log.service";
 import { BaseService } from "./base.service";
 
 export class ComponentService extends BaseService {
-
   constructor(request?: any) {
     super(request);
   }
@@ -120,8 +119,20 @@ export class ComponentService extends BaseService {
 
       const props = await Promise.all(
         data.props.map(async (propItem) => {
+          let propType = await prisma.type.findFirst({
+            where: { name: propItem.prop.type.name, table_id: propTable.id },
+          });
+          if (!propType) {
+            propType = await prisma.type.create({
+              data: {
+                name: propItem.prop.type.name,
+                table_id: propTable.id,
+              },
+            });
+          }
+
           let prop = await prisma.prop.findFirst({
-            where: { key: propItem.prop.key },
+            where: { key: propItem.prop.key, type_id: propType.id },
           });
           if (!prop) {
             let type = await prisma.type.findFirst({
@@ -162,13 +173,20 @@ export class ComponentService extends BaseService {
       await logService.createLog({ error });
       console.log(error);
       return new Response(
-        JSON.stringify({ status: "error", error_message: error })
+        JSON.stringify({ status: "error", error_message: error }),
+        { status: 400 }
       );
     }
   }
 
   async updateComponent(id: number, data: CreateComponentDto) {
     try {
+      console.log(data.tag);
+      let tag = await prisma.tag.findFirst({ where: { name: data.tag.name } });
+
+      if (!tag) {
+        tag = await prisma.tag.create({ data: { name: data.tag.name } });
+      }
       const component = await prisma.component.findUnique({ where: { id } });
       if (!component) {
         return new Response(
@@ -176,13 +194,35 @@ export class ComponentService extends BaseService {
           { status: 404 }
         );
       }
+      const componentTable = await prisma.database_table.findFirst({
+        where: { name: "component" },
+      });
+      const propTable = await prisma.database_table.findFirst({
+        where: { name: "prop" },
+      });
+      if (!componentTable || !propTable)
+        return new Response(
+          JSON.stringify({ message: ErrorMessages.NOT_FOUND_ERROR() }),
+          { status: 404 }
+        );
+      let typeCheck = await prisma.type.findFirst({
+        where: { name: data.type.name, table_id: componentTable.id },
+      });
+      if (!typeCheck) {
+        typeCheck = await prisma.type.create({
+          data: {
+            name: data.type.name,
+            table_id: componentTable.id,
+          },
+        });
+      }
       Object.assign(component, data);
       const new_component = await prisma.component.update({
         where: { id },
         data: {
           name: data.name,
-          tag_id: data.tag.id,
-          type_id: data.type.id,
+          tag_id: tag.id,
+          type_id: typeCheck.id,
           icon: data.icon,
         },
       });
@@ -192,13 +232,69 @@ export class ComponentService extends BaseService {
           { status: 400 }
         );
       }
-      return new Response(JSON.stringify(new_component));
+
+      await prisma.component_prop.deleteMany({
+        where: { component_id: id },
+      });
+
+      const props = await Promise.all(
+        data.props.map(async (propItem) => {
+          let propType = await prisma.type.findFirst({
+            where: { name: propItem.prop.type.name, table_id: propTable.id },
+          });
+          if (!propType) {
+            propType = await prisma.type.create({
+              data: {
+                name: propItem.prop.type.name,
+                table_id: propTable.id,
+              },
+            });
+          }
+
+          let prop = await prisma.prop.findFirst({
+            where: { key: propItem.prop.key, type_id: propType.id },
+          });
+          if (!prop) {
+            let type = await prisma.type.findFirst({
+              where: { name: propItem.prop.type.name, table_id: propTable.id },
+            });
+            if (!type) {
+              type = await prisma.type.create({
+                data: {
+                  name: propItem.prop.type.name,
+                  table_id: propTable.id,
+                },
+              });
+            }
+
+            prop = await prisma.prop.create({
+              data: {
+                key: propItem.prop.key,
+                type_id: type.id,
+              },
+            });
+          }
+
+          await prisma.component_prop.create({
+            data: {
+              component_id: id,
+              prop_id: prop.id,
+            },
+          });
+          return { key: prop.key };
+        })
+      );
+      const { tag_id, ...result } = component;
+      const results = { ...result, props };
+
+      return new Response(JSON.stringify(results), { status: 200 });
     } catch (error) {
       const logService = new LogService();
       await logService.createLog({ error });
       console.log(error);
       return new Response(
-        JSON.stringify({ status: "error", error_message: error })
+        JSON.stringify({ status: "error", error_message: error }),
+        { status: 400 }
       );
     }
   }
