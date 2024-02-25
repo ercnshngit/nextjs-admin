@@ -52,16 +52,14 @@ export default function BuilderPage() {
   const [fullscreen, setFullscreen] = useState(false);
 
   const handleSave = async () => {
-    control(updateBlockData.title, "string", () =>
-      toast.error("Blok adı boş olamaz")
-    );
-    control(updateBlockData.slug, "string", () =>
-      toast.error("Slug boş olamaz")
-    );
-    control(updateBlockData.type_id, "number", () =>
-      toast.error("Tip boş olamaz")
-    );
+    const titleCheck = control(updateBlockData.title, "string", false);
+    const slugCheck = control(updateBlockData.slug, "string", false);
+    const type = control(updateBlockData.type_id, "number", false);
 
+    if (!titleCheck || !slugCheck || !type) {
+      toast.error("Blok başlığı, slug ve tipi boş bırakılamaz");
+      return;
+    }
     const data: CreateBlockComponentsDto = {
       block: {
         ...updateBlockData,
