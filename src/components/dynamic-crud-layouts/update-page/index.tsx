@@ -57,7 +57,7 @@ export default function UpdatePage({
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-start py-10">{children}</div>
+          <div className="flex justify-center py-10">{children}</div>
         </CardContent>
       </Card>
     </div>

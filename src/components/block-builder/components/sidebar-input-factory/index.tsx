@@ -10,12 +10,18 @@ import RichTextEditor from "./components/rich-text";
 import JSONInput from "./components/json-input";
 import { ImSpinner2 } from "react-icons/im";
 import DataInput from "./components/data-input";
+import SelectInput from "./components/select";
 
 type SidebarInputFactoryProps = {
   value: any;
   propKey: string;
   typeName: string;
   setValue: any;
+  className?: string;
+  options?: {
+    label: string;
+    value: any;
+  }[];
   customInput?: {
     for: string;
     component: React.FC<any>;
@@ -26,6 +32,7 @@ export default function SidebarInputFactory({
   customInput,
   propKey,
   typeName,
+  options,
   ...props
 }: SidebarInputFactoryProps) {
   const { translate } = useTranslate();
@@ -43,6 +50,8 @@ export default function SidebarInputFactory({
           return <RichTextEditor propKey={propKey} {...props} />;
         case "data":
           return <DataInput propKey={propKey} {...props} />;
+        case "select":
+          return <SelectInput propKey={propKey} {...props} />;
         default:
           return <TextInput propKey={propKey} {...props} />;
       }
