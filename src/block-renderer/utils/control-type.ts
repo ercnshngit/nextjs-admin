@@ -1,7 +1,16 @@
-export const control = (value: any, type: string = "string") => {
-  if (typeof value === type && value !== null && value !== "") {
+export const control = (
+  value: any,
+  type: string = "string",
+  returnVal?: string
+) => {
+  if (
+    typeof value === type &&
+    value !== null &&
+    value !== "" &&
+    value !== undefined
+  ) {
     return value;
   } else {
-    return "Değiştirmek için tıklayınız.";
+    return returnVal || "Değiştirmek için tıklayınız.";
   }
 };
