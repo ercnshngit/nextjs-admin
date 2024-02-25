@@ -1,3 +1,4 @@
+"use client";
 import { uploadMediaToServer } from "@/services/media";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
@@ -62,8 +63,8 @@ export const modules = {
         if (value) {
           const file = value.target.files[0];
           const { data } = await uploadMediaToServer({
-            file,
-            route: "images",
+            file: file,
+            route: "conval/editor",
           });
         }
       },

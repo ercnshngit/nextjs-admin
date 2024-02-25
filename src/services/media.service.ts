@@ -7,13 +7,13 @@ export class MediaService extends BaseService {
     super(request);
   }
 
-  async encryptFileRequest(content: any) {
+  async encryptFileRequest(content?: any) {
     try {
       const data = {
-        data: content,
+        data: content || {},
         date: new Date(),
       };
-      const private_key = await readFile("encryption-keys/private_key.pem", {
+      const private_key = await readFile("./private_key.pem", {
         encoding: "utf8",
       });
       if (private_key === null) {

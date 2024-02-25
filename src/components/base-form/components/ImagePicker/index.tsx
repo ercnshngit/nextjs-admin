@@ -41,7 +41,7 @@ export default function ImagePicker({
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (file: File) =>
-      uploadMediaToServer({ file, route: "media/" + table.name }),
+      uploadMediaToServer({ file, route: "conval/" + table.name }),
     onSuccess: (response) => {
       setStatus("success");
       queryClient.invalidateQueries(["media"]);

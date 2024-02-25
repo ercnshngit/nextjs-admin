@@ -33,7 +33,7 @@ export default function ImagePickerInput({
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (file: File) =>
-      uploadMediaToServer({ file, route: "media/block" }),
+      uploadMediaToServer({ file: file, route: "conval/block" }),
     onSuccess: (response) => {
       setStatus("success");
       queryClient.invalidateQueries(["media"]);
