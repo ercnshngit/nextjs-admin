@@ -1,4 +1,5 @@
 import { uploadMediaToServer } from "@/services/media";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -141,6 +142,12 @@ export const ReactQuillWrapper = ({
   value: string;
   setValue: any;
 }) => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <ReactQuill
       theme="snow"
