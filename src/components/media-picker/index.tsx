@@ -1,6 +1,12 @@
-import Image from "next/image";
 import { createPortal } from "react-dom";
 import FileUpload from "../FileUpload";
+import { DeleteIcon } from "lucide-react";
+import DeleteDialog from "../delete-dialog-base";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { deleteMediaFromServer } from "@/services/media";
+import { toast } from "react-toastify";
+import { Button } from "../ui/button";
 
 export default function MediaList({
   images,
@@ -15,6 +21,26 @@ export default function MediaList({
   handleUpload: any;
   status: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState<number | null>(null);
+  const openDeleteDialog = (id: number) => {
+    setOpen(true);
+    setId(id);
+  };
+
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      deleteMediaFromServer({
+        id: Number(id),
+      }),
+    onSuccess: (response) => {
+      toast.success("Silme işlemi başarılı");
+    },
+    onError: (error) => {
+      toast.error("Silme işlemi başarısız");
+    },
+  });
+
   return createPortal(
     <>
       <div
@@ -38,6 +64,15 @@ export default function MediaList({
                 onClick={() => handleImageSelect(image)}
                 className="relative flex items-center justify-center w-32 h-32 bg-gray-200 rounded-lg"
               >
+                <Button
+                  variant={"destructive"}
+                  className="absolute top-2 right-2 cursor-pointer"
+                >
+                  <DeleteIcon
+                    size={24}
+                    onClick={() => openDeleteDialog(image.id)}
+                  />
+                </Button>
                 <img
                   className="object-contain"
                   src={process.env.NEXT_PUBLIC_FILE_URL + image.path}
@@ -49,6 +84,11 @@ export default function MediaList({
           <div>{<FileUpload status={status} uploadFile={handleUpload} />}</div>
         </div>
       </div>
+      <DeleteDialog
+        open={open}
+        setOpen={setOpen}
+        handleDelete={deleteMutation.mutate}
+      />
     </>,
 
     document.body

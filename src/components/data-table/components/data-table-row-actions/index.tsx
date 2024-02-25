@@ -1,6 +1,6 @@
 "use client";
 
-import DeleteItem from "@/components/delete-dialog";
+import DeleteItem from "@/components/delete-dialog-table-item";
 import { Button } from "@/components/ui/button";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
 import { Row } from "@tanstack/react-table";

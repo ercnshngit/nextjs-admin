@@ -1,4 +1,4 @@
-import DeleteItem from "@/components/delete-dialog";
+import DeleteItem from "@/components/delete-dialog-table-item";
 import useSearchParams from "@/hooks/use-search-params";
 import { useTranslate } from "@/langs";
 import { ArrowLeftIcon } from "lucide-react";

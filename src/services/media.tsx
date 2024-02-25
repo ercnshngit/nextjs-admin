@@ -8,6 +8,10 @@ export const getMediaFromServer = async ({
   const { data: responseData } = await axiosClient.get("/media");
   return responseData;
 };
+export const deleteMediaFromServer = async ({ id }: { id: number }) => {
+  const { data: responseData } = await axiosClient.get("/media/delete/" + id);
+  return responseData;
+};
 
 export const uploadMediaToServer = async ({
   file,
@@ -18,7 +22,7 @@ export const uploadMediaToServer = async ({
 }) => {
   const formData = new FormData();
   formData.append("file", file);
-  return axiosClient.post("/media/" + route, formData, {
+  return axiosClient.post("/media/upload/" + route, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

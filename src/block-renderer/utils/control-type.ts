@@ -1,7 +1,7 @@
 export const control = (
   value: any,
   type: string = "string",
-  returnVal?: string
+  returnVal?: any
 ) => {
   if (
     typeof value === type &&
@@ -11,6 +11,7 @@ export const control = (
   ) {
     return value;
   } else {
-    return returnVal || "Değiştirmek için tıklayınız.";
+    if (typeof returnVal === "function") return returnVal();
+    return returnVal || null;
   }
 };

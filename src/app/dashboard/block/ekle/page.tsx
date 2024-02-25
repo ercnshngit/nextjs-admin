@@ -1,4 +1,5 @@
 "use client";
+import { control } from "@/block-renderer/utils/control-type";
 import BlockBuilder from "@/components/block-builder";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -41,12 +42,26 @@ export default function BuilderPage() {
           "/dashboard/block" + searchParams.createSearchParamsForUrl();
         router.push(route);
       },
+      onError: (error) => {
+        console.log(error);
+        toast.error("Blok güncellenirken bir hata oluştu");
+      },
     }
   );
 
   const [fullscreen, setFullscreen] = useState(false);
 
   const handleSave = async () => {
+    control(updateBlockData.title, "string", () =>
+      toast.error("Blok adı boş olamaz")
+    );
+    control(updateBlockData.slug, "string", () =>
+      toast.error("Slug boş olamaz")
+    );
+    control(updateBlockData.type_id, "number", () =>
+      toast.error("Tip boş olamaz")
+    );
+
     const data: CreateBlockComponentsDto = {
       block: {
         ...updateBlockData,

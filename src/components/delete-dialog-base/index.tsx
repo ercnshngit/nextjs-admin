@@ -17,42 +17,31 @@ import {
 import { useTranslate } from "@/langs";
 import { DELETE_TABLE_ITEM } from "@/types/common-table-api";
 import { deleteTableItem } from "@/services/dashboard";
-export default function DeleteItem({ open, setOpen, tableName, id }: any) {
+export default function DeleteDialog({
+  title,
+  open,
+  setOpen,
+  description,
+  handleDelete,
+}: {
+  title?: string;
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  description?: string;
+  handleDelete: any;
+}) {
   const { translate } = useTranslate();
-
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const deleteMutation = useMutation(
-    (deleteData: DELETE_TABLE_ITEM) => deleteTableItem(deleteData),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([tableName]);
-        console.log("deleteMutation");
-        router.push("/dashboard/" + tableName);
-        router.refresh();
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    }
-  );
-
-  const handleDelete = (id: number, tableName: string) => {
-    deleteMutation.mutate({
-      id: id,
-      tableName: tableName,
-    });
-  };
   return (
     <>
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {translate("MENU_DELETE_ALERT_TITLE")}
+              {title || "Silmek istediginizden emin misiniz?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {translate("MENU_DELETE_ALERT_DESCRIPTION")}
+              {description ||
+                "Bu işlem geri alınamaz ve bu veriye bagli olan diger yerlerde problem olusabilir. Silmek istediginizden emin misiniz?"}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -62,7 +51,7 @@ export default function DeleteItem({ open, setOpen, tableName, id }: any) {
             <AlertDialogAction
               onClick={() => {
                 setOpen(false);
-                handleDelete(Number(id), tableName);
+                handleDelete();
               }}
             >
               {translate("MENU_DELETE_ALERT_CONFIRMATION")}
