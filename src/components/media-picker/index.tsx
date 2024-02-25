@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import FileUpload from "../FileUpload";
-import { DeleteIcon } from "lucide-react";
+import { DeleteIcon, Trash2Icon } from "lucide-react";
 import DeleteDialog from "../delete-dialog-base";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -48,7 +48,7 @@ export default function MediaList({
         onClick={() => setMediaPickerOpen(false)}
       >
         <div
-          className="flex flex-col gap-4 p-8 bg-white rounded-lg shadow"
+          className="flex flex-col gap-4 p-8 z-50 bg-white rounded-lg shadow"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between">
@@ -68,8 +68,9 @@ export default function MediaList({
                   variant={"destructive"}
                   className="absolute top-2 right-2 cursor-pointer"
                 >
-                  <DeleteIcon
+                  <Trash2Icon
                     size={24}
+                    className="text-white"
                     onClick={() => openDeleteDialog(image.id)}
                   />
                 </Button>
