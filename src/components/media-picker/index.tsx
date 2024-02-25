@@ -48,7 +48,7 @@ export default function MediaList({
         onClick={() => setMediaPickerOpen(false)}
       >
         <div
-          className="flex flex-col gap-4 p-8 z-50 bg-white rounded-lg shadow"
+          className="flex flex-col gap-4 p-8 z-[100] bg-white rounded-lg shadow"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between">
