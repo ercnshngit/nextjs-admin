@@ -11,7 +11,13 @@ import {
 } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeftCircleIcon, FullscreenIcon, Save } from "lucide-react";
+import {
+  ArrowLeftCircleIcon,
+  FullscreenIcon,
+  LockIcon,
+  PlayIcon,
+  Save,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -23,7 +29,16 @@ export default function BuilderPage({
     id: string;
   };
 }) {
-  const { elements, setElements, setBlock, updateBlockData } = useDesigner();
+  const {
+    elements,
+    setElements,
+    setBlock,
+    updateBlockData,
+    mode,
+    setMode,
+    dragdrop,
+    setDragdrop,
+  } = useDesigner();
   const router = useRouter();
   const { data: block_components } = useQuery(
     ["block_components", params.id],
@@ -129,7 +144,27 @@ export default function BuilderPage({
               onClick={() => setFullscreen((prev) => !prev)}
               variant="secondary"
             >
-              <FullscreenIcon className="w-5 h-5" />
+              <FullscreenIcon className="h-5 w-5" />
+            </Button>
+            <Button
+              onClick={() =>
+                setMode((p) => (p === "preview" ? "ui" : "preview"))
+              }
+              variant="secondary"
+              className={cn(mode === "preview" && "bg-green-500")}
+            >
+              <PlayIcon
+                className={cn("h-5 w-5", mode === "preview" && "stroke-white")}
+              />
+            </Button>
+            <Button
+              onClick={() => setDragdrop((p) => !p)}
+              variant="secondary"
+              className={cn(!dragdrop && "bg-red-500")}
+            >
+              <LockIcon
+                className={cn("h-5 w-5", !dragdrop && "stroke-white")}
+              />
             </Button>
           </div>
           <div className="flex items-center space-x-2">
@@ -140,7 +175,7 @@ export default function BuilderPage({
           </div>
         </div>
       </div>
-      <BlockBuilder dragDrop={false} />
+      <BlockBuilder dragDrop={dragdrop} />
     </div>
   );
 }

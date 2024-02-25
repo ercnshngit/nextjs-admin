@@ -24,6 +24,8 @@ type DesignerContextType = {
   updateElement: (code: string, element: BlockComponentDto) => void;
   updateBlockData: BlockDto;
   setUpdateBlockData: Dispatch<SetStateAction<BlockDto>>;
+  dragdrop: boolean;
+  setDragdrop: Dispatch<SetStateAction<boolean>>;
 };
 
 export const DesignerContext = createContext<DesignerContextType | null>(null);
@@ -33,6 +35,7 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [selectedElement, setSelectedElement] =
     useState<BlockComponentDto | null>(null);
   const [mode, setMode] = useState<"html" | "preview" | "ui">("ui");
+  const [dragdrop, setDragdrop] = useState(true);
   const [block, setBlock] = useState<BlockDto | null>(null);
   const [updateBlockData, setUpdateBlockData] = useState<BlockDto>({
     id: 0,
@@ -84,6 +87,8 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
         block,
         setBlock,
         updateElement,
+        dragdrop,
+        setDragdrop,
       }}
     >
       {children}
