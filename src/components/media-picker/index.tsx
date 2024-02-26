@@ -41,14 +41,14 @@ export default function MediaList({
     },
   });
 
-  return createPortal(
+  return (
     <>
       <div
-        className="fixed inset-0 flex items-center justify-center bg-black/20"
+        className="fixed inset-0 flex z-50 items-center justify-center bg-black/20"
         onClick={() => setMediaPickerOpen(false)}
       >
         <div
-          className="flex flex-col gap-4 p-8 z-[100] bg-white rounded-lg shadow"
+          className="flex flex-col gap-4 p-8  absolute bg-white rounded-lg shadow"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between">
@@ -67,12 +67,12 @@ export default function MediaList({
                 <Button
                   variant={"destructive"}
                   className="absolute top-2 right-2 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openDeleteDialog(image.id);
+                  }}
                 >
-                  <Trash2Icon
-                    size={24}
-                    className="text-white"
-                    onClick={() => openDeleteDialog(image.id)}
-                  />
+                  <Trash2Icon size={24} className="text-white" />
                 </Button>
                 <img
                   className="object-contain"
@@ -90,8 +90,6 @@ export default function MediaList({
         setOpen={setOpen}
         handleDelete={deleteMutation.mutate}
       />
-    </>,
-
-    document.body
+    </>
   );
 }

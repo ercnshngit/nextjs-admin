@@ -6,6 +6,7 @@ import { ComponentPropDto } from "@/services/dto/prop.dto";
 import { getMediaFromServer, uploadMediaToServer } from "@/services/media";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
+import { createPortal } from "react-dom";
 import { toast } from "react-toastify";
 
 export default function ImagePickerInput({
@@ -64,6 +65,17 @@ export default function ImagePickerInput({
   }
   return (
     <>
+      {mediaPickerOpen &&
+        createPortal(
+          <MediaList
+            handleImageSelect={handleImageSelect}
+            images={data}
+            status={status}
+            setMediaPickerOpen={setMediaPickerOpen}
+            handleUpload={(file: File) => mutation.mutate(file)}
+          />,
+          document.body
+        )}
       <input
         className="px-2 py-1 border border-gray-200 rounded-md "
         id={propKey}
@@ -77,15 +89,6 @@ export default function ImagePickerInput({
       >
         Medya Kütüphanesini Aç
       </Button>
-      {mediaPickerOpen && (
-        <MediaList
-          handleImageSelect={handleImageSelect}
-          images={data}
-          status={status}
-          setMediaPickerOpen={setMediaPickerOpen}
-          handleUpload={(file: File) => mutation.mutate(file)}
-        />
-      )}
     </>
   );
 }
