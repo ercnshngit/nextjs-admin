@@ -1,49 +1,9 @@
-import dynamic from "next/dynamic";
-import { memo, useCallback, useMemo, useState } from "react";
-import { useDesigner } from "@/contexts/designer-context";
+"use client";
 import { Button } from "@/components/ui/button";
+import { useDesigner } from "@/contexts/designer-context";
 import { BlockComponentDto } from "@/services/dto/block_component.dto";
-
-function Component({
-  component,
-  children,
-  ...rest
-}: {
-  component: BlockComponentDto;
-  children?: any;
-  [key: string]: any;
-}) {
-  const [isError, setIsError] = useState(false);
-  const Component = useMemo(() => {
-    try {
-      return dynamic<any>(
-        () =>
-          import("../components/tags/" + component.component.tag.name).catch(
-            (e) => {
-              console.error("Error loading component:", e);
-              setIsError(true);
-              return ErrorComponent;
-            }
-          ),
-        {
-          loading: () => <p>Loading..</p>,
-        }
-      );
-    } catch (error) {
-      console.error("Error loading component:", error);
-      setIsError(true);
-      return ErrorComponent;
-    }
-  }, [component.component.tag.name]);
-
-  if (isError) return <ErrorComponent component={component} />;
-  if (children) return <Component {...rest}>{children}</Component>;
-
-  return <Component {...rest} />;
-}
-const Memo = memo(Component);
-
-export { Memo as Component };
+import { memo, useMemo, useState } from "react";
+import * as tags from "../components/tags";
 
 const ErrorComponent = ({
   component,
@@ -62,7 +22,7 @@ const ErrorComponent = ({
         size={"sm"}
         onClick={(e) => {
           e.stopPropagation();
-          if (component) removeElement(component.code);
+          if (component) removeElement && removeElement(component.code);
         }}
       >
         Sil
@@ -75,3 +35,27 @@ const ErrorComponent = ({
   );
 };
 ErrorComponent.displayName = "ErrorComponent";
+
+function Component({
+  component,
+  children,
+  ...rest
+}: {
+  component: BlockComponentDto;
+  children?: any;
+  [key: string]: any;
+}) {
+  const [isError, setIsError] = useState(false);
+  const Component = useMemo(() => {
+    return tags[component.component.tag.name as keyof typeof tags] as any;
+  }, [component.component.tag.name]);
+
+  if (isError) return <ErrorComponent component={component} />;
+  if (!Component) return null; // Add this line
+  if (children) return <Component {...rest}>{children}</Component>;
+
+  return <Component {...rest} />;
+}
+const Memo = memo(Component);
+
+export { Memo as Component };

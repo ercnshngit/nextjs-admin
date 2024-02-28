@@ -36,8 +36,8 @@ export default function BuilderPage() {
     {
       onSuccess: async (data) => {
         console.log(JSON.stringify(data));
-        dataLanguageMutation.mutate(data);
-        toast.success("Blok başarıyla güncellendi");
+        dataLanguageMutation.mutate(data.data);
+        toast.success("Blok başarıyla eklendi");
         const route =
           "/dashboard/block" + searchParams.createSearchParamsForUrl();
         router.push(route);
@@ -52,14 +52,16 @@ export default function BuilderPage() {
   const [fullscreen, setFullscreen] = useState(false);
 
   const handleSave = async () => {
-    const titleCheck = control(updateBlockData.title, "string", false);
-    const slugCheck = control(updateBlockData.slug, "string", false);
-    const type = control(updateBlockData.type_id, "number", false);
+    control(updateBlockData.title, "string", () =>
+      toast.error("Blok adı boş olamaz")
+    );
+    control(updateBlockData.slug, "string", () =>
+      toast.error("Slug boş olamaz")
+    );
+    control(updateBlockData.type_id, "number", () =>
+      toast.error("Tip boş olamaz")
+    );
 
-    if (!titleCheck || !slugCheck || !type) {
-      toast.error("Blok başlığı, slug ve tipi boş bırakılamaz");
-      return;
-    }
     const data: CreateBlockComponentsDto = {
       block: {
         ...updateBlockData,

@@ -13,7 +13,6 @@ export default function RichTextEditor({
 }) {
   const [text, setText] = useState(value || "");
   const handleSetValue = (value: string) => {
-    console.log(value);
     setText(value);
     setValue(value);
   };

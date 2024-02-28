@@ -85,7 +85,7 @@ export default function BaseForm(props: {
               table={table}
               id={id}
               watch={watch}
-              setValue={setValue}
+              setValue={(value) => setValue(field.name, value)}
               customInput={customInput}
               control={control}
               readOnly={config?.readonly?.includes(field.name)}

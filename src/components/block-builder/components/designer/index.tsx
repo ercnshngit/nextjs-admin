@@ -17,13 +17,14 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
     removeElement,
     setElements,
     mode,
-    setBlock,
+    contextActive,
   } = useDesigner();
 
   const [tree, setTree] = useState<BlockComponentDto[]>([]);
   const [hoveredElement, setHoveredElement] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!elements) return;
     const elementTree = createTree(elements);
     if (!elementTree) return;
     setTree(elementTree);
@@ -40,13 +41,15 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
   });
 
   useDndMonitor({
-    onDragEnd: (event) =>
-      handleDragEnd({
+    onDragEnd: (event) => {
+      if (!addElement || !removeElement || !elements) return;
+      return handleDragEnd({
         event,
         addElement,
         removeElement,
         elements,
-      }),
+      });
+    },
   });
 
   const renderComponentWrapper = (component: BlockComponentDto) => {
@@ -103,18 +106,18 @@ export default function Designer({ dragDrop }: { dragDrop: boolean }) {
           mode === "ui" && "rounded-xl"
         )}
       >
-        {!droppable.isOver && elements.length === 0 && (
+        {!droppable.isOver && elements && elements.length === 0 && (
           <p className="flex items-center flex-grow text-3xl font-bold text-muted-foreground">
             Buraya bırakın
           </p>
         )}
 
-        {droppable.isOver && elements.length === 0 && (
+        {droppable.isOver && elements && elements.length === 0 && (
           <div className="w-full p-4">
             <div className="h-[120px] rounded-md bg-primary/20"></div>
           </div>
         )}
-        {elements.length > 0 && (
+        {elements && elements.length > 0 && (
           <div className="flex flex-col w-full gap-2 p-4">
             {tree.map((component) => {
               return mode === "preview"

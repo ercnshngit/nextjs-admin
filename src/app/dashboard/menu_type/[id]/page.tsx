@@ -9,7 +9,7 @@ import Link from "next/link";
 
 import Loading from "@/components/loading";
 import { getTableItem } from "@/services/common-table-api";
-import { changeMenuOrder, getMenuItems } from "@/services/dashboard";
+import { changeMenuOrder, getMenuByTypeId } from "@/services/menu";
 import { MENU_ITEM } from "@/types/menus";
 import { menu } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -36,7 +36,7 @@ export default function MenuType({ params }: { params: { id: string } }) {
 function Menu({ menuTypeId }: { menuTypeId: number }) {
   const { data, error } = useQuery<MENU_ITEM[], Error>(
     ["menus", menuTypeId],
-    () => getMenuItems({ typeId: menuTypeId })
+    () => getMenuByTypeId({ typeId: menuTypeId })
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation(

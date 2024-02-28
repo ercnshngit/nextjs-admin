@@ -28,10 +28,10 @@ export default function BlockRenderer({
   };
 
   return (
-    <div>
+    <>
       {elementTree.map((component) => {
         return renderPreview(component);
       })}
-    </div>
+    </>
   );
 }

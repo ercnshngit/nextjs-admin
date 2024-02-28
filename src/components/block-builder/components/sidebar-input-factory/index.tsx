@@ -51,7 +51,7 @@ export default function SidebarInputFactory({
         case "data":
           return <DataInput propKey={propKey} {...props} />;
         case "select":
-          return <SelectInput propKey={propKey} {...props} />;
+          return <SelectInput propKey={propKey} {...props} options={options} />;
         default:
           return <TextInput propKey={propKey} {...props} />;
       }

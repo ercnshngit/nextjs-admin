@@ -5,6 +5,7 @@ import { BlockComponentDto } from "./dto/block_component.dto";
 import { CreateComponentDto } from "./dto/component.dto";
 import { DataLanguageDto } from "./dto/data_language.dto";
 import { DatabaseTableDto } from "./dto/database-table.dto";
+import { prisma } from "@/libs/prisma";
 
 export const getTablesStructure = async () => {
   const { data } = await axiosClient.get("/table");
@@ -147,6 +148,7 @@ export const getBlockComponentsByType = async (type: string) => {
 
   return data as BlockComponentDto[][];
 };
+
 export const getBlockComponentsBySlug = async (slug: string) => {
   const { data } = await axiosClient.get(`/block/component/get/byslug/${slug}`);
 
@@ -181,7 +183,7 @@ export const createCrudOption = async (column_id: number, data: any) => {
 };
 
 export const updateBlock = async (id: number, data: any) => {
-  const { data: responseData } = await axiosClient.post("/block/get/" + id, {
+  const { data: responseData } = await axiosClient.post("/block/" + id, {
     ...data,
     id,
   });
@@ -222,46 +224,6 @@ export const getGeneralBySlug = async (slug: string) => {
     "/general/get/byslug/" + slug
   );
   return responseData as general[];
-};
-
-export const createMenu = async ({ data }: { data: any }) => {
-  const res = await axiosClient.post("/menu", data);
-  return res;
-};
-
-export const deleteMenu = async (id: number) => {
-  const { data } = await axiosClient.get(`/menu/delete/${id}`);
-  return data;
-};
-
-export const updateMenu = async ({ id, data }: { id: number; data: any }) => {
-  const { data: responseData } = await axiosClient.post(
-    "/menu/get/byid/" + id,
-    data
-  );
-  return responseData;
-};
-
-export const changeMenuOrder = async (data: any) => {
-  const { data: responseData } = await axiosClient.post(
-    "/menu/change-order",
-    data
-  );
-  return responseData;
-};
-
-export const getMenuItems = async ({ typeId }: { typeId: number }) => {
-  const { data } = await axiosClient.get(`/menu/get/bytype/${typeId}`);
-  return data;
-};
-export const getMenuBySlug = async ({ slug }: { slug: string }) => {
-  const { data } = await axiosClient.get(`/menu/get/byslug/${slug}`);
-  return data;
-};
-
-export const getMenuByTypeId = async (type_id: number) => {
-  const { data } = await axiosClient.get(`/menu/type/${type_id}`);
-  return data;
 };
 
 // data_language

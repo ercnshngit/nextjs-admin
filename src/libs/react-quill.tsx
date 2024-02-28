@@ -1,4 +1,6 @@
 "use client";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { uploadMediaToServer } from "@/services/media";
 import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
@@ -144,19 +146,43 @@ export const ReactQuillWrapper = ({
   setValue: any;
 }) => {
   const [mounted, setMounted] = useState(false);
+  const [htmlMode, setHtmlMode] = useState(false);
+  const [images, setImages] = useState();
   useEffect(() => {
+    if (typeof window === "undefined") return;
     setMounted(true);
   }, []);
 
   if (!mounted) return null;
   return (
-    <ReactQuill
-      theme="snow"
-      value={value}
-      onChange={setValue}
-      modules={modules}
-      formats={formats}
-      className="h-[80%]"
-    />
+    <>
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="html-mode"
+          checked={htmlMode}
+          onCheckedChange={() => setHtmlMode((p) => !p)}
+        />
+        <Label htmlFor="html-mode">HTML</Label>
+      </div>
+      {htmlMode && (
+        <textarea
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          className="h-[80%] min-h-[250px] w-full"
+        />
+      )}
+      {!htmlMode && (
+        <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={(value) => {
+            setValue(value);
+          }}
+          modules={modules}
+          formats={formats}
+          className="h-[80%] bg-white"
+        />
+      )}
+    </>
   );
 };

@@ -16,19 +16,21 @@ export default function EditableContent({
   propValue: any;
   typeName: string;
   children?: React.ReactNode;
-  options?: string[];
+  options?: { label: string; value: any }[];
   className?: string;
 }) {
   const { updateElement, selectedElement } = useDesigner();
+  console.log("selectedElement", selectedElement);
   if (!selectedElement) return children;
   return (
     <div className={cn("z-30", className)}>
       <SidebarInputFactory
         key={propName}
         propKey={propName}
+        className="text-black"
         typeName={typeName}
-        options={options?.map((item) => ({ label: item, value: item }))}
-        setValue={(value: string) =>
+        options={options}
+        setValue={(value: string) => {
           updateElement(selectedElement.code, {
             ...selectedElement,
             props: selectedElement.props.map((p) => {
@@ -40,8 +42,8 @@ export default function EditableContent({
               }
               return p;
             }),
-          })
-        }
+          });
+        }}
         value={propValue}
       />
     </div>

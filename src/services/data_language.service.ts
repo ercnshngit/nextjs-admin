@@ -63,8 +63,8 @@ export class DataLanguageService extends BaseService {
       console.log(data);
       const isExist = await prisma.data_language.findFirst({
         where: {
-          database_table_id: data.database_table_id,
-          data_id: data.data_id,
+          database_table_id: Number(data.database_table_id),
+          data_id: Number(data.data_id),
         },
       });
       let data_language = null;
@@ -74,7 +74,13 @@ export class DataLanguageService extends BaseService {
           data,
         });
       } else {
-        data_language = await prisma.data_language.create({ data });
+        data_language = await prisma.data_language.create({
+          data: {
+            data_id: Number(data.data_id),
+            language_code: data.language_code,
+            database_table_id: Number(data.database_table_id),
+          },
+        });
       }
 
       if (!data_language) {

@@ -33,13 +33,7 @@ export default function FileUpload({
         setMessage("Tek dosya yükleyebilirsiniz.");
         return;
       }
-      if (
-        acceptedFiles[0].type !== "image/png" &&
-        acceptedFiles[0].type !== "image/jpeg"
-      ) {
-        setMessage("Lütfen png ya da jpg dosyası yükleyiniz.");
-        return;
-      }
+
       if (acceptedFiles[0].size > MAX_FILE_SIZE) {
         setMessage(
           "Dosya boyutu 500 KBtan büyük olamaz. Dosyanızın boyutu " +

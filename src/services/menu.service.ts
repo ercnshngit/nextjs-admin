@@ -4,10 +4,7 @@ import {
   ErrorMessages,
 } from "../../constants/messages.constants";
 import { MenuDto, MenuOrderUpdateDto } from "./dto/menu.dto";
-import { MenuFunctions } from "./functions/menu-functions";
 import { BaseService } from "./base.service";
-
-const func = new MenuFunctions();
 
 export class MenuService extends BaseService {
   constructor(request?: any) {
@@ -28,23 +25,6 @@ export class MenuService extends BaseService {
       const submenus = await this.getSubMenus(menuItem.id);
       result.push({ ...menuItem, submenus });
     }
-
-    return new Response(JSON.stringify(result));
-  }
-
-  async getMenuBySlug(slug: string) {
-    const menu = await prisma.menu.findFirst({ where: { slug } });
-    if (!menu) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
-    }
-
-    const result = [];
-
-    const submenus = await this.getSubMenus(menu.id);
-    result.push({ ...menu, submenus });
 
     return new Response(JSON.stringify(result));
   }
@@ -81,178 +61,52 @@ export class MenuService extends BaseService {
     return new Response(JSON.stringify(result));
   }
 
-  async getMenus() {
-    const menus = await prisma.menu.findMany();
-    if (!menus || menus.length === 0) {
+  async getMenuByTypeName(name: string) {
+    const type = await prisma.type.findFirst({ where: { name } });
+
+    if (!type) {
+      return new Response(
+        JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }),
+        { status: 404 }
+      );
+    }
+
+    const menu = await prisma.menu.findMany({
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        type_id: true,
+        menu_belong_id: true,
+        route: true,
+        status: true,
+        previous_id: true,
+        next_id: true,
+      },
+      where: { type_id: type.id, menu_belong_id: null },
+    });
+    if (!menu || menu.length === 0) {
       return new Response(
         JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
         { status: 404 }
       );
     }
 
-    return new Response(JSON.stringify(menus));
-  }
-
-  async updateMenuOrder(data: MenuOrderUpdateDto) {
-    try {
-      const firstMenu = await prisma.menu.findUnique({
-        where: { id: data.first_menu_id },
-      });
-      if (!firstMenu) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-          { status: 404 }
-        );
-      }
-
-      const secondMenu = await prisma.menu.findUnique({
-        where: { id: data.second_menu_id },
-      });
-      if (!secondMenu) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-          { status: 404 }
-        );
-      }
-      if (firstMenu.menu_belong_id !== secondMenu.menu_belong_id) {
-        return new Response(
-          JSON.stringify({
-            message: ErrorMessages.MENU_BELONG_ID_NOT_SAME_ERROR(),
-          }),
-          { status: 400 }
-        );
-      }
-      console.log(
-        firstMenu.previous_id,
-        secondMenu.previous_id,
-        firstMenu.next_id,
-        secondMenu.next_id
-      );
-      const updatedFirstMenu = await prisma.menu.update({
-        // ilk menüyü güncelle
-        where: { id: data.first_menu_id },
-        include: { previous: true, next: true },
-        data: {
-          previous_id: secondMenu.previous_id,
-          next_id: secondMenu.next_id,
-        },
-      });
-      if (!updatedFirstMenu) {
-        return new Response(
-          JSON.stringify({
-            message: ErrorMessages.UPDATE_FAILED_ERROR(),
-            location: "firstMenuIdUpdate",
-          }),
-          { status: 400 }
-        );
-      }
-      const updatedFirstMenuPreviousAndNextMenus = await prisma.menu.update({
-        // ilk menünün önceki ve sonraki menülerini güncelle
-        where: { id: data.first_menu_id },
-        include: { previous: true, next: true },
-        data: {
-          previous_menu:
-            secondMenu.previous_id == null
-              ? {}
-              : {
-                  update: {
-                    data: {
-                      next_id: firstMenu.id,
-                    },
-                  },
-                },
-          next_menu:
-            secondMenu.next_id == null
-              ? {}
-              : {
-                  update: {
-                    data: {
-                      previous_id: firstMenu.id,
-                    },
-                  },
-                },
-        },
-      });
-      if (!updatedFirstMenuPreviousAndNextMenus) {
-        return new Response(
-          JSON.stringify({
-            message: ErrorMessages.UPDATE_FAILED_ERROR(),
-            location: "firstMenuNext&PreviousUpdate",
-          }),
-          { status: 400 }
-        );
-      }
-      const updatedSecondMenu = await prisma.menu.update({
-        where: { id: data.second_menu_id },
-        include: { previous: true, next: true },
-        data: {
-          previous_id: firstMenu.previous_id,
-          next_id: firstMenu.next_id,
-        },
-      });
-      if (!updatedSecondMenu) {
-        return new Response(
-          JSON.stringify({ message: ErrorMessages.UPDATE_FAILED_ERROR() }),
-          { status: 400 }
-        );
-      }
-
-      const updatedSecondMenuPreviousAndNextMenus = await prisma.menu.update({
-        // ikinci menünün önceki ve sonraki menülerini güncelle
-        where: { id: data.second_menu_id },
-        include: { previous: true, next: true },
-        data: {
-          previous_menu:
-            firstMenu.previous_id == null
-              ? {}
-              : {
-                  update: {
-                    data: {
-                      next_id: secondMenu.id,
-                    },
-                  },
-                },
-          next_menu:
-            firstMenu.next_id == null
-              ? {}
-              : {
-                  update: {
-                    data: {
-                      previous_id: secondMenu.id,
-                    },
-                  },
-                },
-        },
-      });
-      if (!updatedSecondMenuPreviousAndNextMenus) {
-        return new Response(
-          JSON.stringify({
-            message: ErrorMessages.UPDATE_FAILED_ERROR(),
-            location: "secondMenuNext&PreviousUpdate",
-          }),
-          { status: 400 }
-        );
-      }
-      return new Response(
-        JSON.stringify({
-          message: ConfirmMessages.UPDATE_SUCCESS_CONFIRM(),
-          firstMenu: updatedFirstMenuPreviousAndNextMenus,
-          secondMenu: updatedSecondMenuPreviousAndNextMenus,
-        })
-      );
-    } catch (error: any) {
-      console.log(error);
-      throw new Error(error);
+    const result = [];
+    const sortedMenus = await this.sortMenus(menu);
+    for (const menuItem of sortedMenus) {
+      const submenus = await this.getSubMenus(menuItem.id);
+      result.push({ ...menuItem, submenus });
     }
+
+    return new Response(JSON.stringify(result));
   }
 
   async sortMenus(data: any[]) {
     try {
       const sortedSubMenus = [];
       // İlk öğeyi bulmak için previous_id'si null olan öğeyi bulun
-      console.log(data);
       const firstItem = data.find((item) => item.previous_id === null);
-      console.log(firstItem);
 
       if (firstItem) {
         sortedSubMenus.push(firstItem);
@@ -261,11 +115,9 @@ export class MenuService extends BaseService {
 
         // Sonraki öğeleri next_id'leri kullanarak sıralayın
         while (currentItem.next_id) {
-          console.log(currentItem.title, currentItem.next_id);
           const nextItem = data.find((item) => item.id === currentItem.next_id);
 
           if (nextItem) {
-            console.log(data.length === sortedSubMenus.length);
             if (data.length === sortedSubMenus.length) break;
             sortedSubMenus.push(nextItem);
             currentItem = nextItem;
@@ -279,76 +131,6 @@ export class MenuService extends BaseService {
       console.log(error);
       throw new Error(error);
     }
-  }
-
-  async getSortedMenus() {
-    const menus = await prisma.menu.findMany({
-      orderBy: { id: "asc" },
-    });
-    if (!menus || menus.length === 0) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
-    }
-
-    return new Response(JSON.stringify(menus));
-  }
-
-  async getMenusByType(id: number) {
-    const menu = await prisma.menu.findMany({
-      where: { type_id: id, menu_belong_id: null },
-    });
-    if (!menu || menu.length === 0) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
-    }
-
-    const result = [];
-    for (const menuItem of menu) {
-      const submenus = await this.getSubMenus(menuItem.id);
-      result.push({ ...menuItem, submenus });
-    }
-
-    return new Response(JSON.stringify(result));
-  }
-
-  async getMenuByTypeAndId(typeId: number, id: number) {
-    const menu = await prisma.menu.findFirst({
-      where: { type_id: typeId, id },
-    });
-    if (!menu) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
-    }
-
-    const result = [];
-    const submenus = await this.getSubMenus(menu.id);
-    result.push({ menu, submenus });
-
-    return new Response(JSON.stringify(result));
-  }
-
-  async getMenuByTypeAndSlug(typeId: number, slug: string) {
-    const menu = await prisma.menu.findFirst({
-      where: { type_id: typeId, slug },
-    });
-    if (!menu) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
-    }
-
-    const result = [];
-    const submenus = await this.getSubMenus(menu.id);
-    result.push({ menu, submenus });
-
-    return new Response(JSON.stringify(result));
   }
 
   async getSubMenus(menuId: number) {
@@ -369,7 +151,7 @@ export class MenuService extends BaseService {
   }
 
   async createMenu(data: MenuDto) {
-    if (data.type_id && !(await func.checkTypeExist(data.type_id))) {
+    if (data.type_id && !(await this.checkTypeExist(data.type_id))) {
       return new Response(
         JSON.stringify({ message: ErrorMessages.TYPE_NOT_FOUND_ERROR() }),
         { status: 404 }
@@ -378,7 +160,7 @@ export class MenuService extends BaseService {
 
     if (
       data.menu_belong_id &&
-      !(await func.checkMenuBelongExist(data.menu_belong_id))
+      !(await this.checkMenuBelongExist(data.menu_belong_id))
     ) {
       return new Response(
         JSON.stringify({ message: ErrorMessages.MENU_NOT_FOUND_ERROR() }),
@@ -387,7 +169,7 @@ export class MenuService extends BaseService {
     }
 
     if (data.title) {
-      data.slug = data.slug ?? (await func.slugCreator(data.title));
+      data.slug = data.slug ?? (await this.slugCreator(data.title));
       data.route =
         data.route || data.route === "" ? `/${data.slug}` : data.route;
     }
@@ -458,17 +240,17 @@ export class MenuService extends BaseService {
 
   async updateMenu(id: number, data: MenuDto) {
     let msg: any = "";
-    const menuExist = await func.checkMenuExist(id);
+    const menuExist = await this.checkMenuExist(id);
 
     !menuExist
       ? (msg = ErrorMessages.MENU_NOT_FOUND_ERROR())
-      : data.type_id && !(await func.checkTypeExist(data.type_id))
+      : data.type_id && !(await this.checkTypeExist(data.type_id))
       ? (msg = ErrorMessages.TYPE_NOT_FOUND_ERROR())
       : data.menu_belong_id &&
-        !(await func.checkMenuBelongExist(data.menu_belong_id))
+        !(await this.checkMenuBelongExist(data.menu_belong_id))
       ? (msg = ErrorMessages.MENU_NOT_FOUND_ERROR())
       : data.title
-      ? (data.slug = data.slug ?? (await func.slugCreator(data.title)))
+      ? (data.slug = data.slug ?? (await this.slugCreator(data.title)))
       : (data.route = data.route ?? `/${data.slug}`);
 
     if (msg) {
@@ -739,5 +521,60 @@ export class MenuService extends BaseService {
       JSON.stringify({ message: ConfirmMessages.DELETE_SUCCESS_CONFIRM() }),
       { status: 200 }
     );
+  }
+
+  async removeSpecialChars(text: string) {
+    return text.replace(/[^\w\s-]/g, "");
+  }
+
+  async convertTurkishWords(text: string) {
+    const turkishChars = "çğıöşüÇĞİÖŞÜ ";
+    const englishChars = "cgiosuCGIOSU-";
+
+    let result = "";
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const index = turkishChars.indexOf(char);
+
+      if (index !== -1) {
+        result += englishChars[index];
+      } else {
+        result += char === " " ? "-" : char;
+      }
+    }
+
+    return await this.removeSpecialChars(result.toLowerCase());
+  }
+
+  async slugCreator(value: string) {
+    const tr = await this.convertTurkishWords(value);
+    const slug = tr
+      .toLowerCase()
+      .replace(/[\s_-]+/g, "-")
+      .trim();
+
+    return slug;
+  }
+
+  async checkMenuExist(menuId: number): Promise<boolean> {
+    const checkMenuExist = await prisma.menu.findUnique({
+      where: { id: menuId },
+    });
+    return !!checkMenuExist;
+  }
+
+  async checkTypeExist(typeId: number): Promise<boolean> {
+    const checkTypeExist = await prisma.type.findUnique({
+      where: { id: typeId },
+    });
+    return !!checkTypeExist;
+  }
+
+  async checkMenuBelongExist(menuBelongId: number): Promise<boolean> {
+    const checkMenuBelongExist = await prisma.menu.findMany({
+      where: { id: menuBelongId },
+    });
+    return checkMenuBelongExist && checkMenuBelongExist.length > 0;
   }
 }

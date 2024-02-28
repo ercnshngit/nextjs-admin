@@ -20,17 +20,6 @@ export class BlockService extends BaseService {
     return new Response(JSON.stringify(block), { status: 200 });
   }
 
-  async getBlocks() {
-    const blocks = await prisma.block.findMany();
-    if (blocks.length < 1) {
-      return new Response(
-        JSON.stringify({ message: ErrorMessages.BLOCK_NOT_FOUND_ERROR() }),
-        { status: 404 }
-      );
-    }
-    return new Response(JSON.stringify(blocks));
-  }
-
   async createBlock(data: BlockDto) {
     try {
       if (data.type_id) {

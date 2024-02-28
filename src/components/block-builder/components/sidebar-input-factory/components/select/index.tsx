@@ -40,12 +40,11 @@ export default function SelectInput({
         }}
         defaultValue={value}
       >
-        <SelectTrigger>
+        <SelectTrigger className="bg-white text-black">
           <SelectValue placeholder="Select a type" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Data set</SelectLabel>
             {options?.map((item) => (
               <SelectItem key={item.value} value={String(item.value)}>
                 {item.label}

@@ -28,7 +28,8 @@ export default function ComponentWrapper({
   dragDrop: boolean;
   children?: any;
 }) {
-  const { removeElement, setSelectedElement, addElement } = useDesigner();
+  const { removeElement, setSelectedElement, addElement, selectedElement } =
+    useDesigner();
   const topHalf = useDroppable({
     id: component.code + "-top",
     data: {
@@ -127,7 +128,7 @@ export default function ComponentWrapper({
         <div className="z-50 p-2" id={component.code}>
           {renderComponent()}
         </div>
-        {dragDrop && (
+        {dragDrop && !selectedElement && (
           <>
             <div
               ref={topHalf.setNodeRef}
@@ -198,17 +199,27 @@ export default function ComponentWrapper({
         </div>
 
         {dragDrop && topHalf.isOver && (
-          <div className="absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none" />
+          <div
+            className={
+              "absolute top-0 w-full rounded-md h-[7px] bg-primary rounded-b-none"
+            }
+          />
         )}
         {dragDrop && childrenDrop.isOver && (
-          <div className="absolute w-full rounded-md top-1/3 h-1/3 bg-primary " />
+          <div
+            className={"absolute w-full rounded-md top-1/3 h-1/3 bg-primary "}
+          />
         )}
         {dragDrop &&
+          !selectedElement &&
           component.hasChildren &&
           component.children?.length === 0 && (
             <div
               ref={childrenDrop.setNodeRef}
-              className="absolute w-full px-2 h-1/3 bottom-1/3 "
+              className={cn(
+                selectedElement && "hidden",
+                "absolute w-full px-2 h-1/3 bottom-1/3 "
+              )}
             >
               <div className="border border-dashed hover:border-blue-500 hover:border-collapse">
                 <PlusIcon className="w-6 h-6 m-auto text-gray-400 hover:text-blue-500" />
@@ -216,7 +227,11 @@ export default function ComponentWrapper({
             </div>
           )}
         {dragDrop && bottomHalf.isOver && (
-          <div className="absolute bottom-0 w-full rounded-md h-[7px] bg-primary rounded-t-none" />
+          <div
+            className={
+              "absolute bottom-0 w-full rounded-md h-[7px] bg-primary rounded-t-none"
+            }
+          />
         )}
       </div>
     </Suspense>

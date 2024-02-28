@@ -35,6 +35,7 @@ export default function ImagePicker({
   );
 
   const handleImageSelect = (image: any) => {
+    console.log(image);
     setValue(image.path);
     setMediaPickerOpen(false);
   };

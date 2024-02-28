@@ -1,9 +1,9 @@
 import { createPortal } from "react-dom";
 import FileUpload from "../FileUpload";
-import { DeleteIcon, Trash2Icon } from "lucide-react";
+import { CheckIcon, DeleteIcon, Trash2Icon } from "lucide-react";
 import DeleteDialog from "../delete-dialog-base";
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteMediaFromServer } from "@/services/media";
 import { toast } from "react-toastify";
 import { Button } from "../ui/button";
@@ -28,6 +28,8 @@ export default function MediaList({
     setId(id);
   };
 
+  const queryClient = useQueryClient();
+
   const deleteMutation = useMutation({
     mutationFn: () =>
       deleteMediaFromServer({
@@ -35,6 +37,7 @@ export default function MediaList({
       }),
     onSuccess: (response) => {
       toast.success("Silme işlemi başarılı");
+      queryClient.invalidateQueries(["media"]);
     },
     onError: (error) => {
       toast.error("Silme işlemi başarısız");
@@ -58,29 +61,42 @@ export default function MediaList({
             </button>
           </div>
           <div className="grid grid-cols-5 gap-8 overflow-y-auto max-h-[50vh]">
-            {images.map((image, index) => (
-              <div
-                key={index}
-                onClick={() => handleImageSelect(image)}
-                className="relative flex items-center justify-center w-32 h-32 bg-gray-200 rounded-lg"
-              >
-                <Button
-                  variant={"destructive"}
-                  className="absolute top-2 right-2 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openDeleteDialog(image.id);
-                  }}
+            {Array.isArray(images) &&
+              images?.map((image, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleImageSelect(image)}
+                  className="relative flex items-center justify-center w-24 h-24 bg-gray-200 rounded-lg"
                 >
-                  <Trash2Icon size={24} className="text-white" />
-                </Button>
-                <img
-                  className="object-contain"
-                  src={process.env.NEXT_PUBLIC_FILE_URL + image.path}
-                  alt=""
-                />
-              </div>
-            ))}
+                  <div className="flex gap-2 absolute top-2 right-2 left-2 cursor-pointer">
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleImageSelect(image);
+                      }}
+                      size={"sm"}
+                    >
+                      <CheckIcon size={18} className="text-white" />
+                    </Button>
+                    <Button
+                      size={"sm"}
+                      variant={"destructive"}
+                      className=""
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openDeleteDialog(image.id);
+                      }}
+                    >
+                      <Trash2Icon size={18} className="text-white" />
+                    </Button>
+                  </div>
+                  <img
+                    className="object-contain"
+                    src={process.env.NEXT_PUBLIC_FILE_URL + image.path}
+                    alt=""
+                  />
+                </div>
+              ))}
           </div>
           <div>{<FileUpload status={status} uploadFile={handleUpload} />}</div>
         </div>

@@ -28,7 +28,29 @@ type DesignerContextType = {
   setDragdrop: Dispatch<SetStateAction<boolean>>;
 };
 
-export const DesignerContext = createContext<DesignerContextType | null>(null);
+type DesignerContextDeactiveType = {
+  elements: null;
+  setElements: null;
+  addElement: null;
+  removeElement: null;
+  mode: null;
+  setMode: null;
+  selectedElement: null;
+  setSelectedElement: null;
+  block: null;
+  setBlock: null;
+  updateElement: null;
+  updateBlockData: null;
+  setUpdateBlockData: null;
+  dragdrop: null;
+  setDragdrop: null;
+};
+
+export const DesignerContext = createContext<
+  | ({ contextActive: true } & DesignerContextType)
+  | ({ contextActive: false } & DesignerContextDeactiveType)
+  | null
+>(null);
 
 export function DesignerContextProvider({ children }: { children: ReactNode }) {
   const [elements, setElements] = useState<BlockComponentDto[]>([]);
@@ -74,6 +96,7 @@ export function DesignerContextProvider({ children }: { children: ReactNode }) {
   return (
     <DesignerContext.Provider
       value={{
+        contextActive: true,
         updateBlockData,
         setUpdateBlockData,
         elements,
@@ -100,7 +123,24 @@ export function useDesigner() {
   const context = useContext(DesignerContext);
 
   if (!context) {
-    throw new Error("useDesigner must be used within a DesignerContext");
+    return {
+      contextActive: false,
+      updateBlockData: null,
+      setUpdateBlockData: null,
+      elements: null,
+      setElements: null,
+      addElement: null,
+      removeElement: null,
+      mode: null,
+      setMode: null,
+      selectedElement: null,
+      setSelectedElement: null,
+      block: null,
+      setBlock: null,
+      updateElement: null,
+      dragdrop: null,
+      setDragdrop: null,
+    };
   }
 
   return context;

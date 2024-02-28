@@ -7,7 +7,7 @@ import {
 } from "@/services/dashboard";
 import { DataLanguageDto } from "@/services/dto/data_language.dto";
 import { DatabaseTableDto } from "@/services/dto/database-table.dto";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 export function useDataLanguageMutation({
@@ -21,13 +21,20 @@ export function useDataLanguageMutation({
 
   const { language } = useLanguage();
 
-  const dataLanguageMutation = useMutation((data: any) =>
-    createDataLanguage({
-      language_code: language,
-      database_table_id: table.data?.id || 0,
-      data_id: data.id,
-    })
-  );
+  const queryClient = useQueryClient();
+
+  const dataLanguageMutation = useMutation({
+    mutationFn: (data: any) =>
+      createDataLanguage({
+        language_code: language,
+        database_table_id: table.data?.id || 0,
+        data_id: data.id,
+      }),
+    onSuccess: () => {
+      console.log("Data language created");
+      queryClient.invalidateQueries(["dataLanguage", table_name]);
+    },
+  });
 
   return {
     dataLanguageMutation,
@@ -46,5 +53,8 @@ export function useDataLanguageOfTable({ table_name }: { table_name: string }) {
       ?.filter((data) => language === data.language_code)
       .map((data: DataLanguageDto) => data.data_id) || [];
 
-  return { dataIds, language };
+  const allDataIds =
+    dataLanguage.data?.map((data: DataLanguageDto) => data.data_id) || [];
+
+  return { dataIds, language, allDataIds };
 }

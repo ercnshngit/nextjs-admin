@@ -12,6 +12,7 @@ export async function POST(
   try {
     await service.securiyCheck();
     const body = await req.json();
+    console.log("body", body);
     const res = await service.updateTableWithId(table_name, id, body);
     return cors(req, res);
   } catch (error) {

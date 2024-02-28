@@ -339,7 +339,9 @@ export class BlockComponentService extends BaseService {
         });
       }
 
-      return new Response(JSON.stringify({ results }), { status: 200 });
+      return new Response(JSON.stringify({ id: block.id, results }), {
+        status: 200,
+      });
     } catch (error) {
       await this.createLog({ error });
 
@@ -413,6 +415,7 @@ export class BlockComponentService extends BaseService {
         where: { id: data.id },
       });
     } else {
+      console.log("data : ", data);
       item = await (prisma[table as Prisma.ModelName] as any).create({
         data: { ...data, id: undefined },
       });

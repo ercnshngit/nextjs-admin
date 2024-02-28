@@ -5,12 +5,12 @@ import { NextRequest } from "next/server";
 export const dynamic = "force-dynamic";
 export async function GET(
   req: NextRequest,
-  { params }: { params: { type_id: string; id: number } }
+  { params }: { params: { id: number } }
 ) {
   const service = new MenuService(req);
   try {
     await service.securiyCheck();
-    const res = await service.getMenusByType(Number(params.type_id));
+    const res = await service.getMenuByTypeId(Number(params.id));
     return cors(req, res);
   } catch (error) {
     return await service.createLogAndResolveError(error);

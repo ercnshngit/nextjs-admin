@@ -38,7 +38,7 @@ export default function DeleteItem({ open, setOpen, tableName, id }: any) {
     }
   );
 
-  const handleDelete = (id: number) => {
+  const handleDelete = () => {
     deleteMutation.mutate({
       id: id,
       tableName: tableName,

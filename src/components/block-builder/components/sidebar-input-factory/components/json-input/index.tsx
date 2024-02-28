@@ -2,15 +2,8 @@
 import { jsonParse } from "@/block-renderer/utils/json-parse";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useTable, useTableDataByColumnAndValue } from "@/hooks/use-database";
-import { useTranslate } from "@/langs";
-import { createComponent, getTypes } from "@/services/dashboard";
-import { TypeDto } from "@/services/dto/type.dto";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { PlusCircle } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 
 export default function JsonInput({
   propKey,

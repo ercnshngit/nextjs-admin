@@ -39,6 +39,10 @@ export async function middleware(request: any) {
     const { value: token } = cookies.get("token") ?? { value: null };
     const hasVerifiedToken = token && (await verifyJwtToken(token));
     const isAuthPageRequested = isAuthPages(nextUrl.pathname);
+    if (request.nextUrl.pathname.startsWith("/dashboard")) {
+      return NextResponse.next();
+    }
+
     if (isAuthPageRequested) {
       if (!hasVerifiedToken) {
         const response = NextResponse.next();

@@ -20,7 +20,7 @@ export default function MediaPage() {
       </div>
       <div>{<FileUpload status={status} uploadFile={handleUpload} />}</div>
       <div className="grid grid-cols-5 gap-8 overflow-y-auto max-h-[50vh]">
-        {images.map((image: any) => (
+        {images?.map((image: any) => (
           <div
             key={image.path}
             className="relative flex items-center justify-center w-32 h-32 bg-gray-200 rounded-lg"

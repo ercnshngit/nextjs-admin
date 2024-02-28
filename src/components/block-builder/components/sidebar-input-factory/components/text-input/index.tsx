@@ -17,7 +17,10 @@ export default function TextInput({
 }) {
   return (
     <input
-      className={cn("w-full p-2 border border-gray-300 rounded-md", className)}
+      className={cn(
+        "w-full p-2 border border-gray-300 text-black rounded-md",
+        className
+      )}
       type="text"
       id={propKey}
       defaultValue={value}

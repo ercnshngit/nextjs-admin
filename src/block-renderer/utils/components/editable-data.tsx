@@ -2,11 +2,12 @@ import { useDesigner } from "@/contexts/designer-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { createPortal } from "react-dom";
-import TableWrapper from "./components/table";
+import TableWrapper from "./table";
 import CreateFormBase from "@/components/base-form/create-form-base";
 import { useTable } from "@/hooks/use-database";
 import UpdateFormBase from "@/components/base-form/update-form-base";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function EditableData<T extends { id: number }>({
   description,
@@ -53,7 +54,9 @@ export default function EditableData<T extends { id: number }>({
   return (
     <>
       <p>{description}</p>
-      <button onClick={open}>Ekleme yerini ac</button>
+      <Button onClick={open} className="z-40">
+        Ekleme yerini ac
+      </Button>
       {isOpened &&
         createPortal(
           <>

@@ -1,5 +1,5 @@
 import React from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { FieldErrors, SetValueConfig, UseFormRegister } from "react-hook-form";
 import Checkbox from "./components/Checkbox";
 import Date from "./components/Date";
 import Hidden from "./components/Hidden";
@@ -23,7 +23,7 @@ type FormInputFactoryProps = {
   errors: FieldErrors;
   formType: "create_crud_option" | "update_crud_option";
   id?: number;
-  setValue: any;
+  setValue: SetValueConfig;
   watch?: any;
   control: any;
   readOnly?: boolean;

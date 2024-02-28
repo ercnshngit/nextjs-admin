@@ -17,7 +17,7 @@ import { UniqueIdentifier } from "@dnd-kit/core";
 import { useTranslate } from "@/langs";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { deleteMenu } from "@/services/dashboard";
+import { deleteMenu } from "@/services/menu";
 
 export default function MenuList({
   data,

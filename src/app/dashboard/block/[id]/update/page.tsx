@@ -10,6 +10,7 @@ import {
   updateBlock,
 } from "@/services/dashboard";
 import { CreateBlockComponentsDto } from "@/services/dto/block_component.dto";
+import { useDataLanguageMutation } from "@/utils/use-data-language";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeftCircleIcon,
@@ -45,6 +46,10 @@ export default function BuilderPage({
     () => getBlockComponents(Number(params.id))
   );
 
+  const { dataLanguageMutation } = useDataLanguageMutation({
+    table_name: "block",
+  });
+
   useEffect(() => {
     if (!block_components) return;
 
@@ -58,7 +63,8 @@ export default function BuilderPage({
     {
       onSuccess: async (data) => {
         console.log(JSON.stringify(data));
-        toast.success("Blok başarıyla güncellendi");
+        toast.success("Icerik başarıyla güncellendi");
+
         await queryClient.invalidateQueries(["block_components", params.id]);
       },
     }
@@ -70,7 +76,13 @@ export default function BuilderPage({
       onSuccess: async (data) => {
         console.log(JSON.stringify(data));
         toast.success("Blok başarıyla güncellendi");
+        dataLanguageMutation.mutate(data);
+
         await queryClient.invalidateQueries(["block", params.id]);
+      },
+      onError: (error) => {
+        console.log(error);
+        toast.error("Blok güncellenirken bir hata oluştu");
       },
     }
   );
@@ -111,8 +123,8 @@ export default function BuilderPage({
         })),
     };
 
-    await createBlocks.mutate(data);
-    await updateBlockMutation.mutate();
+    updateBlockMutation.mutate();
+    createBlocks.mutate(data);
   };
 
   useEffect(() => {

@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
   try {
     await service.securiyCheck();
     const body = await req.json();
+    console.log("body : ", body);
     const res = await service.createDataLanguage(body);
     return cors(req, res);
   } catch (error) {

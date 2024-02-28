@@ -158,7 +158,6 @@ export class TableService extends BaseService {
   }
 
   async updateTableWithId(tablename: string, id: number, data: any) {
-    //TODO: sanitize
     try {
       const response = await (
         prisma[tablename as Prisma.ModelName] as any
@@ -167,7 +166,8 @@ export class TableService extends BaseService {
           id: Number(id),
         },
         data: data.reduce((acc: any, item: any) => {
-          acc[item.key] = item.value;
+          const value = parseInt(item.value);
+          acc[item.key] = isNaN(value) ? item.value : value;
           return acc;
         }, {}),
       });

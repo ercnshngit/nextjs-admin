@@ -28,6 +28,7 @@ export default function ImagePickerInput({
     })
   );
   const handleImageSelect = (image: any) => {
+    console.log(image);
     setValue(image.path);
     setMediaPickerOpen(false);
   };
@@ -51,7 +52,7 @@ export default function ImagePickerInput({
     return (
       <>
         <input
-          className="px-2 py-1 border border-gray-200 rounded-md "
+          className="px-2 py-1 border border-gray-200  rounded-md "
           id={propKey}
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -77,7 +78,7 @@ export default function ImagePickerInput({
           document.body
         )}
       <input
-        className="px-2 py-1 border border-gray-200 rounded-md "
+        className="px-2 py-1 border border-gray-200 text-black rounded-md "
         id={propKey}
         value={value}
       />

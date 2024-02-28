@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { CircleIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { columns } from "@/components/data-table/columns";
 import { useDatabase, useTable } from "@/hooks/use-database";
@@ -49,19 +49,23 @@ export default function ListPage({
     translate
   );
 
-  const { dataIds, language } = useDataLanguageOfTable({ table_name: slug });
-  const [tableData, setTableData] = useState(
-    data?.filter((row: any) =>
-      table?.can_translate ? dataIds.includes(row.id) : true
-    )
-  );
+  const { dataIds, language, allDataIds } = useDataLanguageOfTable({
+    table_name: slug,
+  });
+  const [tableData, setTableData] = useState(data);
 
   useEffect(() => {
-    setTableData(
-      data?.filter((row: any) =>
-        table?.can_translate && !noLangMode ? dataIds.includes(row.id) : true
-      )
-    );
+    if (!dataIds) return;
+    if (!table?.can_translate) return;
+    setTableData((p) => {
+      if (!table?.can_translate) {
+        return data;
+      } else {
+        return data.filter((row) =>
+          noLangMode ? !allDataIds.includes(row.id) : dataIds.includes(row.id)
+        );
+      }
+    });
   }, [data, language, noLangMode]);
 
   const filterablesData = filterables?.map((filterable) => {
@@ -108,11 +112,11 @@ export default function ListPage({
       </div>
       <div className="w-full py-10">
         {table?.can_translate && (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 mb-2">
             <Switch
               id="noLang-mode"
               checked={noLangMode}
-              onCheckedChange={() => setNoLangMode(!noLangMode)}
+              onCheckedChange={() => setNoLangMode((p) => !p)}
             />
             <Label htmlFor="noLang-mode">
               Dil belirlenmemis verileri goster
